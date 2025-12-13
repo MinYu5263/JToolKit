@@ -1,0 +1,13 @@
+jtoolkit:
+  title: "JToolKit2 Dev Build"
+  width: 1280
+  height: 768
+  # 可选值: dark, light, primer-dark, primer-light
+  theme: light
+
+spring:
+  application:
+    name: JToolKit2
+  datasource:
+    driver-class-name: org.sqlite.JDBC
+    url: jdbc:sqlite:${user.home}/.jtoolkit/data.db

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="20.0" xmlns="http://javafx.com/javafx/21">
+    <padding>
+        <Insets top="30" right="30" bottom="30" left="30"/>
+    </padding>
+
+    <VBox spacing="5.0">
+        <Label text="Settings" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+        <Label text="Application preferences and configurations." styleClass="text-muted"/>
+    </VBox>
+
+    <Separator/>
+
+    <Label text="TODO: 这里放置具体的设置项，例如主题切换、数据库路径设置等。" />
+</VBox>

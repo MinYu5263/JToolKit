@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import atlantafx.base.controls.ModalPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+<StackPane fx:id="rootPane"
+           xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.minyu.jtoolkit.module.main.MainController">
+
+    <BorderPane fx:id="mainLayout">
+        <left>
+        </left>
+        <center>
+            <StackPane fx:id="contentArea"/>
+        </center>
+    </BorderPane>
+
+    <ModalPane fx:id="modalPane" id="main-modal-pane" />
+
+</StackPane>

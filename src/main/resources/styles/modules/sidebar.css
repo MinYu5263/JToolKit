@@ -1,0 +1,124 @@
+/* =============================================================================
+   1. Sidebar Container (侧边栏整体容器)
+   ============================================================================= */
+#sidebar {
+    -fx-background-color: -color-bg-inset;
+    -fx-border-color: -color-border-default;
+    -fx-min-width: 270px;
+}
+
+/* =============================================================================
+   2. Header Section (头部区域)
+   ============================================================================= */
+
+/* Logo & Title Text */
+#sidebar .header .logo .label,
+#sidebar .title-3 {
+    -fx-padding: 6px 0px 0px 10px;
+    -fx-text-fill: -color-fg-muted;
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
+}
+
+/* Search Button */
+#sidebar .header .search-button {
+    -fx-pref-height: 35px;
+    -fx-min-height: 35px;
+    -fx-max-height: 35px;
+}
+
+#sidebar .header .search-button:hover {
+    -fx-background-color: -color-button-bg-hover !important;
+}
+
+/* =============================================================================
+   3. TreeView Base Styles (导航列表基础重置)
+   ============================================================================= */
+
+/* Reset default TreeView backgrounds/padding */
+.tree-view {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.tree-view .tree-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-indent: 0;
+}
+
+/* Hide default arrow (disclosure node) */
+.tree-cell .tree-disclosure-node {
+    -fx-min-width: 0;
+    -fx-pref-width: 0;
+    -fx-max-width: 0;
+    -fx-min-height: 0;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+    visibility: hidden;
+}
+
+/* Row Selection & Hover Backgrounds */
+.tree-view .tree-cell:filled:selected,
+.tree-view .tree-cell:filled:hover,
+.tree-view:focused .tree-cell:selected {
+    -fx-background-color: -color-accent-subtle;
+}
+
+/* =============================================================================
+   4. Nav Tree Cell (自定义单元格内容)
+   ============================================================================= */
+
+/* Container Layout */
+.nav-tree-cell {
+    -fx-min-height: 30px;
+    -fx-padding: 0 0 0 4px;
+    -fx-background-color: transparent;
+
+    -fx-border-color: -color-border-muted;
+    -fx-border-width: 0 0 0 1;
+}
+
+/* Prevent double background on selection */
+.tree-cell:filled:hover .nav-tree-cell,
+.tree-cell:filled:selected .nav-tree-cell {
+    -fx-background-color: transparent;
+}
+
+/* --- Text (Title) --- */
+.nav-tree-cell .title {
+    -fx-text-fill: -color-fg-default;
+    -fx-font-size: 14px;
+}
+
+.tree-cell:filled:selected .nav-tree-cell .title {
+    -fx-text-fill: -color-accent-fg;
+    -fx-font-weight: bold;
+}
+
+/* --- Left Icon (Parent items) --- */
+.nav-tree-cell .icon-container {
+    -fx-alignment: center;
+}
+
+.nav-tree-cell .left-icon {
+    -fx-icon-color: -color-fg-muted;
+    -fx-icon-size: 16px;
+}
+
+
+
+/* --- Right Arrow (Expand/Collapse) --- */
+.nav-tree-cell .arrow {
+    -fx-icon-color: -color-fg-subtle;
+    -fx-icon-size: 20px;
+}
+
+/* =============================================================================
+   5. Footer Section (底部区域)
+   ============================================================================= */
+#sidebar .footer {
+    -fx-padding: 10px 20px;
+    -fx-border-color: -color-border-muted;
+    -fx-border-width: 1px 0 0 0;
+}
