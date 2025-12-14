@@ -1,0 +1,7 @@
+--name "JToolKit"
+--type app-image
+--input target/pure
+--main-jar JToolKit.jar
+--module-path "%JAVA_HOME%/jmods;%PATH_TO_FX_MODS%"
+--add-modules ALL-MODULE-PATH
+--dest dist

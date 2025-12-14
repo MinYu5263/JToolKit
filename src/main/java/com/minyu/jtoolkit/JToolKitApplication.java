@@ -1,6 +1,7 @@
 package com.minyu.jtoolkit;
 
 import javafx.application.Application;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
@@ -13,6 +14,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @see JfxRuntime
  */
 @SpringBootApplication
+@MapperScan("com.minyu.jtoolkit.system.mapper")
 public class JToolKitApplication {
     public static void main(String[] args) {
         Application.launch(JfxRuntime.class, args);

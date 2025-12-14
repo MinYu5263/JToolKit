@@ -10,7 +10,11 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -28,6 +32,7 @@ public class MainController {
     private StackPane contentArea;
 
     private final MainModel model = new MainModel();
+    private Map<String, Parent> viewCache = new HashMap<>();
 
     @FXML
     public void initialize() {
@@ -42,7 +47,7 @@ public class MainController {
         mainLayout.setLeft(sidebar);
 
         model.selectedPageProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null && !newVal.isBlank()) {
+            if (StringUtils.isNotBlank(newVal)) {
                 loadView(newVal);
             }
         });
@@ -51,10 +56,17 @@ public class MainController {
     private void loadView(String fxmlPath) {
         try {
             contentArea.getChildren().clear();
-            Parent view = viewLoader.load(fxmlPath);
+            Parent view;
+            if (viewCache.containsKey(fxmlPath)) {
+                view = viewCache.get(fxmlPath);
+            } else {
+                view = viewLoader.load(fxmlPath);
+                viewCache.put(fxmlPath, view);
+            }
             contentArea.getChildren().add(view);
         } catch (Exception e) {
             e.printStackTrace();
+            viewCache.remove(fxmlPath);
             contentArea.getChildren().add(new Label("无法加载页面: " + fxmlPath));
         }
     }
