@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox prefHeight="600.0" prefWidth="800.0" spacing="10.0"
+      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.minyu.jtoolkit.module.cron.CronController">
+
+    <padding>
+        <Insets top="15" right="15" bottom="15" left="15"/>
+    </padding>
+
+    <TitledPane text="Cron 表达式结果" collapsible="false">
+        <HBox spacing="10.0" alignment="CENTER_LEFT">
+            <TextField fx:id="cronExpressionField" text="* * * * * ? *" HBox.hgrow="ALWAYS"
+                       style="-fx-font-family: 'Consolas', 'Monospaced'; -fx-font-size: 14px;"/>
+            <Button text="复制" onAction="#onCopy"/>
+            <Button text="解析运行时间" onAction="#onParse"/>
+        </HBox>
+    </TitledPane>
+
+    <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+
+        <Tab text="秒 (Seconds)" fx:id="tabSecond">
+            <VBox spacing="10.0">
+                <padding><Insets top="10" left="10"/></padding>
+                <fx:define>
+                    <ToggleGroup fx:id="secGroup"/>
+                </fx:define>
+
+                <RadioButton fx:id="secTypeEvery" text="每秒 允许的通配符[, - * /]" toggleGroup="$secGroup" selected="true"/>
+
+                <HBox spacing="5.0" alignment="CENTER_LEFT">
+                    <RadioButton fx:id="secTypeCycle" text="周期:" toggleGroup="$secGroup"/>
+                    <Label text="从第"/>
+                    <Spinner fx:id="secCycleStart" prefWidth="70" editable="true"/>
+                    <Label text="秒开始，每"/>
+                    <Spinner fx:id="secCycleStep" prefWidth="70" editable="true"/>
+                    <Label text="秒执行一次"/>
+                </HBox>
+
+                <HBox spacing="5.0" alignment="CENTER_LEFT">
+                    <RadioButton fx:id="secTypeRange" text="区间:" toggleGroup="$secGroup"/>
+                    <Label text="从第"/>
+                    <Spinner fx:id="secRangeStart" prefWidth="70" editable="true"/>
+                    <Label text="秒 到 第"/>
+                    <Spinner fx:id="secRangeEnd" prefWidth="70" editable="true"/>
+                    <Label text="秒"/>
+                </HBox>
+            </VBox>
+        </Tab>
+
+        <Tab text="分 (Minutes)" fx:id="tabMinute">
+            <VBox spacing="10.0">
+                <padding><Insets top="10" left="10"/></padding>
+                <fx:define>
+                    <ToggleGroup fx:id="minGroup"/>
+                </fx:define>
+
+                <RadioButton fx:id="minTypeEvery" text="每分 允许的通配符[, - * /]" toggleGroup="$minGroup" selected="true"/>
+
+                <HBox spacing="5.0" alignment="CENTER_LEFT">
+                    <RadioButton fx:id="minTypeCycle" text="周期:" toggleGroup="$minGroup"/>
+                    <Label text="从第"/>
+                    <Spinner fx:id="minCycleStart" prefWidth="70" editable="true"/>
+                    <Label text="分开始，每"/>
+                    <Spinner fx:id="minCycleStep" prefWidth="70" editable="true"/>
+                    <Label text="分执行一次"/>
+                </HBox>
+
+                <HBox spacing="5.0" alignment="CENTER_LEFT">
+                    <RadioButton fx:id="minTypeRange" text="区间:" toggleGroup="$minGroup"/>
+                    <Label text="从第"/>
+                    <Spinner fx:id="minRangeStart" prefWidth="70" editable="true"/>
+                    <Label text="分 到 第"/>
+                    <Spinner fx:id="minRangeEnd" prefWidth="70" editable="true"/>
+                    <Label text="分"/>
+                </HBox>
+            </VBox>
+        </Tab>
+
+        <Tab text="时 (Hours)" fx:id="tabHour">
+            <VBox spacing="10.0">
+                <padding><Insets top="10" left="10"/></padding>
+                <fx:define><ToggleGroup fx:id="hourGroup"/></fx:define>
+                <RadioButton fx:id="hourTypeEvery" text="每小时" toggleGroup="$hourGroup" selected="true"/>
+                <HBox spacing="5.0" alignment="CENTER_LEFT">
+                    <RadioButton fx:id="hourTypeCycle" text="周期:" toggleGroup="$hourGroup"/>
+                    <Label text="从第"/>
+                    <Spinner fx:id="hourCycleStart" prefWidth="70" editable="true"/>
+                    <Label text="时开始，每"/>
+                    <Spinner fx:id="hourCycleStep" prefWidth="70" editable="true"/>
+                    <Label text="时执行一次"/>
+                </HBox>
+                <HBox spacing="5.0" alignment="CENTER_LEFT">
+                    <RadioButton fx:id="hourTypeRange" text="区间:" toggleGroup="$hourGroup"/>
+                    <Label text="从第"/>
+                    <Spinner fx:id="hourRangeStart" prefWidth="70" editable="true"/>
+                    <Label text="时 到 第"/>
+                    <Spinner fx:id="hourRangeEnd" prefWidth="70" editable="true"/>
+                    <Label text="时"/>
+                </HBox>
+            </VBox>
+        </Tab>
+
+    </TabPane>
+
+    <TitledPane text="最近 5 次运行时间 (基于当前时间)" collapsible="false" VBox.vgrow="ALWAYS">
+        <TextArea fx:id="resultArea" editable="false" wrapText="true"
+                  style="-fx-font-family: 'Consolas', 'Monospaced';"/>
+    </TitledPane>
+
+</VBox>

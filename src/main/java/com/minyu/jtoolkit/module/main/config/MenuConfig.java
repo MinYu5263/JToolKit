@@ -12,6 +12,9 @@ public class MenuConfig {
                         new MenuPage("Theme", "fxml/theme/ThemeView.fxml")
                         // new MenuPage("Settings", "fxml/settings/SettingsView.fxml")
                 )),
+                new MenuCategory("生成器", "mdal-developer_board", List.of(
+                        new MenuPage("Cron 生成器", "fxml/cron/CronView.fxml")
+                )),
 
                 new MenuCategory("Dev Tools", "mdmz-settings", List.of(
                         new MenuPage("JSON Parser", "fxml/json/JsonView.fxml")
