@@ -16,6 +16,10 @@ public class MenuConfig {
                         new MenuPage("Cron 生成器", "fxml/cron/CronView.fxml"),
                         new MenuPage("文件树生成", "fxml/file_tree/FileTreeView.fxml")
                 )),
+                new MenuCategory("转换工具", "mdal-flip_camera_android", List.of(
+                        new MenuPage("Excel转SQL", "fxml/excel2sql/ExcelToSqlView.fxml"),
+                        new MenuPage("SQL转Ecel", "fxml/file_tree/SqlToExcelView.fxml")
+                )),
 
                 new MenuCategory("文本工具", "mdmz-text_snippet", List.of(
                         new MenuPage("JSON 格式化", "fxml/json/JsonView.fxml"),

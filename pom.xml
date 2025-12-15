@@ -29,6 +29,7 @@
         <commons-lang3.version>3.18.0</commons-lang3.version>
         <mybatis-plus.version>3.5.12</mybatis-plus.version>
         <cron-utils.version>9.2.1</cron-utils.version>
+        <easyexcel.version>4.0.3</easyexcel.version>
     </properties>
 
     <dependencies>
@@ -113,6 +114,13 @@
             <groupId>com.cronutils</groupId>
             <artifactId>cron-utils</artifactId>
             <version>${cron-utils.version}</version>
+        </dependency>
+
+        <!-- 处理Excel -->
+        <dependency>
+            <groupId>cn.idev.excel</groupId>
+            <artifactId>fastexcel</artifactId>
+            <version>1.3.0</version>
         </dependency>
     </dependencies>
 

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox prefHeight="600.0" prefWidth="900.0" spacing="10.0"
+      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.minyu.jtoolkit.module.excel2sql.ExcelToSqlController">
+
+    <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+
+    <HBox spacing="10.0" alignment="CENTER_LEFT">
+        <Label text="Excel 文件:"/>
+        <TextField fx:id="filePathField" promptText="拖拽或选择 Excel 文件 (.xlsx, .xls, .csv)..." HBox.hgrow="ALWAYS"/>
+        <Button text="浏览..." onAction="#onBrowse"/>
+        <ComboBox fx:id="sheetCombo" promptText="选择 Sheet" prefWidth="150"/>
+        <Button text="加载预览" onAction="#onLoadPreview"/>
+    </HBox>
+
+    <SplitPane dividerPositions="0.4" VBox.vgrow="ALWAYS">
+        <VBox spacing="10.0">
+            <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+            <TitledPane text="生成配置" collapsible="false" VBox.vgrow="ALWAYS">
+                <GridPane vgap="10" hgap="10">
+                    <Label text="目标表名 (Table):" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    <TextField fx:id="tableNameField" text="my_table" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                    <Label text="选项:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                    <CheckBox fx:id="chkSkipHeader" text="首行是表头 (跳过)" selected="true" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                    <Label text="SQL 模式:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                    <ChoiceBox fx:id="sqlModeChoice" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                </GridPane>
+            </TitledPane>
+
+            <Label text="检测到的列 (Columns):"/>
+            <TableView fx:id="columnTable" VBox.vgrow="ALWAYS" editable="true">
+                <columns>
+                    <TableColumn fx:id="colIndex" text="索引" prefWidth="50"/>
+                    <TableColumn fx:id="colHeader" text="Excel 表头" prefWidth="120"/>
+                    <TableColumn fx:id="colDbField" text="数据库字段名 (可编辑)" prefWidth="150"/>
+                </columns>
+                <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
+            </TableView>
+        </VBox>
+
+        <VBox spacing="5.0">
+            <padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button text="生成 SQL 脚本" onAction="#onGenerate" style="-fx-base: #2e8b57; -fx-text-fill: white;"/>
+                <Label fx:id="statusLabel" text="就绪" textFill="grey"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="复制结果" onAction="#onCopy"/>
+            </HBox>
+            <TextArea fx:id="resultArea" VBox.vgrow="ALWAYS" editable="false"
+                      style="-fx-font-family: 'Consolas', 'Monospaced';"/>
+        </VBox>
+    </SplitPane>
+</VBox>
