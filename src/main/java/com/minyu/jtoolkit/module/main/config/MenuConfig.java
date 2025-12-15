@@ -16,14 +16,14 @@ public class MenuConfig {
                         new MenuPage("Cron 生成器", "fxml/cron/CronView.fxml")
                 )),
 
-                new MenuCategory("Dev Tools", "mdmz-settings", List.of(
-                        new MenuPage("JSON Parser", "fxml/json/JsonView.fxml")
+                new MenuCategory("文本工具", "mdmz-text_snippet", List.of(
+                        new MenuPage("JSON 格式化", "fxml/json/JsonView.fxml"),
                         // new MenuPage("Base64", "fxml/dev/Base64View.fxml"),
-                        // new MenuPage("Regex Tester", "fxml/dev/RegexView.fxml")
+                        new MenuPage("正则表达式测试", "fxml/regex/RegexView.fxml")
                 )),
 
                  new MenuCategory("系统工具", "mdal-account_tree", List.of(
-                        new MenuPage("环境变量助手", "fxml/env_vars/EnvVarView.fxml")
+                        new MenuPage("环境变量助手", "fxml/regex/RegexView.fxml")
                 ))
         );
     }

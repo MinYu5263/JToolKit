@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox prefHeight="600.0" prefWidth="800.0" spacing="10.0"
+      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.minyu.jtoolkit.module.regex.RegexController">
+
+    <padding>
+        <Insets top="15" right="15" bottom="15" left="15"/>
+    </padding>
+
+    <VBox spacing="8.0">
+        <HBox spacing="10.0" alignment="CENTER_LEFT">
+            <Label text="正则表达式:" style="-fx-font-weight: bold;"/>
+            <TextField fx:id="regexField" promptText="在此输入正则表达式..." HBox.hgrow="ALWAYS"
+                       style="-fx-font-family: 'Consolas', 'Monospaced'; -fx-font-size: 14px;"/>
+            <ComboBox fx:id="templateCombo" promptText="常用模板" prefWidth="150.0"/>
+        </HBox>
+
+        <HBox spacing="15.0" alignment="CENTER_LEFT">
+            <Label text="匹配选项:"/>
+            <CheckBox fx:id="chkIgnoreCase" text="忽略大小写 (Case Insensitive)"/>
+            <CheckBox fx:id="chkMultiline" text="多行模式 (Multiline)"/>
+            <CheckBox fx:id="chkDotAll" text="点匹配换行 (DotAll)"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="statusLabel" text="准备就绪" textFill="grey"/>
+        </HBox>
+    </VBox>
+
+    <Separator/>
+
+    <SplitPane dividerPositions="0.5" orientation="VERTICAL" VBox.vgrow="ALWAYS">
+
+        <VBox spacing="5.0">
+            <padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
+            <Label text="待匹配文本 (Source Text):"/>
+            <TextArea fx:id="sourceTextArea" promptText="在此粘贴需要验证的文本..." VBox.vgrow="ALWAYS" wrapText="true"
+                      style="-fx-font-family: 'Consolas', 'Monospaced';"/>
+        </VBox>
+
+        <VBox spacing="5.0">
+            <padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="匹配结果 (Matches):"/>
+                <Label fx:id="matchCountLabel" text="共找到 0 处匹配" style="-fx-text-fill: #2e8b57;"/>
+            </HBox>
+
+            <TableView fx:id="resultTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="colIndex" text="序号" prefWidth="50" style="-fx-alignment: CENTER;"/>
+                    <TableColumn fx:id="colMatch" text="匹配内容 (Full Match)" prefWidth="300"/>
+                    <TableColumn fx:id="colStart" text="开始位置" prefWidth="80" style="-fx-alignment: CENTER;"/>
+                    <TableColumn fx:id="colEnd" text="结束位置" prefWidth="80" style="-fx-alignment: CENTER;"/>
+                    <TableColumn fx:id="colGroups" text="捕获组 (Groups)" prefWidth="250"/>
+                </columns>
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                </columnResizePolicy>
+            </TableView>
+        </VBox>
+    </SplitPane>
+
+</VBox>
