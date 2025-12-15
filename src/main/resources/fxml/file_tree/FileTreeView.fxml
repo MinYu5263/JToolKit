@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<SplitPane dividerPositions="0.25" prefHeight="600.0" prefWidth="900.0"
+           xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.minyu.jtoolkit.module.file_tree.FileTreeController">
+
+    <VBox spacing="5.0">
+        <padding><Insets top="10" right="5" bottom="10" left="10"/></padding>
+        <Label text="历史记录 (History)" style="-fx-font-weight: bold;"/>
+        <ListView fx:id="historyListView" VBox.vgrow="ALWAYS">
+            <placeholder>
+                <Label text="暂无生成记录"/>
+            </placeholder>
+            <contextMenu>
+                <ContextMenu>
+                    <items>
+                        <MenuItem text="重命名别名" onAction="#onRenameHistory"/>
+                        <MenuItem text="删除记录" onAction="#onDeleteHistory"/>
+                    </items>
+                </ContextMenu>
+            </contextMenu>
+        </ListView>
+        <Button text="清空历史" maxWidth="Infinity" onAction="#onClearHistory"/>
+    </VBox>
+
+    <VBox spacing="10.0">
+        <padding><Insets top="15" right="15" bottom="15" left="10"/></padding>
+
+        <HBox spacing="10.0" alignment="CENTER_LEFT">
+            <TextField fx:id="pathField" promptText="选择文件夹路径..." HBox.hgrow="ALWAYS"/>
+            <Button text="浏览..." onAction="#onBrowse"/>
+            <Button text="生成结构树" onAction="#onGenerate"/>
+        </HBox>
+
+        <TitledPane text="生成配置 (Configuration)" collapsible="false">
+            <GridPane hgap="15" vgap="10">
+                <Label text="风格:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <HBox spacing="15.0" GridPane.rowIndex="0" GridPane.columnIndex="1">
+                    <fx:define><ToggleGroup fx:id="styleGroup"/></fx:define>
+                    <RadioButton fx:id="rbAscii" text="ASCII (标准)" toggleGroup="$styleGroup" selected="true"/>
+                    <RadioButton fx:id="rbEmoji" text="Emoji (图标)" toggleGroup="$styleGroup"/>
+                    <RadioButton fx:id="rbMarkdown" text="Markdown (列表)" toggleGroup="$styleGroup"/>
+                </HBox>
+
+                <Label text="深度:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <HBox spacing="10.0" alignment="CENTER_LEFT" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                    <CheckBox fx:id="chkNoLimit" text="无限制 (Unlimited)" selected="true"/>
+                    <Label text="或限制层级:"/>
+                    <Spinner fx:id="depthSpinner" prefWidth="80" editable="true"/>
+                </HBox>
+
+                <Label text="过滤:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <HBox spacing="15.0" alignment="CENTER_LEFT" GridPane.rowIndex="2" GridPane.columnIndex="1">
+                    <CheckBox fx:id="chkDirsOnly" text="只显示文件夹"/>
+                    <Label text="忽略匹配(逗号分隔):"/>
+                    <TextField fx:id="ignoreField" text=".git,target,node_modules,.idea" HBox.hgrow="ALWAYS"/>
+                </HBox>
+            </GridPane>
+        </TitledPane>
+
+        <TextArea fx:id="resultArea" VBox.vgrow="ALWAYS" editable="false"/>
+
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Label fx:id="statusLabel" text="就绪" textFill="grey" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+            <Button text="复制到剪贴板" onAction="#onCopy"/>
+        </HBox>
+    </VBox>
+</SplitPane>

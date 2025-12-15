@@ -13,7 +13,8 @@ public class MenuConfig {
                         // new MenuPage("Settings", "fxml/settings/SettingsView.fxml")
                 )),
                 new MenuCategory("生成器", "mdal-developer_board", List.of(
-                        new MenuPage("Cron 生成器", "fxml/cron/CronView.fxml")
+                        new MenuPage("Cron 生成器", "fxml/cron/CronView.fxml"),
+                        new MenuPage("文件树生成", "fxml/file_tree/FileTreeView.fxml")
                 )),
 
                 new MenuCategory("文本工具", "mdmz-text_snippet", List.of(
@@ -23,7 +24,7 @@ public class MenuConfig {
                 )),
 
                  new MenuCategory("系统工具", "mdal-account_tree", List.of(
-                        new MenuPage("环境变量助手", "fxml/regex/RegexView.fxml")
+                        new MenuPage("环境变量助手", "fxml/env_vars/EnvVarView.fxml")
                 ))
         );
     }
