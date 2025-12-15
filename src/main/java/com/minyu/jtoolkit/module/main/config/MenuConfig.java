@@ -17,11 +17,11 @@ public class MenuConfig {
                         new MenuPage("JSON Parser", "fxml/json/JsonView.fxml")
                         // new MenuPage("Base64", "fxml/dev/Base64View.fxml"),
                         // new MenuPage("Regex Tester", "fxml/dev/RegexView.fxml")
-                ))
+                )),
 
-                /* new MenuCategory("Other", "feather-box", List.of(
-                        new MenuPage("About", "fxml/about/AboutView.fxml")
-                )) */
+                 new MenuCategory("系统工具", "mdal-account_tree", List.of(
+                        new MenuPage("环境变量助手", "fxml/env_vars/EnvVarView.fxml")
+                ))
         );
     }
 }
