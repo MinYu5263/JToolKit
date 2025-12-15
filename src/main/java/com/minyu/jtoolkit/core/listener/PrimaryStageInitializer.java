@@ -15,8 +15,7 @@ import org.springframework.stereotype.Component;
 import java.util.Objects;
 
 /**
- * PrimaryStageInitializer
- * 负责初始化 JavaFX 的主 Stage
+ * 主Stage初始化器，监听StageReadyEvent，配置主窗口（主题、视图、样式、标题等）
  */
 @Component
 @RequiredArgsConstructor

@@ -10,7 +10,7 @@ import javax.sql.DataSource;
 import java.io.File;
 
 /**
- * DataSourceConfig
+ * 数据源配置
  */
 @Slf4j
 @Configuration

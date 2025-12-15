@@ -3,9 +3,6 @@ package com.minyu.jtoolkit.core.event;
 import javafx.stage.Stage;
 import org.springframework.context.ApplicationEvent;
 
-/**
- * StageReadyEvent
- */
 public class StageReadyEvent extends ApplicationEvent {
     public StageReadyEvent(Stage stage) {
         super(stage);

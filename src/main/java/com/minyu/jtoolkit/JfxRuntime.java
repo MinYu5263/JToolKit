@@ -8,13 +8,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 
 /**
- * JavaFX 运行时代理
- * <p>
- * 职责：
- * 1. 管理 Spring Boot 上下文的生命周期（启动/关闭）。
- * 2. 将 JavaFX 的 {@link Stage} 通过事件机制发布给 Spring 容器。
- * <p>
- * 注意：此类不应包含任何业务逻辑。
+ * JavaFX运行时代理，管理Spring Boot上下文生命周期，发布StageReadyEvent
  */
 public class JfxRuntime extends Application {
     private ConfigurableApplicationContext context;

@@ -8,10 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 
 /**
- * 主题管理服务
- * <p>
- * 负责封装 AtlantaFX 主题库的调用逻辑，提供统一的主题切换接口。
- * 支持通过配置文件或运行时动态切换亮色/暗色模式。
+ * 主题管理服务，封装AtlantaFX主题切换逻辑
  */
 @Service
 public class ThemeManager {

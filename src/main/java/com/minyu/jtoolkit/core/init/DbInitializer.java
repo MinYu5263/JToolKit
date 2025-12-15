@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 /**
- * DbInitializer
+ * 数据库初始化
  */
 @Slf4j
 @Component

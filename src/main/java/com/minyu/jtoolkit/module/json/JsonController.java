@@ -67,7 +67,7 @@ public class JsonController extends BaseController<JsonViewState> {
 
     @Override
     protected String getStorageKey() {
-        return "tool.json.formatter";
+        return "json_formatter";
     }
 
     @Override

@@ -9,14 +9,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 /**
- * FXML 视图加载器
- * <p>
- * 核心职责：
- * 1. 封装 FXML 加载的重复代码。
- * 2. 桥接 Spring 容器与 JavaFX 控制器工厂（ControllerFactory），
- * 确保 JavaFX 控制器可以使用 @Autowired 注入 Spring Bean。
- *
- * @see org.springframework.context.ApplicationContext
+ * FXML视图加载器，桥接Spring容器与JavaFX控制器，支持控制器注入Spring Bean
  */
 @Component
 public class ViewLoader {

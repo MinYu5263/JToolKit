@@ -5,13 +5,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * 应用物理入口 (Main Entry)
- * <p>
- * 职责：
- * 仅负责引导 JavaFX 运行时环境。
- * 实际的 Spring 容器初始化将在 {@link JfxRuntime#init()} 中触发。
- *
- * @see JfxRuntime
+ * 应用入口类，启动JavaFX运行时，Spring容器初始化由{@link JfxRuntime}处理
  */
 @SpringBootApplication
 @MapperScan("com.minyu.jtoolkit.system.mapper")
