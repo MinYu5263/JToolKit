@@ -4,6 +4,7 @@ import atlantafx.base.controls.Spacer;
 import atlantafx.base.theme.Styles;
 import com.minyu.jtoolkit.module.main.component.SearchDialog;
 import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -14,9 +15,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2MZ;
+import org.springframework.core.io.ClassPathResource;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public final class Sidebar extends VBox {
@@ -70,9 +76,6 @@ public final class Sidebar extends VBox {
         var footer = createFooter();
 
         setId("sidebar");
-        // Java 代码控制样式
-        setMinWidth(270);
-        setStyle("-fx-background-color: -color-bg-inset; -fx-border-color: -color-border-default; -fx-border-width: 0 1px 0 0;");
 
         getChildren().addAll(header, navTree, footer);
     }
@@ -90,18 +93,37 @@ public final class Sidebar extends VBox {
         Platform.runLater(searchDialog::begForFocus);
     }
 
-    private HBox createFooter() {
-        var versionLbl = new Label("v1.0.0");
-        versionLbl.getStyleClass().addAll(Styles.TEXT_SMALL, Styles.TEXT_MUTED);
-
-        var footer = new HBox(versionLbl);
+    private VBox createFooter() {
+        var footer = new VBox();
         footer.getStyleClass().add("footer");
-        footer.setAlignment(Pos.CENTER);
-        footer.setPadding(new Insets(10));
-        // 顶部边框
-        footer.setStyle("-fx-border-color: -color-border-muted; -fx-border-width: 1px 0 0 0;");
 
+        var settingsBtn = createFooterItem("设置", Material2MZ.SETTINGS);
+        settingsBtn.setOnAction(e -> {
+            try {
+                new FXMLLoader(getClass().getResource("fxml/settings/SettingsView.fxml")).load();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        footer.getChildren().addAll(settingsBtn);
         return footer;
+    }
+
+    private Button createFooterItem(String text, Ikon icon) {
+        FontIcon iconView = new FontIcon(icon);
+        Label label = new Label(text);
+        label.getStyleClass().addAll(Styles.TEXT);
+        var container = new HBox(10, iconView, label);
+        container.setAlignment(Pos.CENTER_LEFT);
+
+        var btn = new Button();
+        btn.setGraphic(container);
+        btn.setMaxWidth(Double.MAX_VALUE);
+
+        btn.getStyleClass().add("footer-button");
+
+        return btn;
     }
 
     /// ////////////////////////////////////////////////////////////////////////

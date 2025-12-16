@@ -118,7 +118,47 @@
    5. Footer Section (底部区域)
    ============================================================================= */
 #sidebar .footer {
-    -fx-padding: 10px 20px;
+    -fx-padding: 8px;
     -fx-border-color: -color-border-muted;
     -fx-border-width: 1px 0 0 0;
+    -fx-background-color: -color-bg-inset;
+    -fx-spacing: 4px; /* 控制按钮之间的垂直间距 */
+}
+
+/* --- 底部按钮容器 --- */
+.footer-button {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 8px 12px;
+    -fx-cursor: hand;
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* --- 按钮内部图标样式 --- */
+.footer-button .font-icon {
+    -fx-icon-color: -color-fg-muted;
+    -fx-icon-size: 18px;
+}
+
+/* --- 按钮内部文字样式 --- */
+.footer-button .label {
+    -fx-text-fill: -color-fg-default;
+}
+
+/* --- 交互状态：悬停 (Hover) --- */
+.footer-button:hover {
+    -fx-background-color: -color-accent-subtle;
+}
+
+/* 悬停时高亮图标和文字 */
+.footer-button:hover .font-icon {
+    -fx-icon-color: -color-fg-default;
+}
+.footer-button:hover .label {
+    -fx-text-fill: -color-fg-default;
+}
+
+/* --- 交互状态：按下 (Pressed) --- */
+.footer-button:pressed {
+    -fx-background-color: -color-accent-muted;
 }
