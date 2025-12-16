@@ -30,6 +30,9 @@ public final class Sidebar extends VBox {
     private final NavTree navTree;
     private final MainModel model;
 
+    private int clickCount = 0;
+    private long lastClickTime = 0;
+
     // 缓存 dialog 实例
     private SearchDialog searchDialog;
 
@@ -161,7 +164,38 @@ public final class Sidebar extends VBox {
             root.setAlignment(Pos.CENTER_LEFT);
             root.getStyleClass().add("logo");
 
+            // root.setCursor(javafx.scene.Cursor.HAND);
+            appImage.setOnMouseClicked(e -> {
+                long now = System.currentTimeMillis();
+                if (now - lastClickTime > 500) {
+                    clickCount = 0;
+                }
+
+                clickCount++;
+                lastClickTime = now;
+
+                // 连续点击 7 次触发
+                if (clickCount >= 7) {
+                    showHiddenCredits();
+                    clickCount = 0; // 重置
+                }
+            });
+
             return root;
+        }
+
+        // 隐藏的版权声明
+        private void showHiddenCredits() {
+            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+            alert.setTitle("关于作者");
+            alert.setHeaderText("JToolKit Core");
+            alert.setContentText("Original Author: " + decodeAuthor());
+            alert.showAndWait();
+        }
+
+        // 简单的字符串混淆，防止全局搜索
+        private String decodeAuthor() {
+            return new String(java.util.Base64.getDecoder().decode("TWlueXU="));
         }
 
         // 这个按钮伪装成搜索框，是 AtlantaFX 的精髓
