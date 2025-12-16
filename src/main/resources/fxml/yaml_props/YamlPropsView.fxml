@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox prefHeight="600.0" prefWidth="900.0" spacing="10.0"
+      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.minyu.jtoolkit.module.yaml_props.YamlPropsController">
+
+    <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+
+    <HBox spacing="10.0" alignment="CENTER_LEFT">
+        <Label text="转换模式:" style="-fx-font-weight: bold;"/>
+        <ToggleButton fx:id="directionToggle" text="Properties ➡ YAML" onAction="#onToggleDirection"/>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <Button text="导入文件..." onAction="#onImportFile"/>
+        <Button text="清空" onAction="#onClear"/>
+    </HBox>
+
+    <SplitPane dividerPositions="0.5" VBox.vgrow="ALWAYS">
+
+        <VBox spacing="5.0">
+            <padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
+            <Label fx:id="leftLabel" text="Properties (Source)"/>
+            <TextArea fx:id="sourceArea" promptText="输入或粘贴配置内容..." VBox.vgrow="ALWAYS"/>
+        </VBox>
+
+        <VBox spacing="5.0">
+            <padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label fx:id="rightLabel" text="YAML (Result)"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="复制结果" onAction="#onCopyResult"/>
+            </HBox>
+            <TextArea fx:id="targetArea" editable="false" VBox.vgrow="ALWAYS"/>
+        </VBox>
+
+    </SplitPane>
+
+    <HBox>
+        <Label fx:id="statusLabel" text="就绪" textFill="grey"/>
+    </HBox>
+</VBox>
