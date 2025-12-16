@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox prefHeight="600.0" prefWidth="800.0" spacing="15.0"
+      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.minyu.jtoolkit.module.radix.RadixController">
+
+    <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+
+    <HBox spacing="10.0" alignment="CENTER_LEFT">
+        <Label text="数字格式化 (Grouping):"/>
+        <ToggleButton fx:id="formatToggle" text="OFF" onAction="#onToggleFormat"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="清空所有" onAction="#onClear"/>
+    </HBox>
+
+    <Separator/>
+
+    <VBox spacing="5.0">
+        <Label text="十六进制 (Hexadecimal)"/>
+        <HBox spacing="10.0">
+            <TextField fx:id="hexField" promptText="0-9, A-F" HBox.hgrow="ALWAYS"/>
+            <Button text="复制" onAction="#onCopyHex"/>
+        </HBox>
+    </VBox>
+
+    <VBox spacing="5.0">
+        <Label text="十进制 (Decimal)"/>
+        <HBox spacing="10.0">
+            <TextField fx:id="decField" promptText="0-9" HBox.hgrow="ALWAYS"/>
+            <Button text="复制" onAction="#onCopyDec"/>
+        </HBox>
+    </VBox>
+
+    <VBox spacing="5.0">
+        <Label text="八进制 (Octal)"/>
+        <HBox spacing="10.0">
+            <TextField fx:id="octField" promptText="0-7" HBox.hgrow="ALWAYS"/>
+            <Button text="复制" onAction="#onCopyOct"/>
+        </HBox>
+    </VBox>
+
+    <VBox spacing="5.0">
+        <Label text="二进制 (Binary)"/>
+        <HBox spacing="10.0">
+            <TextArea fx:id="binField" promptText="0, 1" wrapText="true" prefRowCount="3" HBox.hgrow="ALWAYS"/>
+            <VBox spacing="5" alignment="TOP_CENTER">
+                <Button text="复制" onAction="#onCopyBin"/>
+            </VBox>
+        </HBox>
+        <Label text="* 二进制数据较长，已自动换行" textFill="grey"/>
+    </VBox>
+
+    <Label fx:id="statusLabel" text="" wrapText="true"/>
+
+</VBox>

@@ -19,7 +19,8 @@ public class MenuConfig {
                 new MenuCategory("转换工具", "mdal-flip_camera_android", List.of(
                         new MenuPage("Excel转SQL", "fxml/excel2sql/ExcelToSqlView.fxml"),
                         new MenuPage("SQL转Ecel", "fxml/sql2excel/SqlToExcelView.fxml"),
-                        new MenuPage("yaml与properties互转", "fxml/yaml_props/YamlPropsView.fxml")
+                        new MenuPage("yaml与properties互转", "fxml/yaml_props/YamlPropsView.fxml"),
+                        new MenuPage("数字进制", "fxml/radix/RadixView.fxml")
                 )),
 
                 new MenuCategory("文本工具", "mdmz-text_snippet", List.of(
