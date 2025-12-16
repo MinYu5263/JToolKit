@@ -14,7 +14,8 @@ public class MenuConfig {
                 )),
                 new MenuCategory("生成器", "mdal-developer_board", List.of(
                         new MenuPage("Cron 生成器", "fxml/cron/CronView.fxml"),
-                        new MenuPage("文件树生成", "fxml/file_tree/FileTreeView.fxml")
+                        new MenuPage("文件树生成", "fxml/file_tree/FileTreeView.fxml"),
+                        new MenuPage("密码生成器", "fxml/password/PasswordView.fxml")
                 )),
                 new MenuCategory("转换工具", "mdal-flip_camera_android", List.of(
                         new MenuPage("Excel转SQL", "fxml/excel2sql/ExcelToSqlView.fxml"),
