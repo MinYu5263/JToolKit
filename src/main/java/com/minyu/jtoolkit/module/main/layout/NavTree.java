@@ -88,25 +88,23 @@ public class NavTree extends TreeView<Nav> {
             } else {
                 titleLabel.setText(item.title());
 
-                // 核心修改：父级给 30px，子级给 15px (具体数值根据实际视觉效果微调)
+                // 父级给 30px，子级给 12px
                 double containerWidth = item.isGroup() ? 30 : 12;
 
                 leftIconContainer.setMinWidth(containerWidth);
                 leftIconContainer.setPrefWidth(containerWidth);
                 leftIconContainer.setMaxWidth(containerWidth);
 
-                // 容器内容逻辑
                 leftIconContainer.setVisible(true);
                 leftIconContainer.setManaged(true);
 
-                if (item.isGroup() && item.iconLiteral() != null) {
-                    leftIcon.setIconLiteral(item.iconLiteral());
+                if (item.isGroup() && item.icon() != null) {
+                    leftIcon.setIconCode(item.icon());
                     leftIcon.setVisible(true);
                 } else {
-                    leftIcon.setVisible(false); // 子级只是个空的占位盒子
+                    leftIcon.setVisible(false);
                 }
 
-                // 保持之前的箭头逻辑
                 arrowIcon.setVisible(item.isGroup());
                 if (item.isGroup() && getTreeItem().isExpanded()) {
                     arrowIcon.setIconCode(Material2AL.KEYBOARD_ARROW_DOWN);

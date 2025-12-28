@@ -1,11 +1,11 @@
 package com.minyu.jtoolkit.module.main.layout;
 
-import com.minyu.jtoolkit.module.main.config.MenuCategory;
-import com.minyu.jtoolkit.module.main.config.MenuConfig;
-import com.minyu.jtoolkit.module.main.config.MenuPage;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.scene.control.TreeItem;
+import org.kordamp.ikonli.Ikon;
+import org.kordamp.ikonli.material2.Material2AL;
+import org.kordamp.ikonli.material2.Material2MZ;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +18,8 @@ public class MainModel {
     // 导航树数据
     private final ReadOnlyObjectWrapper<TreeItem<Nav>> navTree = new ReadOnlyObjectWrapper<>();
 
+    private final List<SearchResult> searchIndex = new ArrayList<>();
+
     public ReadOnlyObjectProperty<String> selectedPageProperty() {
         return selectedPage.getReadOnlyProperty();
     }
@@ -28,6 +30,7 @@ public class MainModel {
 
     /**
      * 导航到指定页面
+     *
      * @param fxmlPath FXML 文件路径
      */
     public void navigate(String fxmlPath) {
@@ -36,46 +39,12 @@ public class MainModel {
 
     /**
      * 初始化菜单数据
-     * 直接从 MenuConfig 获取静态配置，构建 TreeItem 结构
+     * 直接从 NavConfig 获取静态配置，构建 TreeItem 结构
      */
     public void initMenu() {
-        // 创建隐形的根节点
-        TreeItem<Nav> root = new TreeItem<>(Nav.ROOT);
-        root.setExpanded(true);
-
-        // 1. 获取静态配置
-        List<MenuCategory> categories = MenuConfig.getMenus();
-
-        // 2. 遍历构建树
-        for (MenuCategory category : categories) {
-            // --- 创建父节点 (一级菜单：分组) ---
-            // 注意：这里直接传入 iconLiteral 字符串，不再创建 FontIcon 对象
-            Nav groupNav = new Nav(
-                    category.title(),
-                    category.iconLiteral(),
-                    null // 分组没有 FXML 路径
-            );
-
-            TreeItem<Nav> groupItem = new TreeItem<>(groupNav);
-            groupItem.setExpanded(true);
-
-            // --- 创建子节点 (二级菜单：页面) ---
-            for (MenuPage page : category.pages()) {
-                Nav pageNav = new Nav(
-                        page.title(),
-                        null, // 子菜单强制无图标
-                        page.fxmlPath()
-                );
-
-                TreeItem<Nav> childItem = new TreeItem<>(pageNav);
-                groupItem.getChildren().add(childItem);
-            }
-
-            root.getChildren().add(groupItem);
-        }
-
-        // 更新 Property，通知 View 进行渲染
+        TreeItem<Nav> root = createTree();
         this.navTree.set(root);
+        refreshSearchIndex(root);
     }
 
     public List<SearchResult> search(String query) {
@@ -86,19 +55,94 @@ public class MainModel {
         var results = new ArrayList<SearchResult>();
         var lowerQuery = query.toLowerCase();
 
-        // 遍历配置中的所有菜单
-        for (MenuCategory category : MenuConfig.getMenus()) {
-            for (MenuPage page : category.pages()) {
-                // 简单的包含匹配（忽略大小写）
-                if (page.title().toLowerCase().contains(lowerQuery)) {
-                    results.add(new SearchResult(
-                            page.title(),
-                            category.title(),
-                            page.fxmlPath()
+        for (SearchResult item : searchIndex) {
+            if (item.title().toLowerCase().contains(lowerQuery)) {
+                results.add(item);
+            }
+        }
+        return results;
+    }
+
+    private TreeItem<Nav> createTree() {
+        var root = new TreeItem<>(Nav.ROOT);
+
+        TreeItem<Nav> general = group("General", Material2AL.GRID_ON);
+        general.getChildren().add(
+                item("Theme", "fxml/theme/ThemeView.fxml")
+        );
+        general.setExpanded(true);
+
+        TreeItem<Nav> generators = group("生成器", Material2AL.DEVELOPER_BOARD);
+        generators.getChildren().setAll(List.of(
+                item("Cron 生成器", "fxml/cron/CronView.fxml"),
+                item("文件树生成", "fxml/file_tree/FileTreeView.fxml"),
+                item("密码生成器", "fxml/password/PasswordView.fxml")
+        ));
+        generators.setExpanded(true);
+
+        TreeItem<Nav> converter = group("转换工具", Material2AL.FLIP_CAMERA_ANDROID);
+        converter.getChildren().setAll(List.of(
+                item("Excel转SQL", "fxml/excel2sql/ExcelToSqlView.fxml"),
+                item("SQL转Ecel", "fxml/sql2excel/SqlToExcelView.fxml"),
+                item("yaml与properties互转", "fxml/yaml_props/YamlPropsView.fxml"),
+                item("数字进制", "fxml/radix/RadixView.fxml")
+        ));
+        converter.setExpanded(true);
+
+        TreeItem<Nav> text = group("文本工具", Material2AL.DEVELOPER_BOARD);
+        text.getChildren().setAll(List.of(
+                item("JSON 格式化", "fxml/json/JsonView.fxml"),
+                item("正则表达式测试", "fxml/regex/RegexView.fxml"),
+                item("文本分析与实用工具", "fxml/text_analyzer/TextAnalyzerView.fxml")
+        ));
+        text.setExpanded(true);
+
+        TreeItem<Nav> sysTools = group("系统工具", Material2AL.ACCOUNT_TREE);
+        sysTools.getChildren().add(
+                item("环境变量助手", "fxml/env_vars/EnvVarView.fxml")
+        );
+        sysTools.setExpanded(true);
+
+        root.getChildren().setAll(List.of(
+                general,
+                generators,
+                converter,
+                text,
+                sysTools
+        ));
+        return root;
+    }
+
+    private TreeItem<Nav> group(String title, Ikon ikon) {
+        return new TreeItem<>(new Nav(title, ikon, null));
+    }
+
+    private TreeItem<Nav> item(String title, String fxmlPath) {
+        return new TreeItem<>(new Nav(title, null, fxmlPath));
+    }
+
+    private void refreshSearchIndex(TreeItem<Nav> root) {
+        searchIndex.clear();
+        for (TreeItem<Nav> groupItem : root.getChildren()) {
+            String groupTitle = groupItem.getValue().title();
+
+            for (TreeItem<Nav> leafItem : groupItem.getChildren()) {
+                Nav nav = leafItem.getValue();
+                if (nav.fxmlPath() != null) {
+                    searchIndex.add(new SearchResult(
+                            nav.title(),
+                            groupTitle,
+                            nav.fxmlPath()
                     ));
                 }
             }
         }
-        return results;
+    }
+
+    public List<Nav> createFooter() {
+        return List.of(
+                new Nav("设置", Material2MZ.SETTINGS, "fxml/settings/SettingsView.fxml"),
+                new Nav("关于", Material2AL.INFO, "fxml/about/AboutView.fxml")
+        );
     }
 }

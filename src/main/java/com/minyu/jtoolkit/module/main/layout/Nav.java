@@ -1,11 +1,9 @@
 
 package com.minyu.jtoolkit.module.main.layout;
 
-import org.jspecify.annotations.Nullable;
+import org.kordamp.ikonli.Ikon;
 
-record Nav(String title,
-           @Nullable String iconLiteral,
-           @Nullable String fxmlPath) {
+public record Nav(String title, Ikon icon, String fxmlPath) {
 
     public static final Nav ROOT = new Nav("ROOT", null, null);
 

@@ -4,7 +4,6 @@ import atlantafx.base.controls.Spacer;
 import atlantafx.base.theme.Styles;
 import com.minyu.jtoolkit.module.main.component.SearchDialog;
 import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -15,13 +14,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2MZ;
-import org.springframework.core.io.ClassPathResource;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -100,31 +95,42 @@ public final class Sidebar extends VBox {
         var footer = new VBox();
         footer.getStyleClass().add("footer");
 
-        var settingsBtn = createFooterItem("设置", Material2MZ.SETTINGS);
-        settingsBtn.setOnAction(e -> {
-            try {
-                new FXMLLoader(getClass().getResource("fxml/settings/SettingsView.fxml")).load();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
+        List<Nav> navs = model.createFooter();
+        for (Nav nav : navs) {
+            Button btn = createFooterItem(nav); // 调用下方的通用方法
+            footer.getChildren().add(btn);
+        }
 
-        footer.getChildren().addAll(settingsBtn);
         return footer;
     }
 
-    private Button createFooterItem(String text, Ikon icon) {
-        FontIcon iconView = new FontIcon(icon);
-        Label label = new Label(text);
-        label.getStyleClass().addAll(Styles.TEXT);
-        var container = new HBox(10, iconView, label);
-        container.setAlignment(Pos.CENTER_LEFT);
+    private Button createFooterItem(Nav nav) {
+        // 1. 图标容器 (保持与 NavTree 30px 对齐)
+        var iconNode = new FontIcon(nav.icon());
+        var iconContainer = new StackPane(iconNode);
+        iconContainer.setMinWidth(30);
+        iconContainer.setMaxWidth(30);
+        iconContainer.setAlignment(Pos.CENTER);
+        // 加上 style class 方便 CSS 控制颜色
+        iconContainer.getStyleClass().add("icon-container");
 
+        // 2. 文字
+        var label = new Label(nav.title());
+        label.getStyleClass().add("label");
+
+        // 3. 布局
+        var content = new HBox(iconContainer, label);
+        content.setAlignment(Pos.CENTER_LEFT);
+        // content.setSpacing(0); // 紧凑布局
+
+        // 4. 按钮本体
         var btn = new Button();
-        btn.setGraphic(container);
-        btn.setMaxWidth(Double.MAX_VALUE);
+        btn.setGraphic(content);
+        btn.setMaxWidth(Double.MAX_VALUE); // 撑满宽度
+        btn.getStyleClass().add("footer-button"); // CSS 样式类
 
-        btn.getStyleClass().add("footer-button");
+        // 5. 点击事件
+        btn.setOnAction(e -> model.navigate(nav.fxmlPath()));
 
         return btn;
     }
