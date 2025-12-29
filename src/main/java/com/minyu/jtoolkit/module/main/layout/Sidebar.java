@@ -2,7 +2,6 @@ package com.minyu.jtoolkit.module.main.layout;
 
 import atlantafx.base.controls.Spacer;
 import atlantafx.base.theme.Styles;
-import com.minyu.jtoolkit.module.main.component.SearchDialog;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -10,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
@@ -76,7 +76,8 @@ public final class Sidebar extends VBox {
         sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) {
                 newScene.setOnKeyPressed(e -> {
-                    if (e.getCode().getName().equals("Slash") && !e.isShortcutDown()) {
+                    if (e.getCode() == KeyCode.F && e.isShortcutDown() && e.isShiftDown()) {
+                        e.consume();
                         openSearchDialog();
                     }
                 });
@@ -147,7 +148,6 @@ public final class Sidebar extends VBox {
                 clickCount++;
                 lastClickTime = now;
 
-                // 连续点击 7 次触发
                 if (clickCount >= 7) {
                     showHiddenCredits();
                     clickCount = 0; // 重置
@@ -166,22 +166,19 @@ public final class Sidebar extends VBox {
             alert.showAndWait();
         }
 
-        // 简单的字符串混淆，防止全局搜索
         private String decodeAuthor() {
             return new String(java.util.Base64.getDecoder().decode("TWlueXU="));
         }
 
-        // 这个按钮伪装成搜索框，是 AtlantaFX 的精髓
         private Button createSearchButton() {
             var searchIcon = new FontIcon(Material2MZ.SEARCH);
-            var titleLbl = new Label("Search", searchIcon);
+            var titleLbl = new Label("搜索", searchIcon);
 
-            var hintLbl = new Label("Press /");
+            var hintLbl = new Label("Ctrl + Shift + F");
             hintLbl.getStyleClass().addAll(Styles.TEXT_MUTED, Styles.TEXT_SMALL);
 
             var searchBox = new HBox(titleLbl, new Spacer(), hintLbl);
             searchBox.setAlignment(Pos.CENTER_LEFT);
-            // 关键：让内部 HBox 撑满按钮宽度
             HBox.setHgrow(searchBox, Priority.ALWAYS);
 
             var root = new Button();
@@ -189,7 +186,6 @@ public final class Sidebar extends VBox {
             root.setGraphic(searchBox);
             root.setMaxWidth(Double.MAX_VALUE); // 按钮撑满父容器
 
-            // 样式微调：模拟输入框的外观
             root.setStyle("-fx-background-color: -color-bg-default; -fx-border-color: -color-border-default; -fx-border-radius: 4px; -fx-background-radius: 4px; -fx-padding: 8px 12px;");
 
             root.setOnAction(e -> openSearchDialog());

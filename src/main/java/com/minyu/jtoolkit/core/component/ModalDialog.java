@@ -1,4 +1,4 @@
-package com.minyu.jtoolkit.module.main.component; // 1. 修改包名
+package com.minyu.jtoolkit.core.component;
 
 import atlantafx.base.controls.Card;
 import atlantafx.base.controls.ModalPane;
@@ -22,12 +22,10 @@ public abstract class ModalDialog extends ModalBox {
     protected final Tile header = new Tile();
 
     public ModalDialog() {
-        // 传入 CSS 选择器 ID (#main-modal-pane)，告诉 ModalBox 它属于哪个层
         super("#" + MODAL_PANE_ID);
         createView();
     }
 
-    // 3. 修改 show 方法，根据 ID 查找 ModalPane 并显示自己
     public void show(Scene scene) {
         var modalPane = (ModalPane) scene.lookup("#" + MODAL_PANE_ID);
         if (modalPane == null) {
@@ -42,13 +40,11 @@ public abstract class ModalDialog extends ModalBox {
         content.setHeader(header);
         content.getStyleClass().add(Tweaks.EDGE_TO_EDGE);
 
-        // 保证使用合适的大小
         setMinWidth(USE_PREF_SIZE);
         setMaxWidth(USE_PREF_SIZE);
         setMinHeight(USE_PREF_SIZE);
         setMaxHeight(USE_PREF_SIZE);
 
-        // 布局设置
         AnchorPane.setTopAnchor(content, 0d);
         AnchorPane.setRightAnchor(content, 0d);
         AnchorPane.setBottomAnchor(content, 0d);

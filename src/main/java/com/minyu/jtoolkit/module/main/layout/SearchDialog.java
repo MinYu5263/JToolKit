@@ -1,11 +1,10 @@
-package com.minyu.jtoolkit.module.main.component;
+package com.minyu.jtoolkit.module.main.layout;
 
 import atlantafx.base.controls.CustomTextField;
 import atlantafx.base.controls.Spacer;
 import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Tweaks;
-import com.minyu.jtoolkit.module.main.layout.MainModel;
-import com.minyu.jtoolkit.module.main.layout.SearchResult;
+import com.minyu.jtoolkit.core.component.ModalDialog;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -37,7 +36,6 @@ public final class SearchDialog extends ModalDialog {
         setId("search-dialog");
         header.setTitle("Search");
 
-        // ModalBox 的内容区域是 Card，我们将内容放入 Card 的 body
         content.setBody(createContent());
         content.setPrefSize(600, 440);
 
