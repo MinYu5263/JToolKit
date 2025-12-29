@@ -2,10 +2,7 @@ package com.minyu.jtoolkit.module.main.layout;
 
 import atlantafx.base.theme.Tweaks;
 import javafx.geometry.Pos;
-import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.Label;
-import javafx.scene.control.TreeCell;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -16,13 +13,37 @@ import org.kordamp.ikonli.material2.Material2AL;
 
 public class NavTree extends TreeView<Nav> {
 
-    public NavTree(MainModel model) {
+    public NavTree() {
         super();
         getStyleClass().add(Tweaks.EDGE_TO_EDGE);
         setShowRoot(false);
-        rootProperty().bind(model.navTreeProperty());
         setCellFactory(p -> new NavTreeCell());
         setFocusTraversable(false);
+    }
+
+    public boolean selectPath(String path) {
+        if (path == null) return false;
+
+        TreeItem<Nav> target = findItemByPath(getRoot(), path);
+        if (target != null) {
+            getSelectionModel().select(target);
+            return true;
+        } else {
+            getSelectionModel().clearSelection();
+            return false;
+        }
+    }
+
+    private TreeItem<Nav> findItemByPath(TreeItem<Nav> root, String path) {
+        if (root == null) return null;
+        if (root.getValue() != null && path.equals(root.getValue().fxmlPath())) {
+            return root;
+        }
+        for (TreeItem<Nav> child : root.getChildren()) {
+            var found = findItemByPath(child, path);
+            if (found != null) return found;
+        }
+        return null;
     }
 
     static class NavTreeCell extends TreeCell<Nav> {
@@ -33,23 +54,19 @@ public class NavTree extends TreeView<Nav> {
         private final StackPane leftIconContainer;
 
         public NavTreeCell() {
-            // 1. 图标容器
             leftIcon = new FontIcon();
             leftIcon.getStyleClass().add("left-icon");
 
             leftIconContainer = new StackPane(leftIcon);
-            // 核心：固定宽度占位
             leftIconContainer.setMinWidth(30);
             leftIconContainer.setPrefWidth(30);
             leftIconContainer.setMaxWidth(30);
             leftIconContainer.setAlignment(Pos.CENTER);
             leftIconContainer.getStyleClass().add("icon-container");
 
-            // 2. 标题
             titleLabel = new Label();
             titleLabel.getStyleClass().add("title");
 
-            // 3. 右侧箭头
             arrowIcon = new FontIcon(Material2AL.KEYBOARD_ARROW_LEFT);
             arrowIcon.getStyleClass().add("arrow");
 
@@ -60,7 +77,6 @@ public class NavTree extends TreeView<Nav> {
             root.setAlignment(Pos.CENTER_LEFT);
             root.getStyleClass().add("nav-tree-cell");
 
-            // 确保没有额外的间距
             root.setSpacing(0);
             setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
 

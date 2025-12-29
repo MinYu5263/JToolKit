@@ -32,7 +32,7 @@ public class MainController {
     private StackPane contentArea;
 
     private final MainModel model = new MainModel();
-    private Map<String, Parent> viewCache = new HashMap<>();
+    private final Map<String, Parent> viewCache = new HashMap<>();
 
     @FXML
     public void initialize() {

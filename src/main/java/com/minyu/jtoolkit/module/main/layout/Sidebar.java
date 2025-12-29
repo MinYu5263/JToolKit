@@ -28,14 +28,16 @@ public final class Sidebar extends VBox {
     private int clickCount = 0;
     private long lastClickTime = 0;
 
-    // 缓存 dialog 实例
     private SearchDialog searchDialog;
 
     public Sidebar(MainModel model) {
         super();
         this.model = model;
-        this.navTree = new NavTree(model);
-        this.navList = new NavList(model);
+        this.navTree = new NavTree();
+        this.navList = new NavList();
+
+        this.navTree.rootProperty().bind(model.navTreeProperty());
+        this.navList.itemsProperty().bind(model.footerListProperty());
 
         this.navTree.getSelectionModel().selectedItemProperty().addListener((obs, old, val) -> {
             if (val != null && val.getValue() != null && !val.getValue().isGroup()) {
@@ -53,6 +55,13 @@ public final class Sidebar extends VBox {
 
         createView();
         initShortcuts();
+
+        this.model.selectedPageProperty().addListener((obs, old, newPath) -> {
+            if (newPath != null) {
+                this.navTree.selectPath(newPath);
+                this.navList.selectPath(newPath);
+            }
+        });
     }
 
     private void createView() {
