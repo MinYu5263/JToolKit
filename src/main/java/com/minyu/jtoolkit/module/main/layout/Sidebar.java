@@ -17,12 +17,12 @@ import javafx.scene.layout.VBox;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2MZ;
 
-import java.util.List;
 import java.util.Objects;
 
 public final class Sidebar extends VBox {
 
     private final NavTree navTree;
+    private final NavList navList;
     private final MainModel model;
 
     private int clickCount = 0;
@@ -35,47 +35,44 @@ public final class Sidebar extends VBox {
         super();
         this.model = model;
         this.navTree = new NavTree(model);
+        this.navList = new NavList(model);
 
-        createView();
-
-        // 绑定模型：当 Model 页面变化时，自动选中 NavTree 对应项
-        // (这里需要 MainModel 提供 getTreeItemForPage 方法，或者简单的遍历查找，
-        //  如果没有该方法，可以先注释掉这块联动逻辑)
-        /* model.selectedPageProperty().addListener((obs, old, val) -> {
-            if (val != null) {
-                // navTree.getSelectionModel().select(...);
+        this.navTree.getSelectionModel().selectedItemProperty().addListener((obs, old, val) -> {
+            if (val != null && val.getValue() != null && !val.getValue().isGroup()) {
+                this.model.navigate(val.getValue().fxmlPath());
+                this.navList.getSelectionModel().clearSelection();
             }
         });
-        */
 
-        // 注册全局快捷键 (例如按 / 呼出搜索)
-        // 简单实现：监听 Scene 的按键事件
+        this.navList.getSelectionModel().selectedItemProperty().addListener((obs, old, val) -> {
+            if (val != null && val.fxmlPath() != null) {
+                this.model.navigate(val.fxmlPath());
+                this.navTree.getSelectionModel().clearSelection();
+            }
+        });
+
+        createView();
+        initShortcuts();
+    }
+
+    private void createView() {
+        var header = new Header();
+        VBox.setVgrow(navTree, Priority.ALWAYS);
+        this.navList.getStyleClass().add("footer-list");
+        setId("sidebar");
+        getChildren().addAll(header, navTree, navList);
+    }
+
+    private void initShortcuts() {
         sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) {
                 newScene.setOnKeyPressed(e -> {
-                    // 如果是 / 键，且当前不是在输入框里输入文字，则打开搜索
                     if (e.getCode().getName().equals("Slash") && !e.isShortcutDown()) {
-                        // 这里可以加更细致的判断，防止在输入框里打字时误触
-                        // openSearchDialog();
+                        openSearchDialog();
                     }
                 });
             }
         });
-    }
-
-    private void createView() {
-        // 1. 创建头部 (Logo + Search Button)
-        var header = new Header();
-
-        // 2. 设置 NavTree 占据剩余空间
-        VBox.setVgrow(navTree, Priority.ALWAYS);
-
-        // 3. 底部 (版本号或其他)
-        var footer = createFooter();
-
-        setId("sidebar");
-
-        getChildren().addAll(header, navTree, footer);
     }
 
     private void openSearchDialog() {
@@ -92,48 +89,9 @@ public final class Sidebar extends VBox {
     }
 
     private VBox createFooter() {
-        var footer = new VBox();
-        footer.getStyleClass().add("footer");
-
-        List<Nav> navs = model.createFooter();
-        for (Nav nav : navs) {
-            Button btn = createFooterItem(nav); // 调用下方的通用方法
-            footer.getChildren().add(btn);
-        }
-
-        return footer;
+        return new VBox();
     }
 
-    private Button createFooterItem(Nav nav) {
-        // 1. 图标容器 (保持与 NavTree 30px 对齐)
-        var iconNode = new FontIcon(nav.icon());
-        var iconContainer = new StackPane(iconNode);
-        iconContainer.setMinWidth(30);
-        iconContainer.setMaxWidth(30);
-        iconContainer.setAlignment(Pos.CENTER);
-        // 加上 style class 方便 CSS 控制颜色
-        iconContainer.getStyleClass().add("icon-container");
-
-        // 2. 文字
-        var label = new Label(nav.title());
-        label.getStyleClass().add("label");
-
-        // 3. 布局
-        var content = new HBox(iconContainer, label);
-        content.setAlignment(Pos.CENTER_LEFT);
-        // content.setSpacing(0); // 紧凑布局
-
-        // 4. 按钮本体
-        var btn = new Button();
-        btn.setGraphic(content);
-        btn.setMaxWidth(Double.MAX_VALUE); // 撑满宽度
-        btn.getStyleClass().add("footer-button"); // CSS 样式类
-
-        // 5. 点击事件
-        btn.setOnAction(e -> model.navigate(nav.fxmlPath()));
-
-        return btn;
-    }
 
     /// ////////////////////////////////////////////////////////////////////////
     // 内部类 Header：负责 Logo 和 搜索按钮

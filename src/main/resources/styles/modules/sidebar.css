@@ -107,7 +107,6 @@
 }
 
 
-
 /* --- Right Arrow (Expand/Collapse) --- */
 .nav-tree-cell .arrow {
     -fx-icon-color: -color-fg-subtle;
@@ -117,48 +116,34 @@
 /* =============================================================================
    5. Footer Section (底部区域)
    ============================================================================= */
-#sidebar .footer {
-    -fx-padding: 8px;
+.list-view.footer-list {
+    -fx-background-color: transparent;
+    -fx-padding: 3px 0 0 0;
+
+    /* 顶部分割线 */
     -fx-border-color: -color-border-muted;
     -fx-border-width: 1px 0 0 0;
-    -fx-background-color: -color-bg-inset;
-    -fx-spacing: 4px; /* 控制按钮之间的垂直间距 */
 }
 
-/* --- 底部按钮容器 --- */
-.footer-button {
+.list-view.footer-list .list-cell {
     -fx-background-color: transparent;
-    -fx-border-width: 0;
-    -fx-padding: 8px 12px;
-    -fx-cursor: hand;
-    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 0;
+    -fx-indent: 0;
 }
 
-/* --- 按钮内部图标样式 --- */
-.footer-button .font-icon {
-    -fx-icon-color: -color-fg-muted;
-    -fx-icon-size: 18px;
-}
-
-/* --- 按钮内部文字样式 --- */
-.footer-button .label {
-    -fx-text-fill: -color-fg-default;
-}
-
-/* --- 交互状态：悬停 (Hover) --- */
-.footer-button:hover {
+.list-view.footer-list .list-cell:filled:selected,
+.list-view.footer-list .list-cell:filled:hover {
     -fx-background-color: -color-accent-subtle;
 }
 
-/* 悬停时高亮图标和文字 */
-.footer-button:hover .font-icon {
-    -fx-icon-color: -color-fg-default;
-}
-.footer-button:hover .label {
-    -fx-text-fill: -color-fg-default;
+.list-view.footer-list .scroll-bar:horizontal,
+.list-view.footer-list .scroll-bar:vertical {
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+    -fx-opacity: 0;
 }
 
-/* --- 交互状态：按下 (Pressed) --- */
-.footer-button:pressed {
-    -fx-background-color: -color-accent-muted;
+.list-view.footer-list .list-cell:filled:selected .title {
+    -fx-text-fill: -color-accent-fg;
+    -fx-font-weight: bold;
 }

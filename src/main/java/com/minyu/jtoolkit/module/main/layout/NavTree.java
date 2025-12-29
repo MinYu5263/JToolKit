@@ -23,12 +23,6 @@ public class NavTree extends TreeView<Nav> {
         rootProperty().bind(model.navTreeProperty());
         setCellFactory(p -> new NavTreeCell());
         setFocusTraversable(false);
-
-        getSelectionModel().selectedItemProperty().addListener((obs, old, val) -> {
-            if (val != null && val.getValue() != null && !val.getValue().isGroup()) {
-                model.navigate(val.getValue().fxmlPath());
-            }
-        });
     }
 
     static class NavTreeCell extends TreeCell<Nav> {

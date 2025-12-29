@@ -1,8 +1,9 @@
 package com.minyu.jtoolkit.module.main.layout;
 
 import atlantafx.base.theme.Tweaks;
-import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.geometry.Pos;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -12,60 +13,63 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 public class NavList extends ListView<Nav> {
 
-    // 预设行高，用于计算总高度 (36px是通常的舒适高度)
-    private static final int CELL_HEIGHT = 36;
+    private static final int CELL_HEIGHT = 30;
+    private static final int TOP_PADDING = 5;
+    private static final int BORDER_WIDTH = 1;
 
     public NavList(MainModel model) {
         super();
+        getStyleClass().add(Tweaks.EDGE_TO_EDGE);
+        setFocusTraversable(false);
 
-        // 1. 基础样式
-        getStyleClass().add(Tweaks.EDGE_TO_EDGE); // 去边框
-        getStyleClass().add("nav-list");          // 方便 CSS 覆盖
-        setFocusTraversable(false);               // 避免 Tab 键选中整个列表
+        setFixedCellSize(CELL_HEIGHT);
 
-        // 2. 数据源
-        var items = model.createFooter();
-        setItems(FXCollections.observableArrayList(items));
+        itemsProperty().bind(model.footerListProperty());
+        setCellFactory(lv -> new NavListCell());
 
-        // 3. 关键：根据数量自动计算高度，避免出现滚动条
-        setPrefHeight(items.size() * CELL_HEIGHT);
-        setFixedCellSize(CELL_HEIGHT); // 固定每一行的高度，性能更好
-
-        // 4. 设置渲染器
-        setCellFactory(lv -> new NavListCell(model));
+        getItems().addListener((ListChangeListener<Nav>) c -> resize());
+        resize();
     }
 
-    // --- 内部类：简单的单元格渲染 ---
+    private void resize() {
+        int count = getItems().size();
+        // 高度 = 行数 * 行高 + 顶部内边距 + 边框修正
+        double height = count * CELL_HEIGHT + TOP_PADDING + BORDER_WIDTH;
+
+        setPrefHeight(height);
+        setMinHeight(height);
+        setMaxHeight(height);
+    }
+
     static class NavListCell extends ListCell<Nav> {
         private final HBox root;
         private final Label titleLabel;
-        private final FontIcon iconNode;
-        private final StackPane iconContainer;
+        private final FontIcon leftIcon;
 
-        public NavListCell(MainModel model) {
-            // 左侧图标容器 (保持与 NavTree 30px 对齐)
-            iconNode = new FontIcon();
-            iconContainer = new StackPane(iconNode);
-            iconContainer.setMinWidth(30);
-            iconContainer.setMaxWidth(30);
-            iconContainer.setAlignment(Pos.CENTER);
+        public NavListCell() {
+            // 图标容器
+            leftIcon = new FontIcon();
+            // 这里可以复用 left-icon 样式，或者单独定义
+            leftIcon.getStyleClass().add("left-icon");
 
-            // 标题
+            StackPane leftIconContainer = new StackPane(leftIcon);
+            leftIconContainer.setAlignment(Pos.CENTER);
+            leftIconContainer.getStyleClass().add("icon-container");
+
+            // 核心：强制 30px，与 NavTree 一级菜单对齐
+            leftIconContainer.setMinWidth(30);
+            leftIconContainer.setMaxWidth(30);
+
             titleLabel = new Label();
             titleLabel.getStyleClass().add("title");
 
-            // 布局
-            root = new HBox(iconContainer, titleLabel);
+            root = new HBox(leftIconContainer, titleLabel);
             root.setAlignment(Pos.CENTER_LEFT);
-            root.getStyleClass().add("nav-list-cell");
+            // 复用 nav-tree-cell 的样式，保证高度和边框一致
+            root.getStyleClass().add("nav-tree-cell");
+            root.setSpacing(0);
 
-            // 交互：直接监听点击，比 SelectionModel 更直接
-            setOnMouseClicked(e -> {
-                Nav item = getItem();
-                if (item != null && item.fxmlPath() != null) {
-                    model.navigate(item.fxmlPath());
-                }
-            });
+            setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
         }
 
         @Override
@@ -79,10 +83,8 @@ public class NavList extends ListView<Nav> {
                 titleLabel.setText(item.title());
 
                 if (item.icon() != null) {
-                    iconNode.setIconCode(item.icon());
-                    iconContainer.setVisible(true);
-                } else {
-                    iconContainer.setVisible(false);
+                    leftIcon.setIconCode(item.icon());
+                    leftIcon.setVisible(true);
                 }
 
                 setGraphic(root);

@@ -1,7 +1,11 @@
 package com.minyu.jtoolkit.module.main.layout;
 
+import javafx.beans.property.ReadOnlyListProperty;
+import javafx.beans.property.ReadOnlyListWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.material2.Material2AL;
@@ -18,6 +22,8 @@ public class MainModel {
     // 导航树数据
     private final ReadOnlyObjectWrapper<TreeItem<Nav>> navTree = new ReadOnlyObjectWrapper<>();
 
+    private final ReadOnlyListWrapper<Nav> footerList = new ReadOnlyListWrapper<>(FXCollections.observableArrayList());
+
     private final List<SearchResult> searchIndex = new ArrayList<>();
 
     public ReadOnlyObjectProperty<String> selectedPageProperty() {
@@ -26,6 +32,10 @@ public class MainModel {
 
     public ReadOnlyObjectProperty<TreeItem<Nav>> navTreeProperty() {
         return navTree.getReadOnlyProperty();
+    }
+
+    public ReadOnlyListProperty<Nav> footerListProperty() {
+        return footerList.getReadOnlyProperty();
     }
 
     /**
@@ -42,9 +52,13 @@ public class MainModel {
      * 直接从 NavConfig 获取静态配置，构建 TreeItem 结构
      */
     public void initMenu() {
-        TreeItem<Nav> root = createTree();
-        this.navTree.set(root);
-        refreshSearchIndex(root);
+        TreeItem<Nav> sideRoot = createSideTree();
+        this.navTree.set(sideRoot);
+
+        ObservableList<Nav> footerRoot = createFooterList();
+        this.footerList.set(footerRoot);
+
+        refreshSearchIndex(sideRoot);
     }
 
     public List<SearchResult> search(String query) {
@@ -63,7 +77,7 @@ public class MainModel {
         return results;
     }
 
-    private TreeItem<Nav> createTree() {
+    private TreeItem<Nav> createSideTree() {
         var root = new TreeItem<>(Nav.ROOT);
 
         TreeItem<Nav> general = group("General", Material2AL.GRID_ON);
@@ -113,6 +127,13 @@ public class MainModel {
         return root;
     }
 
+    public ObservableList<Nav> createFooterList() {
+        return FXCollections.observableArrayList(
+                new Nav("设置", Material2MZ.SETTINGS, "fxml/settings/SettingsView.fxml"),
+                new Nav("关于", Material2AL.INFO, "fxml/about/AboutView.fxml")
+        );
+    }
+
     private TreeItem<Nav> group(String title, Ikon ikon) {
         return new TreeItem<>(new Nav(title, ikon, null));
     }
@@ -137,12 +158,5 @@ public class MainModel {
                 }
             }
         }
-    }
-
-    public List<Nav> createFooter() {
-        return List.of(
-                new Nav("设置", Material2MZ.SETTINGS, "fxml/settings/SettingsView.fxml"),
-                new Nav("关于", Material2AL.INFO, "fxml/about/AboutView.fxml")
-        );
     }
 }
