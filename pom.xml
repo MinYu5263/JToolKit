@@ -32,6 +32,13 @@
         <easyexcel.version>4.0.3</easyexcel.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -73,6 +80,11 @@
             <groupId>org.kordamp.ikonli</groupId>
             <artifactId>ikonli-material2-pack</artifactId>
             <version>${ikonli.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.Dansoftowner</groupId>
+            <artifactId>jSystemThemeDetector</artifactId>
+            <version>3.9.1</version>
         </dependency>
 
         <dependency>

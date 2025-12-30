@@ -12,8 +12,6 @@
     <Label text="设置" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
 
     <VBox spacing="10.0">
-        <Label text="外观"/>
-
         <Card>
             <body>
                 <Tile title="主题" description="选择要使用的应用主题">

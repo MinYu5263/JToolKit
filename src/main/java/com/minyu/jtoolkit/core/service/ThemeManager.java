@@ -1,6 +1,7 @@
 package com.minyu.jtoolkit.core.service;
 
 import atlantafx.base.theme.*;
+import com.jthemedetecor.OsThemeDetector;
 import jakarta.annotation.PostConstruct;
 import javafx.application.Application;
 import lombok.Getter;
@@ -15,6 +16,8 @@ import java.util.Map;
 @Getter
 @Service
 public class ThemeManager {
+    public static final String ID_SYSTEM = "SYSTEM";
+
     private final Map<String, Theme> availableThemes = new LinkedHashMap<>();
 
     @PostConstruct
@@ -29,10 +32,20 @@ public class ThemeManager {
     }
 
     public void applyTheme(String themeName) {
-        Theme theme = availableThemes.get(themeName);
-        if (theme != null) {
-            Application.setUserAgentStylesheet(theme.getUserAgentStylesheet());
+        if (ID_SYSTEM.equals(themeName)) {
+            applySystemTheme();
+        } else {
+            Theme theme = availableThemes.get(themeName);
+            if (theme != null) {
+                Application.setUserAgentStylesheet(theme.getUserAgentStylesheet());
+            }
         }
+    }
+
+    private void applySystemTheme() {
+        boolean isSystemDark = OsThemeDetector.getDetector().isDark();
+        Theme theme = isSystemDark ? new PrimerDark() : new PrimerLight();
+        Application.setUserAgentStylesheet(theme.getUserAgentStylesheet());
     }
 
     public void applyTheme(Theme theme) {
