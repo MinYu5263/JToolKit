@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import atlantafx.base.controls.ModalPane?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.StackPane?>
 <StackPane fx:id="rootPane"
@@ -12,10 +13,14 @@
         <left>
         </left>
         <center>
-            <StackPane fx:id="contentArea"/>
+            <StackPane fx:id="contentArea">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+            </StackPane>
         </center>
     </BorderPane>
 
-    <ModalPane fx:id="modalPane" id="main-modal-pane" />
+    <ModalPane fx:id="modalPane" id="main-modal-pane"/>
 
 </StackPane>
