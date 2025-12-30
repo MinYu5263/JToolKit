@@ -1,72 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import atlantafx.base.controls.ToggleSwitch?>
+<?import atlantafx.base.controls.Card?>
+<?import atlantafx.base.controls.Tile?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21"
+      fx:controller="com.minyu.jtoolkit.module.settings.SettingsController"
+      spacing="10">
 
-<VBox
-        xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-        >
-
-
-    <padding>
-        <Insets top="30" right="30" bottom="30" left="30"/>
-    </padding>
-
-    <Label text="设置 (Settings)" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
-    <Separator/>
+    <Label text="设置" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
 
     <VBox spacing="10.0">
-        <Label text="外观 (Appearance)"
-               style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: -color-accent-fg;"/>
+        <Label text="外观"/>
 
-        <GridPane hgap="20" vgap="10">
-            <Label text="主题模式:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-            <HBox spacing="15" GridPane.rowIndex="0" GridPane.columnIndex="1">
-                <fx:define>
-                    <ToggleGroup fx:id="themeGroup"/>
-                </fx:define>
-                <RadioButton fx:id="rbLight" text="明亮 (Light)" toggleGroup="$themeGroup" userData="LIGHT"/>
-                <RadioButton fx:id="rbDark" text="暗黑 (Dark)" toggleGroup="$themeGroup" userData="DARK"/>
-                <RadioButton fx:id="rbDracula" text="吸血鬼 (Dracula)" toggleGroup="$themeGroup" userData="DRACULA"/>
-            </HBox>
-            <Label text="* 切换后立即生效" style="-fx-font-size: 11px; -fx-text-fill: grey;" GridPane.rowIndex="1"
-                   GridPane.columnIndex="1"/>
-        </GridPane>
+        <Card>
+            <body>
+                <Tile title="主题" description="选择要使用的应用主题">
+                    <action>
+                        <ComboBox fx:id="themeCombo" prefWidth="200"/>
+                    </action>
+                </Tile>
+            </body>
+        </Card>
     </VBox>
-
-    <Separator/>
-
-    <VBox spacing="15.0">
-        <Label text="通用 (General)"
-               style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: -color-accent-fg;"/>
-
-        <HBox spacing="20" alignment="CENTER_LEFT">
-            <Label text="关闭主窗口时:" prefWidth="150"/>
-            <ToggleSwitch fx:id="tsCloseToTray" text="最小化到托盘 (Minimize to Tray)"/>
-        </HBox>
-
-        <HBox spacing="20" alignment="CENTER_LEFT">
-            <Label text="启动时:" prefWidth="150"/>
-            <ToggleSwitch fx:id="tsCheckUpdate" text="自动检查更新"/>
-        </HBox>
-    </VBox>
-
-    <Separator/>
-
-    <VBox spacing="10.0">
-        <Label text="关于 (About)"
-               style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: -color-accent-fg;"/>
-        <HBox spacing="10" alignment="BASELINE_LEFT">
-            <Label text="当前版本:"/>
-            <Label text="v1.0.0-SNAPSHOT" style="-fx-font-family: 'Monospaced';"/>
-        </HBox>
-        <HBox spacing="10" alignment="BASELINE_LEFT">
-            <Label text="开发者:"/>
-            <Label text="Minyu"/>
-        </HBox>
-    </VBox>
-
-
 </VBox>

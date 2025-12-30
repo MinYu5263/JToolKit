@@ -1,9 +1,8 @@
 jtoolkit:
-  title: "JToolKit Dev Build"
+  title: "JToolKit"
   width: 1280
   height: 768
-  # 可选值: dark, light, primer-dark, primer-light
-  theme: light
+  theme: Primer Light
 
 spring:
   application:

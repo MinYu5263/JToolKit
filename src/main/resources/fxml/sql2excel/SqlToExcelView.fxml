@@ -3,15 +3,17 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
-<VBox prefHeight="700.0" prefWidth="1100.0" spacing="10.0"
-      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+<VBox xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21"
       fx:controller="com.minyu.jtoolkit.module.sql2excel.SqlToExcelController">
 
-    <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
 
     <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-background-color: #f4f4f4; -fx-background-radius: 5;">
-        <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+        <padding>
+            <Insets top="10" right="10" bottom="10" left="10"/>
+        </padding>
 
         <Label text="选择连接:" style="-fx-font-weight: bold;"/>
         <ComboBox fx:id="profileCombo" promptText="请选择或创建连接..." prefWidth="200"/>
@@ -34,7 +36,9 @@
     <SplitPane dividerPositions="0.25" VBox.vgrow="ALWAYS">
 
         <VBox spacing="5.0">
-            <padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
+            <padding>
+                <Insets top="5" right="5" bottom="5" left="5"/>
+            </padding>
             <Label text="导出任务列表 (Sheets):" style="-fx-font-weight: bold;"/>
             <ListView fx:id="taskListView" VBox.vgrow="ALWAYS"/>
             <HBox spacing="5">
@@ -47,7 +51,9 @@
         </VBox>
 
         <VBox spacing="8.0" fx:id="editorArea" disable="true">
-            <padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
+            <padding>
+                <Insets top="5" right="5" bottom="5" left="5"/>
+            </padding>
 
             <HBox spacing="10" alignment="CENTER_LEFT">
                 <Label text="Sheet 名称:"/>
@@ -64,7 +70,9 @@
             </HBox>
 
             <TableView fx:id="previewTable" VBox.vgrow="ALWAYS">
-                <placeholder><Label text="暂无数据"/></placeholder>
+                <placeholder>
+                    <Label text="暂无数据"/>
+                </placeholder>
             </TableView>
         </VBox>
 
