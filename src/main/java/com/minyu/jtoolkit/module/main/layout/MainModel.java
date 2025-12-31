@@ -80,12 +80,6 @@ public class MainModel {
     private TreeItem<Nav> createSideTree() {
         var root = new TreeItem<>(Nav.ROOT);
 
-        TreeItem<Nav> general = group("General", Material2AL.GRID_ON);
-        general.getChildren().add(
-                item("Theme", "fxml/theme/ThemeView.fxml")
-        );
-        general.setExpanded(true);
-
         TreeItem<Nav> generators = group("生成器", Material2AL.DEVELOPER_BOARD);
         generators.getChildren().setAll(List.of(
                 item("Cron 生成器", "fxml/cron/CronView.fxml"),
@@ -118,7 +112,6 @@ public class MainModel {
         sysTools.setExpanded(true);
 
         root.getChildren().setAll(List.of(
-                general,
                 generators,
                 converter,
                 text,

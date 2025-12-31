@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
@@ -38,8 +39,11 @@ public class PrimaryStageInitializer implements ApplicationListener<StageReadyEv
     @Value("${jtoolkit.height:768}")
     private int height;
 
-    @Value("${jtoolkit.theme:light}")
+    @Value("${jtoolkit.theme:SYSTEM}")
     private String defaultTheme;
+
+    @Value("${jtoolkit.font-size:14}")
+    private Integer defaultFontSize;
 
     @Override
     public void onApplicationEvent(StageReadyEvent event) {
@@ -57,9 +61,11 @@ public class PrimaryStageInitializer implements ApplicationListener<StageReadyEv
         // 设置主题
         SettingsViewState settingsViewState = viewDataService.loadState("app_settings", SettingsViewState.class);
         if (settingsViewState != null) {
-            themeManager.applyTheme(settingsViewState.getThemeId());
+            themeManager.applyTheme(StringUtils.isNotBlank(settingsViewState.getThemeId()) ? settingsViewState.getThemeId() : defaultTheme);
+            themeManager.applyFontSize(settingsViewState.getFontSize() != null ? settingsViewState.getFontSize() : defaultFontSize);
         } else {
             themeManager.applyTheme(defaultTheme);
+            themeManager.applyFontSize(defaultFontSize);
         }
 
         stage.show();

@@ -3,6 +3,7 @@ jtoolkit:
   width: 1280
   height: 768
   theme: SYSTEM
+  font-size: 14
 
 spring:
   application:

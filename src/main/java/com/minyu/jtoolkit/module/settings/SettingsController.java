@@ -5,6 +5,8 @@ import com.minyu.jtoolkit.module.BaseController;
 import javafx.beans.Observable;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.util.StringConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -19,6 +21,9 @@ public class SettingsController extends BaseController<SettingsViewState> {
 
     @FXML
     private ComboBox<ThemeItem> themeCombo;
+
+    @FXML
+    private Spinner<Integer> fontSizeSpinner;
 
     private final ThemeManager themeManager;
 
@@ -58,6 +63,17 @@ public class SettingsController extends BaseController<SettingsViewState> {
                 themeManager.applyTheme(newVal.themeId());
             }
         });
+
+        SpinnerValueFactory<Integer> valueFactory =
+                new SpinnerValueFactory.IntegerSpinnerValueFactory(8, 36, ThemeManager.DEFAULT_FONT_SIZE);
+        fontSizeSpinner.setValueFactory(valueFactory);
+
+        // 监听变化，实时应用字体大小 (预览效果)
+        fontSizeSpinner.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                themeManager.applyFontSize(newVal);
+            }
+        });
     }
 
     @Override
@@ -77,14 +93,19 @@ public class SettingsController extends BaseController<SettingsViewState> {
 
     @Override
     protected void restoreValues(SettingsViewState state) {
+        // 恢复主题
         if (state.getThemeId() != null) {
             String savedId = state.getThemeId();
-            for (ThemeItem item : themeCombo.getItems()) {
-                if (Objects.equals(item.themeId(), savedId)) {
-                    themeCombo.getSelectionModel().select(item);
-                    return;
-                }
-            }
+            themeCombo.getItems().stream()
+                    .filter(item -> Objects.equals(item.themeId(), savedId))
+                    .findFirst()
+                    .ifPresent(item -> themeCombo.getSelectionModel().select(item));
+        }
+
+        // 恢复字体大小
+        if (state.getFontSize() != null) {
+            fontSizeSpinner.getValueFactory().setValue(state.getFontSize());
+            themeManager.applyFontSize(state.getFontSize());
         }
     }
 
@@ -93,11 +114,15 @@ public class SettingsController extends BaseController<SettingsViewState> {
         if (themeCombo.getSelectionModel().getSelectedItem() == null) {
             themeCombo.getSelectionModel().selectFirst();
         }
+        fontSizeSpinner.getValueFactory().setValue(ThemeManager.DEFAULT_FONT_SIZE);
     }
 
     @Override
     protected List<Observable> getObservables() {
-        return List.of(themeCombo.getSelectionModel().selectedItemProperty());
+        return List.of(
+                themeCombo.getSelectionModel().selectedItemProperty(),
+                fontSizeSpinner.valueProperty()
+        );
     }
 
     @Override
@@ -107,6 +132,7 @@ public class SettingsController extends BaseController<SettingsViewState> {
         if (selected != null) {
             state.setThemeId(selected.themeId());
         }
+        state.setFontSize(fontSizeSpinner.getValue());
         return state;
     }
 }

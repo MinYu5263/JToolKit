@@ -4,6 +4,8 @@ import atlantafx.base.theme.*;
 import com.jthemedetecor.OsThemeDetector;
 import jakarta.annotation.PostConstruct;
 import javafx.application.Application;
+import javafx.scene.Parent;
+import javafx.stage.Window;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,8 @@ import java.util.Map;
 @Service
 public class ThemeManager {
     public static final String ID_SYSTEM = "SYSTEM";
+
+    public static final int DEFAULT_FONT_SIZE = 14;
 
     private final Map<String, Theme> availableThemes = new LinkedHashMap<>();
 
@@ -51,6 +55,21 @@ public class ThemeManager {
     public void applyTheme(Theme theme) {
         if (theme != null) {
             Application.setUserAgentStylesheet(theme.getUserAgentStylesheet());
+        }
+    }
+
+    /**
+     * 设置全局字体大小
+     * 原理：直接修改当前所有窗口 Root 节点的内联样式
+     */
+    public void applyFontSize(int size) {
+        int validSize = Math.max(8, Math.min(size, 36));
+
+        for (Window window : Window.getWindows()) {
+            if (window.getScene() != null && window.getScene().getRoot() != null) {
+                Parent root = window.getScene().getRoot();
+                root.setStyle("-fx-font-size: " + validSize + "px;");
+            }
         }
     }
 }

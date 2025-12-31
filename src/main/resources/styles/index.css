@@ -1,5 +1,6 @@
 
 @import "modules/sidebar.css";
+@import "modules/main.css";
 
 .root {
     -fx-font-family: "Inter", "System", sans-serif;

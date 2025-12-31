@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import atlantafx.base.controls.Card?>
 <?import atlantafx.base.controls.Tile?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
 <?import javafx.scene.layout.VBox?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21"
       fx:controller="com.minyu.jtoolkit.module.settings.SettingsController"
@@ -12,14 +12,15 @@
     <Label text="设置" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
 
     <VBox spacing="10.0">
-        <Card>
-            <body>
-                <Tile title="主题" description="选择要使用的应用主题">
-                    <action>
-                        <ComboBox fx:id="themeCombo" prefWidth="200"/>
-                    </action>
-                </Tile>
-            </body>
-        </Card>
+        <Tile title="主题" description="选择要使用的应用主题" styleClass="setting-item">
+            <action>
+                <ComboBox fx:id="themeCombo" prefWidth="200"/>
+            </action>
+        </Tile>
+        <Tile title="字体大小" description="调整全局字体大小" styleClass="setting-item">
+            <action>
+                <Spinner fx:id="fontSizeSpinner" prefWidth="120"/>
+            </action>
+        </Tile>
     </VBox>
 </VBox>

@@ -88,7 +88,7 @@
 /* --- Text (Title) --- */
 .nav-tree-cell .title {
     -fx-text-fill: -color-fg-default;
-    -fx-font-size: 14px;
+    /*-fx-font-size: 14px;*/
 }
 
 .tree-cell:filled:selected .nav-tree-cell .title {
