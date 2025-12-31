@@ -3,7 +3,6 @@ package com.minyu.jtoolkit.module.json;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONWriter;
 import com.minyu.jtoolkit.module.BaseController;
-import com.minyu.jtoolkit.system.service.ViewDataService;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import lombok.extern.slf4j.Slf4j;
@@ -21,10 +20,6 @@ public class JsonController extends BaseController<JsonViewState> {
 
     @FXML
     private TextArea outputArea;
-
-    public JsonController(ViewDataService viewDataService) {
-        super();
-    }
 
     @FXML
     public void initView() {

@@ -4,7 +4,6 @@ import cn.idev.excel.FastExcel;
 import cn.idev.excel.context.AnalysisContext;
 import cn.idev.excel.event.AnalysisEventListener;
 import com.minyu.jtoolkit.module.BaseController;
-import com.minyu.jtoolkit.system.service.ViewDataService;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -42,10 +41,6 @@ public class ExcelToSqlController extends BaseController<ExcelToSqlViewState> {
 
     private final ObservableList<ColumnMapping> columnMappings = FXCollections.observableArrayList();
     private File currentFile;
-
-    public ExcelToSqlController(ViewDataService viewDataService) {
-        super();
-    }
 
     @FXML
     public void initView() {

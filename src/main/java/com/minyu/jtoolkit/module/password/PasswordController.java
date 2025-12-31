@@ -1,7 +1,6 @@
 package com.minyu.jtoolkit.module.password;
 
 import com.minyu.jtoolkit.module.BaseController;
-import com.minyu.jtoolkit.system.service.ViewDataService;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -45,10 +44,6 @@ public class PasswordController extends BaseController<PasswordViewState> {
 
     // 强随机数生成器
     private final SecureRandom secureRandom = new SecureRandom();
-
-    public PasswordController(ViewDataService viewDataService) {
-        super();
-    }
 
     @FXML
     public void initView() {

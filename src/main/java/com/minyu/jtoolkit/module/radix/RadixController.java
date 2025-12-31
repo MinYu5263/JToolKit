@@ -1,7 +1,6 @@
 package com.minyu.jtoolkit.module.radix;
 
 import com.minyu.jtoolkit.module.BaseController;
-import com.minyu.jtoolkit.system.service.ViewDataService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
@@ -25,10 +24,6 @@ public class RadixController extends BaseController<RadixViewState> {
     // 定义 Long 的最大值和最小值 (BigInteger 形式)
     private static final BigInteger MAX_LONG = BigInteger.valueOf(Long.MAX_VALUE);
     private static final BigInteger MIN_LONG = BigInteger.valueOf(Long.MIN_VALUE);
-
-    public RadixController(ViewDataService viewDataService) {
-        super();
-    }
 
     @FXML
     public void initView() {

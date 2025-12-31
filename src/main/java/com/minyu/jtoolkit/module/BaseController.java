@@ -38,6 +38,11 @@ public abstract class BaseController<T extends ViewState> implements Initializab
         this.viewDataService = viewDataService;
     }
 
+    @Autowired
+    public void setJsonFileViewDataService(ViewDataService viewDataService) {
+        this.viewDataService = viewDataService;
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // 1. 初始化视图组件（设置 CellFactory, Converter, 初始显隐状态等）

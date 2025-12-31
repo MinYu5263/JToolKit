@@ -6,7 +6,6 @@ import cn.idev.excel.write.metadata.WriteSheet;
 import com.minyu.jtoolkit.module.BaseController;
 import com.minyu.jtoolkit.module.sql2excel.SqlToExcelViewState.DbConnectionProfile;
 import com.minyu.jtoolkit.module.sql2excel.SqlToExcelViewState.QueryTaskState;
-import com.minyu.jtoolkit.system.service.ViewDataService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -53,10 +52,6 @@ public class SqlToExcelController extends BaseController<SqlToExcelViewState> {
 
     // 当前活跃的数据库连接 (复用)
     private Connection activeConnection;
-
-    public SqlToExcelController(ViewDataService viewDataService) {
-        super();
-    }
 
     @FXML
     public void initView() {

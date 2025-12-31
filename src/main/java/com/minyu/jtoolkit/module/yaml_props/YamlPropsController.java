@@ -5,7 +5,6 @@ import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.minyu.jtoolkit.module.BaseController;
-import com.minyu.jtoolkit.system.service.ViewDataService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
@@ -42,9 +41,7 @@ public class YamlPropsController extends BaseController<YamlPropsViewState> {
     private final JavaPropsMapper propsMapper;
     private final YAMLMapper yamlMapper;
 
-    public YamlPropsController(ViewDataService viewDataService) {
-        super();
-
+    public YamlPropsController() {
         // 初始化 Mapper
         this.propsMapper = new JavaPropsMapper();
 

@@ -1,7 +1,6 @@
 package com.minyu.jtoolkit.module.env_vars;
 
 import com.minyu.jtoolkit.module.BaseController;
-import com.minyu.jtoolkit.system.service.ViewDataService;
 import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -47,11 +46,6 @@ public class EnvVarController extends BaseController<EnvVarViewState> {
     // === 数据源 ===
     private final ObservableList<Map.Entry<String, String>> systemEnvList = FXCollections.observableArrayList();
     private final ObservableList<GeneratorItem> generatorList = FXCollections.observableArrayList();
-
-    public EnvVarController(ViewDataService viewDataService) {
-        super();
-    }
-
 
     public void initView() {
         initSystemViewer();

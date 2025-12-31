@@ -1,7 +1,6 @@
 package com.minyu.jtoolkit.module.file_tree;
 
 import com.minyu.jtoolkit.module.BaseController;
-import com.minyu.jtoolkit.system.service.ViewDataService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -38,10 +37,6 @@ public class FileTreeController extends BaseController<FileTreeViewState> {
 
     // 数据源
     private final ObservableList<FileTreeViewState.HistoryItem> historyData = FXCollections.observableArrayList();
-
-    public FileTreeController(ViewDataService viewDataService) {
-        super();
-    }
 
     @FXML
     public void initView() {

@@ -6,7 +6,6 @@ import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
 import com.minyu.jtoolkit.module.BaseController;
-import com.minyu.jtoolkit.system.service.ViewDataService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
@@ -40,9 +39,7 @@ public class CronController extends BaseController<CronViewState> {
     // Quartz Cron 解析器
     private final CronParser cronParser;
 
-    public CronController(ViewDataService viewDataService) {
-        super();
-        // 初始化 Quartz 解析器
+    public CronController() {
         this.cronParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
     }
 

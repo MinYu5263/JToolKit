@@ -1,7 +1,6 @@
 package com.minyu.jtoolkit.module.text_analyzer;
 
 import com.minyu.jtoolkit.module.BaseController;
-import com.minyu.jtoolkit.system.service.ViewDataService;
 import javafx.fxml.FXML;
 import javafx.scene.control.IndexRange;
 import javafx.scene.control.Label;
@@ -28,10 +27,6 @@ public class TextAnalyzerController extends BaseController<TextAnalyzerViewState
     // 核心状态
     private String originalText = "";
     private boolean isProgrammaticChange = false; // 锁：是否为程序触发的修改
-
-    public TextAnalyzerController(ViewDataService viewDataService) {
-        super();
-    }
 
     @FXML
     public void initView() {

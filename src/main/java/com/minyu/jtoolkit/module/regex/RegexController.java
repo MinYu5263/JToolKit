@@ -1,7 +1,6 @@
 package com.minyu.jtoolkit.module.regex;
 
 import com.minyu.jtoolkit.module.BaseController;
-import com.minyu.jtoolkit.system.service.ViewDataService;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -40,10 +39,6 @@ public class RegexController extends BaseController<RegexViewState> {
     // === 数据源 ===
     private final ObservableList<MatchItem> matchList = FXCollections.observableArrayList();
     private final Map<String, String> regexTemplates = new LinkedHashMap<>();
-
-    public RegexController(ViewDataService viewDataService) {
-        super();
-    }
 
     public void initView() {
         initTemplates();
