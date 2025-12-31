@@ -4,7 +4,7 @@ import cn.idev.excel.FastExcel;
 import cn.idev.excel.context.AnalysisContext;
 import cn.idev.excel.event.AnalysisEventListener;
 import com.minyu.jtoolkit.module.BaseController;
-import com.minyu.jtoolkit.system.service.ViewStateService;
+import com.minyu.jtoolkit.system.service.ViewDataService;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -43,14 +43,14 @@ public class ExcelToSqlController extends BaseController<ExcelToSqlViewState> {
     private final ObservableList<ColumnMapping> columnMappings = FXCollections.observableArrayList();
     private File currentFile;
 
-    public ExcelToSqlController(ViewStateService viewStateService) {
-        super(viewStateService);
+    public ExcelToSqlController(ViewDataService viewDataService) {
+        super();
     }
 
     @FXML
-    public void initialize() {
+    public void initView() {
         initUI();
-        super.loadState();
+
     }
 
     private void initUI() {
@@ -238,17 +238,17 @@ public class ExcelToSqlController extends BaseController<ExcelToSqlViewState> {
     // === BaseController 实现 ===
 
     @Override
-    protected String getStorageKey() {
+    protected String getViewKey() {
         return "tool.data.excel2sql";
     }
 
     @Override
-    protected Class<ExcelToSqlViewState> getStateType() {
+    protected Class<ExcelToSqlViewState> getStorageType() {
         return ExcelToSqlViewState.class;
     }
 
     @Override
-    protected void restoreUI(ExcelToSqlViewState state) {
+    protected void restoreValues(ExcelToSqlViewState state) {
         if (state == null) return;
 
         if (state.getLastFilePath() != null) {
@@ -261,7 +261,7 @@ public class ExcelToSqlController extends BaseController<ExcelToSqlViewState> {
     }
 
     @Override
-    protected ExcelToSqlViewState captureUI() {
+    protected ExcelToSqlViewState captureValues() {
         ExcelToSqlViewState state = new ExcelToSqlViewState();
         state.setLastFilePath(filePathField.getText());
         state.setTableName(tableNameField.getText());

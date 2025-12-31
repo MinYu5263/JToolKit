@@ -1,9 +1,11 @@
 package com.minyu.jtoolkit.module.text_analyzer;
 
 import com.minyu.jtoolkit.module.BaseController;
-import com.minyu.jtoolkit.system.service.ViewStateService;
+import com.minyu.jtoolkit.system.service.ViewDataService;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.IndexRange;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import org.springframework.stereotype.Component;
@@ -27,13 +29,13 @@ public class TextAnalyzerController extends BaseController<TextAnalyzerViewState
     private String originalText = "";
     private boolean isProgrammaticChange = false; // 锁：是否为程序触发的修改
 
-    public TextAnalyzerController(ViewStateService viewStateService) {
-        super(viewStateService);
+    public TextAnalyzerController(ViewDataService viewDataService) {
+        super();
     }
 
     @FXML
-    public void initialize() {
-        super.loadState();
+    public void initView() {
+        
 
         // 1. 核心监听：文本变化
         textArea.textProperty().addListener((obs, old, val) -> {
@@ -43,7 +45,7 @@ public class TextAnalyzerController extends BaseController<TextAnalyzerViewState
             }
             updateStats();
             // 自动保存 (注意：这里不需要 BaseController 的 observeChanges，因为我们手动控制更精细)
-            saveState();
+            saveValues();
         });
 
         // 2. 选区变化监听
@@ -213,13 +215,17 @@ public class TextAnalyzerController extends BaseController<TextAnalyzerViewState
     // ================== 持久化 ==================
 
     @Override
-    protected String getStorageKey() { return "tool.text.analyzer"; }
+    protected String getViewKey() {
+        return "tool.text.analyzer";
+    }
 
     @Override
-    protected Class<TextAnalyzerViewState> getStateType() { return TextAnalyzerViewState.class; }
+    protected Class<TextAnalyzerViewState> getStorageType() {
+        return TextAnalyzerViewState.class;
+    }
 
     @Override
-    protected void restoreUI(TextAnalyzerViewState state) {
+    protected void restoreValues(TextAnalyzerViewState state) {
         if (state != null) {
             // 恢复时也不应该视为用户输入，防止覆盖 originalText
             isProgrammaticChange = true;
@@ -230,7 +236,7 @@ public class TextAnalyzerController extends BaseController<TextAnalyzerViewState
     }
 
     @Override
-    protected TextAnalyzerViewState captureUI() {
+    protected TextAnalyzerViewState captureValues() {
         TextAnalyzerViewState state = new TextAnalyzerViewState();
         state.setText(textArea.getText());
         state.setOriginalText(originalText);

@@ -1,5 +1,6 @@
 package com.minyu.jtoolkit.module.file_tree;
 
+import com.minyu.jtoolkit.core.model.ViewState;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FileTreeViewState {
+public class FileTreeViewState implements ViewState {
 
     // 历史记录列表
     private List<HistoryItem> history = new ArrayList<>();

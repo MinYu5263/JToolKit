@@ -19,9 +19,9 @@ public class DbInitializer {
     public void init() {
 
         String createTableSql = """
-                CREATE TABLE IF NOT EXISTS view_state (
+                CREATE TABLE IF NOT EXISTS view_data (
                     view_key VARCHAR(255) PRIMARY KEY,
-                    view_data TEXT,
+                    view_state TEXT,
                     updated_at TIMESTAMP DEFAULT (datetime(CURRENT_TIMESTAMP, 'localtime'))
                 );
                 """;
@@ -29,10 +29,10 @@ public class DbInitializer {
 
         // 创建触发器实现自动更新时间
         String createTriggerSql = """
-                CREATE TRIGGER IF NOT EXISTS update_view_state_timestamp
-                AFTER UPDATE ON view_state
+                CREATE TRIGGER IF NOT EXISTS update_view_data_timestamp
+                AFTER UPDATE ON view_data
                 BEGIN
-                    UPDATE view_state SET updated_at = datetime(CURRENT_TIMESTAMP, 'localtime') WHERE view_key = NEW.view_key;
+                    UPDATE view_data SET updated_at = datetime(CURRENT_TIMESTAMP, 'localtime') WHERE view_key = NEW.view_key;
                 END;
                 """;
         jdbcTemplate.execute(createTriggerSql);

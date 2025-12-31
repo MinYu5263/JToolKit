@@ -2,18 +2,20 @@ package com.minyu.jtoolkit.module.settings;
 
 import com.minyu.jtoolkit.core.service.ThemeManager;
 import com.minyu.jtoolkit.module.BaseController;
-import com.minyu.jtoolkit.system.service.ViewStateService;
+import javafx.beans.Observable;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.util.StringConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
 @Component
 public class SettingsController extends BaseController<SettingsViewState> {
+    private static final String VIEW_KEY = "app_settings";
 
     @FXML
     private ComboBox<ThemeItem> themeCombo;
@@ -23,16 +25,8 @@ public class SettingsController extends BaseController<SettingsViewState> {
     private record ThemeItem(String displayName, String themeId) {
     }
 
-    public SettingsController(ViewStateService viewStateService, ThemeManager themeManager) {
-        super(viewStateService);
+    public SettingsController(ThemeManager themeManager) {
         this.themeManager = themeManager;
-    }
-
-    @FXML
-    public void initialize() {
-        initThemeCombo();
-        super.loadState();
-        super.observeChanges(themeCombo.getSelectionModel().selectedItemProperty());
     }
 
     private void initThemeCombo() {
@@ -67,18 +61,23 @@ public class SettingsController extends BaseController<SettingsViewState> {
     }
 
     @Override
-    protected String getStorageKey() {
-        return "app_settings";
+    protected String getViewKey() {
+        return VIEW_KEY;
     }
 
     @Override
-    protected Class<SettingsViewState> getStateType() {
+    protected Class<SettingsViewState> getStorageType() {
         return SettingsViewState.class;
     }
 
     @Override
-    protected void restoreUI(SettingsViewState state) {
-        if (state != null && state.getThemeId() != null) {
+    protected void initView() {
+        initThemeCombo();
+    }
+
+    @Override
+    protected void restoreValues(SettingsViewState state) {
+        if (state.getThemeId() != null) {
             String savedId = state.getThemeId();
             for (ThemeItem item : themeCombo.getItems()) {
                 if (Objects.equals(item.themeId(), savedId)) {
@@ -90,7 +89,19 @@ public class SettingsController extends BaseController<SettingsViewState> {
     }
 
     @Override
-    protected SettingsViewState captureUI() {
+    protected void initDefaultValues() {
+        if (themeCombo.getSelectionModel().getSelectedItem() == null) {
+            themeCombo.getSelectionModel().selectFirst();
+        }
+    }
+
+    @Override
+    protected List<Observable> getObservables() {
+        return List.of(themeCombo.getSelectionModel().selectedItemProperty());
+    }
+
+    @Override
+    protected SettingsViewState captureValues() {
         SettingsViewState state = new SettingsViewState();
         ThemeItem selected = themeCombo.getSelectionModel().getSelectedItem();
         if (selected != null) {

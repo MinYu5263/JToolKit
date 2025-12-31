@@ -1,13 +1,15 @@
 package com.minyu.jtoolkit.module.sql2excel;
 
+import com.minyu.jtoolkit.core.model.ViewState;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class SqlToExcelViewState {
+public class SqlToExcelViewState implements ViewState {
 
     // 保存所有配置过的连接信息
     private List<DbConnectionProfile> profiles = new ArrayList<>();

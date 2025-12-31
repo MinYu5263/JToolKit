@@ -1,7 +1,7 @@
 package com.minyu.jtoolkit.module.radix;
 
 import com.minyu.jtoolkit.module.BaseController;
-import com.minyu.jtoolkit.system.service.ViewStateService;
+import com.minyu.jtoolkit.system.service.ViewDataService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
@@ -26,13 +26,13 @@ public class RadixController extends BaseController<RadixViewState> {
     private static final BigInteger MAX_LONG = BigInteger.valueOf(Long.MAX_VALUE);
     private static final BigInteger MIN_LONG = BigInteger.valueOf(Long.MIN_VALUE);
 
-    public RadixController(ViewStateService viewStateService) {
-        super(viewStateService);
+    public RadixController(ViewDataService viewDataService) {
+        super();
     }
 
     @FXML
-    public void initialize() {
-        super.loadState();
+    public void initView() {
+        
 
         hexField.textProperty().addListener((obs, old, val) -> handleInput(val, 16, hexField));
         decField.textProperty().addListener((obs, old, val) -> handleInput(val, 10, decField));
@@ -158,15 +158,17 @@ public class RadixController extends BaseController<RadixViewState> {
     // ================== BaseController 实现 ==================
 
     @Override
-    protected String getStorageKey() { return "tool.code.radix"; }
+    protected String getViewKey() {
+        return "tool.code.radix";
+    }
 
     @Override
-    protected Class<RadixViewState> getStateType() {
+    protected Class<RadixViewState> getStorageType() {
         return RadixViewState.class;
     }
 
     @Override
-    protected void restoreUI(RadixViewState state) {
+    protected void restoreValues(RadixViewState state) {
         if (state == null) return;
 
         formatToggle.setSelected(state.isFormatEnabled());
@@ -182,7 +184,7 @@ public class RadixController extends BaseController<RadixViewState> {
     }
 
     @Override
-    protected RadixViewState captureUI() {
+    protected RadixViewState captureValues() {
         RadixViewState state = new RadixViewState();
         String cleanDec = decField.getText().replaceAll("[,\\s]", "");
         state.setDecimalValue(cleanDec);

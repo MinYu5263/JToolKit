@@ -3,7 +3,7 @@ package com.minyu.jtoolkit.module.json;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONWriter;
 import com.minyu.jtoolkit.module.BaseController;
-import com.minyu.jtoolkit.system.service.ViewStateService;
+import com.minyu.jtoolkit.system.service.ViewDataService;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import lombok.extern.slf4j.Slf4j;
@@ -22,13 +22,13 @@ public class JsonController extends BaseController<JsonViewState> {
     @FXML
     private TextArea outputArea;
 
-    public JsonController(ViewStateService viewStateService) {
-        super(viewStateService);
+    public JsonController(ViewDataService viewDataService) {
+        super();
     }
 
     @FXML
-    public void initialize() {
-        super.loadState();
+    public void initView() {
+        
         super.observeChanges(inputArea.textProperty(), outputArea.textProperty());
     }
 
@@ -66,23 +66,23 @@ public class JsonController extends BaseController<JsonViewState> {
     }
 
     @Override
-    protected String getStorageKey() {
+    protected String getViewKey() {
         return "json_formatter";
     }
 
     @Override
-    protected Class<JsonViewState> getStateType() {
+    protected Class<JsonViewState> getStorageType() {
         return JsonViewState.class;
     }
 
     @Override
-    protected void restoreUI(JsonViewState state) {
+    protected void restoreValues(JsonViewState state) {
         inputArea.setText(state.getInputContent());
         outputArea.setText(state.getOutputContent());
     }
 
     @Override
-    protected JsonViewState captureUI() {
+    protected JsonViewState captureValues() {
         JsonViewState state = new JsonViewState();
         state.setInputContent(inputArea.getText());
         state.setOutputContent(outputArea.getText());

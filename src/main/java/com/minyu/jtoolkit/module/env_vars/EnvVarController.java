@@ -1,7 +1,8 @@
 package com.minyu.jtoolkit.module.env_vars;
 
 import com.minyu.jtoolkit.module.BaseController;
-import com.minyu.jtoolkit.system.service.ViewStateService;
+import com.minyu.jtoolkit.system.service.ViewDataService;
+import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -47,22 +48,14 @@ public class EnvVarController extends BaseController<EnvVarViewState> {
     private final ObservableList<Map.Entry<String, String>> systemEnvList = FXCollections.observableArrayList();
     private final ObservableList<GeneratorItem> generatorList = FXCollections.observableArrayList();
 
-    public EnvVarController(ViewStateService viewStateService) {
-        super(viewStateService);
+    public EnvVarController(ViewDataService viewDataService) {
+        super();
     }
 
-    @FXML
-    public void initialize() {
+
+    public void initView() {
         initSystemViewer();
         initGenerator();
-
-        // 1. 恢复之前保存的草稿
-        super.loadState();
-
-        // 2. 注册自动保存
-        // 监听 generatorList 的增删，以及 formatChoice 的选择
-        // 注意：TableView 单元格编辑的监听在 initGenerator 里单独处理
-        super.observeChanges(generatorList, formatChoice.valueProperty());
     }
 
     // ================== Tab 1: 系统变量查看器逻辑 ==================
@@ -125,7 +118,7 @@ public class EnvVarController extends BaseController<EnvVarViewState> {
         genKeyCol.setOnEditCommit(e -> {
             e.getRowValue().setKey(e.getNewValue());
             generatePreview();
-            super.saveState(); // 编辑单元格后，手动触发保存
+            super.saveValues(); // 编辑单元格后，手动触发保存
         });
 
         // 设置 Value 列可编辑
@@ -134,7 +127,7 @@ public class EnvVarController extends BaseController<EnvVarViewState> {
         genValueCol.setOnEditCommit(e -> {
             e.getRowValue().setValue(e.getNewValue());
             generatePreview();
-            super.saveState(); // 编辑单元格后，手动触发保存
+            super.saveValues(); // 编辑单元格后，手动触发保存
         });
     }
 
@@ -190,17 +183,17 @@ public class EnvVarController extends BaseController<EnvVarViewState> {
     }
 
     @Override
-    protected String getStorageKey() {
+    protected String getViewKey() {
         return "env_vars";
     }
 
     @Override
-    protected Class<EnvVarViewState> getStateType() {
+    protected Class<EnvVarViewState> getStorageType() {
         return EnvVarViewState.class;
     }
 
     @Override
-    protected void restoreUI(EnvVarViewState state) {
+    protected void restoreValues(EnvVarViewState state) {
         if (state == null) return;
 
         if (state.getLastSelectedFormat() != null) {
@@ -217,7 +210,12 @@ public class EnvVarController extends BaseController<EnvVarViewState> {
     }
 
     @Override
-    protected EnvVarViewState captureUI() {
+    protected List<Observable> getObservables() {
+        return List.of();
+    }
+
+    @Override
+    protected EnvVarViewState captureValues() {
         EnvVarViewState state = new EnvVarViewState();
         state.setLastSelectedFormat(formatChoice.getValue());
 

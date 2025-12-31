@@ -1,7 +1,7 @@
 package com.minyu.jtoolkit.module.password;
 
 import com.minyu.jtoolkit.module.BaseController;
-import com.minyu.jtoolkit.system.service.ViewStateService;
+import com.minyu.jtoolkit.system.service.ViewDataService;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -46,13 +46,13 @@ public class PasswordController extends BaseController<PasswordViewState> {
     // 强随机数生成器
     private final SecureRandom secureRandom = new SecureRandom();
 
-    public PasswordController(ViewStateService viewStateService) {
-        super(viewStateService);
+    public PasswordController(ViewDataService viewDataService) {
+        super();
     }
 
     @FXML
-    public void initialize() {
-        super.loadState();
+    public void initView() {
+        
 
         // 1. 长度滑块监听
         lengthLabel.setText(String.valueOf((int) lengthSlider.getValue()));
@@ -151,17 +151,17 @@ public class PasswordController extends BaseController<PasswordViewState> {
     // ================== BaseController 实现 ==================
 
     @Override
-    protected String getStorageKey() {
+    protected String getViewKey() {
         return "tool.password.generator";
     }
 
     @Override
-    protected Class<PasswordViewState> getStateType() {
+    protected Class<PasswordViewState> getStorageType() {
         return PasswordViewState.class;
     }
 
     @Override
-    protected void restoreUI(PasswordViewState state) {
+    protected void restoreValues(PasswordViewState state) {
         if (state == null) return;
 
         lengthSlider.setValue(state.getLength());
@@ -178,7 +178,7 @@ public class PasswordController extends BaseController<PasswordViewState> {
     }
 
     @Override
-    protected PasswordViewState captureUI() {
+    protected PasswordViewState captureValues() {
         PasswordViewState state = new PasswordViewState();
         state.setLength((int) lengthSlider.getValue());
         state.setUseUpper(chkUpper.isSelected());

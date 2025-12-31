@@ -6,7 +6,7 @@ import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
 import com.minyu.jtoolkit.module.BaseController;
-import com.minyu.jtoolkit.system.service.ViewStateService;
+import com.minyu.jtoolkit.system.service.ViewDataService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
@@ -40,14 +40,14 @@ public class CronController extends BaseController<CronViewState> {
     // Quartz Cron 解析器
     private final CronParser cronParser;
 
-    public CronController(ViewStateService viewStateService) {
-        super(viewStateService);
+    public CronController(ViewDataService viewDataService) {
+        super();
         // 初始化 Quartz 解析器
         this.cronParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
     }
 
     @FXML
-    public void initialize() {
+    public void initView() {
         // 1. 初始化 Spinner (0-59)
         initSpinner(secCycleStart, 0, 59, 0); initSpinner(secCycleStep, 1, 59, 1);
         initSpinner(secRangeStart, 0, 59, 0); initSpinner(secRangeEnd, 0, 59, 0);
@@ -59,7 +59,7 @@ public class CronController extends BaseController<CronViewState> {
         initSpinner(hourRangeStart, 0, 23, 0); initSpinner(hourRangeEnd, 0, 23, 0);
 
         // 2. 恢复状态
-        super.loadState();
+
 
         // 3. 注册监听器（任意控件变化 -> 重新生成表达式）
         registerListeners();
@@ -126,7 +126,7 @@ public class CronController extends BaseController<CronViewState> {
         cronExpressionField.setText(cron.trim());
 
         onParse(); // 触发预览
-        super.saveState(); // 保存状态
+        super.saveValues(); // 保存状态
     }
 
     private String buildPart(ToggleGroup group, RadioButton every, RadioButton cycle, RadioButton range,
@@ -184,17 +184,17 @@ public class CronController extends BaseController<CronViewState> {
     // === BaseController 实现 ===
 
     @Override
-    protected String getStorageKey() {
+    protected String getViewKey() {
         return "tool.cron.generator";
     }
 
     @Override
-    protected Class<CronViewState> getStateType() {
+    protected Class<CronViewState> getStorageType() {
         return CronViewState.class;
     }
 
     @Override
-    protected void restoreUI(CronViewState state) {
+    protected void restoreValues(CronViewState state) {
         if (state != null && state.getLastExpression() != null) {
             cronExpressionField.setText(state.getLastExpression());
             // 注意：这里没有做复杂的 String -> UI 逆向解析，
@@ -204,7 +204,7 @@ public class CronController extends BaseController<CronViewState> {
     }
 
     @Override
-    protected CronViewState captureUI() {
+    protected CronViewState captureValues() {
         return new CronViewState(cronExpressionField.getText());
     }
 }

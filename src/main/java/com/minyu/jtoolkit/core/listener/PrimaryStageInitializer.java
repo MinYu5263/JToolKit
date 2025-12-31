@@ -4,7 +4,7 @@ import com.minyu.jtoolkit.core.event.StageReadyEvent;
 import com.minyu.jtoolkit.core.service.ThemeManager;
 import com.minyu.jtoolkit.core.service.ViewLoader;
 import com.minyu.jtoolkit.module.settings.SettingsViewState;
-import com.minyu.jtoolkit.system.service.ViewStateService;
+import com.minyu.jtoolkit.system.service.ViewDataService;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -27,7 +27,7 @@ public class PrimaryStageInitializer implements ApplicationListener<StageReadyEv
 
     private final ViewLoader viewLoader;
     private final ThemeManager themeManager;
-    private final ViewStateService viewStateService;
+    private final ViewDataService viewDataService;
 
     @Value("${jtoolkit.title:JToolKit App}")
     private String appTitle;
@@ -55,7 +55,7 @@ public class PrimaryStageInitializer implements ApplicationListener<StageReadyEv
         stage.getIcons().add(appIcon);
 
         // 设置主题
-        SettingsViewState settingsViewState = viewStateService.loadState("app_settings", SettingsViewState.class);
+        SettingsViewState settingsViewState = viewDataService.loadState("app_settings", SettingsViewState.class);
         if (settingsViewState != null) {
             themeManager.applyTheme(settingsViewState.getThemeId());
         } else {

@@ -6,7 +6,7 @@ import cn.idev.excel.write.metadata.WriteSheet;
 import com.minyu.jtoolkit.module.BaseController;
 import com.minyu.jtoolkit.module.sql2excel.SqlToExcelViewState.DbConnectionProfile;
 import com.minyu.jtoolkit.module.sql2excel.SqlToExcelViewState.QueryTaskState;
-import com.minyu.jtoolkit.system.service.ViewStateService;
+import com.minyu.jtoolkit.system.service.ViewDataService;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -54,12 +54,12 @@ public class SqlToExcelController extends BaseController<SqlToExcelViewState> {
     // 当前活跃的数据库连接 (复用)
     private Connection activeConnection;
 
-    public SqlToExcelController(ViewStateService viewStateService) {
-        super(viewStateService);
+    public SqlToExcelController(ViewDataService viewDataService) {
+        super();
     }
 
     @FXML
-    public void initialize() {
+    public void initView() {
         // 1. 初始化下拉框
         profileCombo.setItems(profiles);
         profileCombo.getSelectionModel().selectedItemProperty().addListener((obs, old, newVal) -> {
@@ -89,18 +89,18 @@ public class SqlToExcelController extends BaseController<SqlToExcelViewState> {
             if (currentEditingTask != null) {
                 currentEditingTask.setSheetName(newVal);
                 taskListView.refresh();
-                saveState();
+                saveValues();
             }
         });
         sqlArea.textProperty().addListener((obs, old, newVal) -> {
             if (currentEditingTask != null) {
                 currentEditingTask.setSql(newVal);
-                saveState();
+                saveValues();
             }
         });
 
         // 3. 恢复状态
-        super.loadState();
+
     }
 
     // ================== 连接管理 (核心修复点) ==================
@@ -156,7 +156,7 @@ public class SqlToExcelController extends BaseController<SqlToExcelViewState> {
                 connStatusLabel.setStyle("-fx-text-fill: green;");
 
                 // 如果有上次选中的 DB，尝试恢复
-                // (此处逻辑略简单，实际可结合 ViewState 恢复)
+                // (此处逻辑略简单，实际可结合 ViewData 恢复)
             }
 
             @Override
@@ -422,14 +422,14 @@ public class SqlToExcelController extends BaseController<SqlToExcelViewState> {
 
             list.refresh();
             profileCombo.setItems(profiles); // 刷新主界面下拉
-            saveState(); // 持久化
+            saveValues(); // 持久化
         });
 
         btnDelete.setOnAction(e -> {
             DbConnectionProfile p = list.getSelectionModel().getSelectedItem();
             if (p != null) {
                 profiles.remove(p);
-                saveState();
+                saveValues();
             }
         });
 
@@ -444,22 +444,29 @@ public class SqlToExcelController extends BaseController<SqlToExcelViewState> {
     // ================== BaseController 任务管理 ==================
     @FXML public void onAddTask() {
         tasks.add(new QueryTask("Sheet" + (tasks.size() + 1), "SELECT * FROM "));
-        saveState();
+        saveValues();
     }
     @FXML public void onRemoveTask() {
         QueryTask t = taskListView.getSelectionModel().getSelectedItem();
-        if(t != null) { tasks.remove(t); saveState(); }
+        if (t != null) {
+            tasks.remove(t);
+            saveValues();
+        }
     }
 
     // ================== 持久化 ==================
-    @Override protected String getStorageKey() { return "tool.data.sql2excel_v2"; }
+    @Override
+    protected String getViewKey() {
+        return "tool.data.sql2excel_v2";
+    }
 
     @Override
-    protected Class<SqlToExcelViewState> getStateType() {
+    protected Class<SqlToExcelViewState> getStorageType() {
         return SqlToExcelViewState.class;
     }
 
-    @Override protected void restoreUI(SqlToExcelViewState state) {
+    @Override
+    protected void restoreValues(SqlToExcelViewState state) {
         if(state == null) return;
         if(state.getProfiles() != null) profiles.setAll(state.getProfiles());
         if(state.getTasks() != null) {
@@ -467,7 +474,8 @@ public class SqlToExcelController extends BaseController<SqlToExcelViewState> {
         }
     }
 
-    @Override protected SqlToExcelViewState captureUI() {
+    @Override
+    protected SqlToExcelViewState captureValues() {
         SqlToExcelViewState state = new SqlToExcelViewState();
         state.setProfiles(new ArrayList<>(profiles));
         List<QueryTaskState> ts = tasks.stream().map(t -> new QueryTaskState(t.getSheetName(), t.getSql())).collect(Collectors.toList());

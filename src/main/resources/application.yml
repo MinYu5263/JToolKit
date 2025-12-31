@@ -2,7 +2,7 @@ jtoolkit:
   title: "JToolKit"
   width: 1280
   height: 768
-  theme: Primer Light
+  theme: SYSTEM
 
 spring:
   application:

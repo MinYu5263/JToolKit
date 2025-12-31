@@ -1,8 +1,7 @@
 package com.minyu.jtoolkit.module.regex;
 
 import com.minyu.jtoolkit.module.BaseController;
-import com.minyu.jtoolkit.system.service.ViewStateService;
-import javafx.application.Platform;
+import com.minyu.jtoolkit.system.service.ViewDataService;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -42,17 +41,16 @@ public class RegexController extends BaseController<RegexViewState> {
     private final ObservableList<MatchItem> matchList = FXCollections.observableArrayList();
     private final Map<String, String> regexTemplates = new LinkedHashMap<>();
 
-    public RegexController(ViewStateService viewStateService) {
-        super(viewStateService);
+    public RegexController(ViewDataService viewDataService) {
+        super();
     }
 
-    @FXML
-    public void initialize() {
+    public void initView() {
         initTemplates();
         initTable();
 
         // 1. 恢复状态
-        super.loadState();
+
 
         // 2. 绑定监听 (实时计算 + 自动保存)
         registerListeners();
@@ -178,17 +176,17 @@ public class RegexController extends BaseController<RegexViewState> {
     // === BaseController 实现 ===
 
     @Override
-    protected String getStorageKey() {
+    protected String getViewKey() {
         return "tool.regex.tester";
     }
 
     @Override
-    protected Class<RegexViewState> getStateType() {
+    protected Class<RegexViewState> getStorageType() {
         return RegexViewState.class;
     }
 
     @Override
-    protected void restoreUI(RegexViewState state) {
+    protected void restoreValues(RegexViewState state) {
         if (state == null) return;
 
         regexField.setText(state.getRegexPattern());
@@ -202,7 +200,7 @@ public class RegexController extends BaseController<RegexViewState> {
     }
 
     @Override
-    protected RegexViewState captureUI() {
+    protected RegexViewState captureValues() {
         return new RegexViewState(
                 regexField.getText(),
                 sourceTextArea.getText(),

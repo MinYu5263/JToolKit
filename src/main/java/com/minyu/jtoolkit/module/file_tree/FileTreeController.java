@@ -1,7 +1,7 @@
 package com.minyu.jtoolkit.module.file_tree;
 
 import com.minyu.jtoolkit.module.BaseController;
-import com.minyu.jtoolkit.system.service.ViewStateService;
+import com.minyu.jtoolkit.system.service.ViewDataService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -39,12 +39,12 @@ public class FileTreeController extends BaseController<FileTreeViewState> {
     // 数据源
     private final ObservableList<FileTreeViewState.HistoryItem> historyData = FXCollections.observableArrayList();
 
-    public FileTreeController(ViewStateService viewStateService) {
-        super(viewStateService);
+    public FileTreeController(ViewDataService viewDataService) {
+        super();
     }
 
     @FXML
-    public void initialize() {
+    public void initView() {
         // 1. 初始化控件
         depthSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 2));
         depthSpinner.disableProperty().bind(chkNoLimit.selectedProperty());
@@ -57,7 +57,7 @@ public class FileTreeController extends BaseController<FileTreeViewState> {
         });
 
         // 2. 恢复状态
-        super.loadState();
+
 
         // 3. 注册自动保存
         super.observeChanges(historyData, ignoreField.textProperty(), chkNoLimit.selectedProperty());
@@ -117,7 +117,7 @@ public class FileTreeController extends BaseController<FileTreeViewState> {
             protected void succeeded() {
                 resultArea.setText(getValue());
                 statusLabel.setText("生成完成");
-                saveState(); // 成功后保存一次历史记录
+                saveValues(); // 成功后保存一次历史记录
             }
 
             @Override
@@ -215,7 +215,7 @@ public class FileTreeController extends BaseController<FileTreeViewState> {
         dialog.showAndWait().ifPresent(name -> {
             item.setName(name);
             historyListView.refresh(); // 刷新 UI 显示
-            saveState();
+            saveValues();
         });
     }
 
@@ -253,17 +253,17 @@ public class FileTreeController extends BaseController<FileTreeViewState> {
     // ================== BaseController 实现 ==================
 
     @Override
-    protected String getStorageKey() {
+    protected String getViewKey() {
         return "tool.file_tree.generator";
     }
 
     @Override
-    protected Class<FileTreeViewState> getStateType() {
+    protected Class<FileTreeViewState> getStorageType() {
         return FileTreeViewState.class;
     }
 
     @Override
-    protected void restoreUI(FileTreeViewState state) {
+    protected void restoreValues(FileTreeViewState state) {
         if (state == null) return;
 
         if (state.getHistory() != null) {
@@ -292,7 +292,7 @@ public class FileTreeController extends BaseController<FileTreeViewState> {
     }
 
     @Override
-    protected FileTreeViewState captureUI() {
+    protected FileTreeViewState captureValues() {
         FileTreeViewState state = new FileTreeViewState();
         state.setHistory(new ArrayList<>(historyData));
         state.setLastPath(pathField.getText());

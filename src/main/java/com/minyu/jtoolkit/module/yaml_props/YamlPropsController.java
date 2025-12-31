@@ -5,7 +5,7 @@ import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.minyu.jtoolkit.module.BaseController;
-import com.minyu.jtoolkit.system.service.ViewStateService;
+import com.minyu.jtoolkit.system.service.ViewDataService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
@@ -42,8 +42,8 @@ public class YamlPropsController extends BaseController<YamlPropsViewState> {
     private final JavaPropsMapper propsMapper;
     private final YAMLMapper yamlMapper;
 
-    public YamlPropsController(ViewStateService viewStateService) {
-        super(viewStateService);
+    public YamlPropsController(ViewDataService viewDataService) {
+        super();
 
         // 初始化 Mapper
         this.propsMapper = new JavaPropsMapper();
@@ -55,8 +55,8 @@ public class YamlPropsController extends BaseController<YamlPropsViewState> {
     }
 
     @FXML
-    public void initialize() {
-        super.loadState();
+    public void initView() {
+        
 
         // 监听输入，实时转换
         sourceArea.textProperty().addListener((obs, old, newVal) -> tryConvert());
@@ -180,17 +180,17 @@ public class YamlPropsController extends BaseController<YamlPropsViewState> {
     // ================== BaseController 实现 ==================
 
     @Override
-    protected String getStorageKey() {
+    protected String getViewKey() {
         return "tool.code.yaml_props";
     }
 
     @Override
-    protected Class<YamlPropsViewState> getStateType() {
+    protected Class<YamlPropsViewState> getStorageType() {
         return YamlPropsViewState.class;
     }
 
     @Override
-    protected void restoreUI(YamlPropsViewState state) {
+    protected void restoreValues(YamlPropsViewState state) {
         if (state == null) return;
 
         // 恢复方向
@@ -204,7 +204,7 @@ public class YamlPropsController extends BaseController<YamlPropsViewState> {
     }
 
     @Override
-    protected YamlPropsViewState captureUI() {
+    protected YamlPropsViewState captureValues() {
         YamlPropsViewState state = new YamlPropsViewState();
         state.setSourceText(sourceArea.getText());
         state.setTargetText(targetArea.getText());

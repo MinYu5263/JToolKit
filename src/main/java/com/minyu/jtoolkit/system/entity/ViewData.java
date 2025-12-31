@@ -7,13 +7,13 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 /**
- * ViewState
+ * ViewData
  */
 @Data
-@TableName("view_state")
-public class ViewState {
+@TableName("view_data")
+public class ViewData {
     @TableId
     private String viewKey;
-    private String viewData;
+    private String viewState;
     private LocalDateTime updated_at;
 }
