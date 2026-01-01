@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import atlantafx.base.controls.Tile?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Spinner?>
+<?import com.minyu.jtoolkit.core.component.ConfigCard?>
+<?import com.minyu.jtoolkit.core.component.ConfigGroup?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.VBox?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21"
       fx:controller="com.minyu.jtoolkit.module.settings.SettingsController"
@@ -12,15 +11,20 @@
     <Label text="设置" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
 
     <VBox spacing="10.0">
-        <Tile title="主题" description="选择要使用的应用主题" styleClass="setting-item">
+        <ConfigCard title="主题" description="选择要使用的应用主题">
             <action>
                 <ComboBox fx:id="themeCombo" prefWidth="200"/>
             </action>
-        </Tile>
-        <Tile title="字体大小" description="调整全局字体大小" styleClass="setting-item">
+        </ConfigCard>
+        <ConfigCard title="字体大小" description="调整全局字体大小">
             <action>
                 <Spinner fx:id="fontSizeSpinner" prefWidth="120"/>
             </action>
-        </Tile>
+        </ConfigCard>
+        <ConfigCard title="搜索快捷键" description="点击输入框并按下组合键（支持 Ctrl, Alt, Shift）">
+            <action>
+                <TextField fx:id="shortcutField" prefWidth="200" editable="false" promptText="点击录制快捷键..."/>
+            </action>
+        </ConfigCard>
     </VBox>
 </VBox>

@@ -10,4 +10,5 @@ import lombok.Data;
 public class SettingsViewState implements ViewState {
     private String themeId;
     private Integer fontSize;
+    private String searchShortcut;
 }

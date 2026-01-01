@@ -186,27 +186,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>com.github.wvengen</groupId>
-                <artifactId>proguard-maven-plugin</artifactId>
-                <version>2.6.0</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>proguard</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <obfuscate>true</obfuscate>
-                    <options>
-                        <option>-keep public class com.minyu.jtoolkit.JToolkitApplication { *; }</option>
-                        <option>-keepclassmembers class * { @javafx.fxml.FXML *; }</option>
-                        <option>-dontwarn</option>
-                    </options>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 </project>

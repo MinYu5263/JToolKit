@@ -1,9 +1,11 @@
 package com.minyu.jtoolkit.module.main;
 
 import atlantafx.base.controls.ModalPane;
+import com.minyu.jtoolkit.core.service.HotKeyManager;
 import com.minyu.jtoolkit.core.service.ViewLoader;
 import com.minyu.jtoolkit.module.main.layout.MainModel;
 import com.minyu.jtoolkit.module.main.layout.Sidebar;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
@@ -33,6 +35,7 @@ public class MainController {
 
     private final MainModel model = new MainModel();
     private final Map<String, Parent> viewCache = new HashMap<>();
+    private final HotKeyManager hotKeyManager;
 
     @FXML
     public void initialize() {
@@ -51,6 +54,15 @@ public class MainController {
                 loadView(newVal);
             }
         });
+
+        // 将搜索框的文本属性与搜索快捷见的文本属性进行绑定
+        model.searchShortcutTextProperty().bind(
+                Bindings.createStringBinding(
+                        () -> hotKeyManager.getDisplayText("search"),
+                        hotKeyManager.getShortcuts()
+                )
+        );
+        initGlobalShortcuts(sidebar);
     }
 
     private void loadView(String fxmlPath) {
@@ -69,5 +81,19 @@ public class MainController {
             viewCache.remove(fxmlPath);
             contentArea.getChildren().add(new Label("无法加载页面: " + fxmlPath));
         }
+    }
+
+    private void initGlobalShortcuts(Sidebar sidebar) {
+        // 监听 Scene 的按键事件
+        mainLayout.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                newScene.setOnKeyPressed(e -> {
+                    if (hotKeyManager.isMatch("search", e)) {
+                        e.consume();
+                        sidebar.openSearchDialog();
+                    }
+                });
+            }
+        });
     }
 }

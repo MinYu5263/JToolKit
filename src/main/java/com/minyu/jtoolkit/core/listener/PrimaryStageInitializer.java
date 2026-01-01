@@ -1,17 +1,14 @@
 package com.minyu.jtoolkit.core.listener;
 
 import com.minyu.jtoolkit.core.event.StageReadyEvent;
-import com.minyu.jtoolkit.core.service.ThemeManager;
+import com.minyu.jtoolkit.core.service.AppConfigManager;
 import com.minyu.jtoolkit.core.service.ViewLoader;
-import com.minyu.jtoolkit.module.settings.SettingsViewState;
-import com.minyu.jtoolkit.system.service.ViewDataService;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
@@ -27,10 +24,9 @@ import java.util.Objects;
 public class PrimaryStageInitializer implements ApplicationListener<StageReadyEvent> {
 
     private final ViewLoader viewLoader;
-    private final ThemeManager themeManager;
-    private final ViewDataService viewDataService;
+    private final AppConfigManager appConfigManager; // 注入 Manager
 
-    @Value("${jtoolkit.title:JToolKit App}")
+    @Value("${jtoolkit.title:JToolKit}")
     private String appTitle;
 
     @Value("${jtoolkit.width:1280}")
@@ -39,35 +35,20 @@ public class PrimaryStageInitializer implements ApplicationListener<StageReadyEv
     @Value("${jtoolkit.height:768}")
     private int height;
 
-    @Value("${jtoolkit.theme:SYSTEM}")
-    private String defaultTheme;
-
-    @Value("${jtoolkit.font-size:14}")
-    private Integer defaultFontSize;
-
     @Override
     public void onApplicationEvent(StageReadyEvent event) {
         Stage stage = event.getStage();
 
         Parent root = viewLoader.load("fxml/main/MainView.fxml");
         Scene scene = new Scene(root, width, height);
+
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles/index.css")).toExternalForm());
+
         stage.setScene(scene);
-
         stage.setTitle(appTitle);
-        Image appIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/logo_32.png")));
-        stage.getIcons().add(appIcon);
-
-        // 设置主题
-        SettingsViewState settingsViewState = viewDataService.loadState("app_settings", SettingsViewState.class);
-        if (settingsViewState != null) {
-            themeManager.applyTheme(StringUtils.isNotBlank(settingsViewState.getThemeId()) ? settingsViewState.getThemeId() : defaultTheme);
-            themeManager.applyFontSize(settingsViewState.getFontSize() != null ? settingsViewState.getFontSize() : defaultFontSize);
-        } else {
-            themeManager.applyTheme(defaultTheme);
-            themeManager.applyFontSize(defaultFontSize);
-        }
-
+        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/logo_32.png"))));
+        // 初始化系统页面
+        appConfigManager.initSystemUI(stage);
         stage.show();
     }
 }

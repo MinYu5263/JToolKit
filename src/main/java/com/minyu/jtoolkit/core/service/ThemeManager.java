@@ -4,8 +4,6 @@ import atlantafx.base.theme.*;
 import com.jthemedetecor.OsThemeDetector;
 import jakarta.annotation.PostConstruct;
 import javafx.application.Application;
-import javafx.scene.Parent;
-import javafx.stage.Window;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
 
@@ -19,20 +17,20 @@ import java.util.Map;
 @Service
 public class ThemeManager {
     public static final String ID_SYSTEM = "SYSTEM";
-
     public static final int DEFAULT_FONT_SIZE = 14;
 
     private final Map<String, Theme> availableThemes = new LinkedHashMap<>();
 
     @PostConstruct
     public void init() {
-        availableThemes.put("Primer Light", new PrimerLight()); // 浅色
-        availableThemes.put("Primer Dark", new PrimerDark()); // 深色
-        availableThemes.put("Nord Light", new NordLight()); // 北欧浅色
-        availableThemes.put("Nord Dark", new NordDark()); // 北欧深色
-        availableThemes.put("Cupertino Light", new CupertinoLight());// 苹果浅色
-        availableThemes.put("Cupertino Dark", new CupertinoDark()); // 苹果深色
-        availableThemes.put("Dracula", new Dracula()); // 吸血鬼
+        // 初始化支持的主题列表
+        availableThemes.put("Primer Light", new PrimerLight());
+        availableThemes.put("Primer Dark", new PrimerDark());
+        availableThemes.put("Nord Light", new NordLight());
+        availableThemes.put("Nord Dark", new NordDark());
+        availableThemes.put("Cupertino Light", new CupertinoLight());
+        availableThemes.put("Cupertino Dark", new CupertinoDark());
+        availableThemes.put("Dracula", new Dracula());
     }
 
     public void applyTheme(String themeName) {
@@ -50,26 +48,5 @@ public class ThemeManager {
         boolean isSystemDark = OsThemeDetector.getDetector().isDark();
         Theme theme = isSystemDark ? new PrimerDark() : new PrimerLight();
         Application.setUserAgentStylesheet(theme.getUserAgentStylesheet());
-    }
-
-    public void applyTheme(Theme theme) {
-        if (theme != null) {
-            Application.setUserAgentStylesheet(theme.getUserAgentStylesheet());
-        }
-    }
-
-    /**
-     * 设置全局字体大小
-     * 原理：直接修改当前所有窗口 Root 节点的内联样式
-     */
-    public void applyFontSize(int size) {
-        int validSize = Math.max(8, Math.min(size, 36));
-
-        for (Window window : Window.getWindows()) {
-            if (window.getScene() != null && window.getScene().getRoot() != null) {
-                Parent root = window.getScene().getRoot();
-                root.setStyle("-fx-font-size: " + validSize + "px;");
-            }
-        }
     }
 }

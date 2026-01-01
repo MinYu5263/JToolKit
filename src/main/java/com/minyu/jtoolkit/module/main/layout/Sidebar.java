@@ -85,7 +85,7 @@ public final class Sidebar extends VBox {
         });
     }
 
-    private void openSearchDialog() {
+    public void openSearchDialog() {
         if (searchDialog == null) {
             searchDialog = new SearchDialog(model);
             // 设置关闭时清空内容，可选
@@ -174,7 +174,8 @@ public final class Sidebar extends VBox {
             var searchIcon = new FontIcon(Material2MZ.SEARCH);
             var titleLbl = new Label("搜索", searchIcon);
 
-            var hintLbl = new Label("Ctrl + Shift + F");
+            var hintLbl = new Label();
+            hintLbl.textProperty().bind(model.searchShortcutTextProperty());
             hintLbl.getStyleClass().addAll(Styles.TEXT_MUTED, Styles.TEXT_SMALL);
 
             var searchBox = new HBox(titleLbl, new Spacer(), hintLbl);

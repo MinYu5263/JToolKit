@@ -1,0 +1,39 @@
+/* =============================================================================
+   ConfigGroup (折叠组)
+   ============================================================================= */
+.config-group {
+    -fx-background-color: -color-bg-default;
+    -fx-border-color: -color-border-muted;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+/* 头部样式 */
+.config-group > .tile {
+    -fx-padding: 8px 12px;
+    -fx-background-radius: 4px;
+}
+
+/* 当展开时，头部底部的圆角要去掉 */
+.config-group > .tile.expanded {
+    -fx-background-radius: 4px 4px 0 0;
+    -fx-border-color: -color-border-muted;
+    -fx-border-width: 0 0 1px 0; /* 加一条底部分割线 */
+}
+
+/* 内容容器 */
+.config-group > .content-container {
+    -fx-padding: 0;
+    -fx-background-radius: 0 0 4px 4px;
+}
+
+/* =============================================================================
+   嵌套逻辑：当 ConfigCard 在 ConfigGroup 内部时
+   ============================================================================= */
+.config-group .content-container > .config-card {
+    -fx-border-width: 0 0 1px 0; /* 只留底部分割线 */
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-background-color: transparent; /* 背景透明，复用 Group 的背景 */
+}

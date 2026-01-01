@@ -1,6 +1,8 @@
 
 @import "modules/sidebar.css";
-@import "modules/main.css";
+
+@import "components/config-card.css";
+@import "components/config-group.css";
 
 .root {
     -fx-font-family: "Inter", "System", sans-serif;

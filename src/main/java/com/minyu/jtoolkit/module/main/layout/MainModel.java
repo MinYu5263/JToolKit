@@ -1,9 +1,6 @@
 package com.minyu.jtoolkit.module.main.layout;
 
-import javafx.beans.property.ReadOnlyListProperty;
-import javafx.beans.property.ReadOnlyListWrapper;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TreeItem;
@@ -26,6 +23,8 @@ public class MainModel {
 
     private final List<SearchResult> searchIndex = new ArrayList<>();
 
+    private final SimpleStringProperty searchShortcutText = new SimpleStringProperty("");
+
     public ReadOnlyObjectProperty<String> selectedPageProperty() {
         return selectedPage.getReadOnlyProperty();
     }
@@ -36,6 +35,10 @@ public class MainModel {
 
     public ReadOnlyListProperty<Nav> footerListProperty() {
         return footerList.getReadOnlyProperty();
+    }
+
+    public SimpleStringProperty searchShortcutTextProperty() {
+        return searchShortcutText;
     }
 
     /**
