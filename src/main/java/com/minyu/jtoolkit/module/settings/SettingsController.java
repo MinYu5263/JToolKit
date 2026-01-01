@@ -7,6 +7,8 @@ import com.minyu.jtoolkit.system.service.StorageService;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -15,7 +17,12 @@ import javafx.util.StringConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -187,6 +194,31 @@ public class SettingsController implements Initializable {
             // 清空所有
             storageService.clearAll();
             showInfoDialog("重置完成", "所有数据已清空，请重启应用。");
+        }
+    }
+
+    /**
+     * 打开数据目录
+     */
+    @FXML
+    private void onOpenDataDir() {
+        try {
+            Path dir = storageService.getBaseDirectory();
+
+            if (!Files.exists(dir)) {
+                Files.createDirectories(dir);
+            }
+
+            File file = dir.toFile();
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
+                Desktop.getDesktop().open(file);
+            } else {
+                showInfoDialog("无法打开", "当前系统不支持自动打开文件夹，路径为：\n" + file.getAbsolutePath());
+            }
+
+        } catch (IOException e) {
+            log.error("Failed to open data directory", e);
+            showInfoDialog("打开失败", "无法打开文件夹：" + e.getMessage());
         }
     }
 

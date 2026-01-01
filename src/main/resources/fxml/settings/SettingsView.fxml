@@ -28,6 +28,21 @@
                 <TextField fx:id="shortcutField" prefWidth="200" editable="false" promptText="点击录制快捷键..."/>
             </action>
         </ConfigCard>
+        <ConfigCard title="应用数据">
+            <action>
+                <Button text="打开目录" onAction="#onOpenDataDir">
+                    <graphic>
+                    </graphic>
+                    <styleClass>
+                        <String fx:value="button-outlined"/>
+                        <String fx:value="accent"/>
+                    </styleClass>
+                    <tooltip>
+                        <Tooltip text="定位到 app_data.json 所在文件夹"/>
+                    </tooltip>
+                </Button>
+            </action>
+        </ConfigCard>
         <ConfigCard title="清空数据" description="">
             <action>
                 <HBox spacing="10">

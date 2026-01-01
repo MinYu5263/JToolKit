@@ -92,6 +92,11 @@ public class StorageServiceImpl implements StorageService {
         scheduleWrite();
     }
 
+    @Override
+    public Path getBaseDirectory() {
+        return storagePath.getParent();
+    }
+
     /**
      * 防抖调度逻辑
      */

@@ -2,6 +2,8 @@ package com.minyu.jtoolkit.system.service;
 
 import com.minyu.jtoolkit.core.model.PersistentState;
 
+import java.nio.file.Path;
+
 /**
  * StorageService
  */
@@ -30,4 +32,9 @@ public interface StorageService {
      * @param retainedKeys 不需要被清除的 key
      */
     void clearExclude(String... retainedKeys);
+
+    /**
+     * 获取数据存储的根目录
+     */
+    Path getBaseDirectory();
 }
