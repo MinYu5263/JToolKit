@@ -6,6 +6,7 @@
 <?import javafx.scene.layout.VBox?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21"
       fx:controller="com.minyu.jtoolkit.module.settings.SettingsController"
+      fx:id="rootBox"
       spacing="10">
 
     <Label text="设置" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>

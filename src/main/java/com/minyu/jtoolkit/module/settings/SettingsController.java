@@ -12,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,8 @@ import java.util.ResourceBundle;
 @Slf4j
 @Component
 public class SettingsController implements Initializable {
+    @FXML
+    private VBox rootBox;
     @FXML
     private ComboBox<ThemeItem> themeCombo;
     @FXML
@@ -144,6 +147,7 @@ public class SettingsController implements Initializable {
                 currentKeyCombination = null;
                 // 更新配置：移除快捷键
                 appConfigManager.updateShortcut("search", null);
+                rootBox.requestFocus();
                 return;
             }
 
@@ -160,6 +164,7 @@ public class SettingsController implements Initializable {
             shortcutField.setText(combination.getDisplayText());
 
             appConfigManager.updateShortcut("search", combination.getName());
+            rootBox.requestFocus();
         });
     }
 }
