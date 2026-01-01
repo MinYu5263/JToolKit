@@ -19,4 +19,15 @@ public interface StorageService {
      * @param clazz 目标类型，必须实现 PersistentState
      */
     <T extends PersistentState> T load(String key, Class<T> clazz);
+
+    /**
+     * 清空所有数据
+     */
+    void clearAll();
+
+    /**
+     * 清空数据，但保留指定的 Key
+     * @param retainedKeys 不需要被清除的 key
+     */
+    void clearExclude(String... retainedKeys);
 }

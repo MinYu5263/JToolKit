@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 
@@ -71,6 +73,23 @@ public class StorageServiceImpl implements StorageService {
             return null;
         }
         return JSON.to(clazz, obj);
+    }
+
+    @Override
+    public void clearAll() {
+        dataCache.clear();
+        log.warn("All application data has been cleared.");
+        scheduleWrite();
+    }
+
+    @Override
+    public void clearExclude(String... retainedKeys) {
+        List<String> keepList = Arrays.asList(retainedKeys);
+
+        dataCache.keySet().removeIf(key -> !keepList.contains(key));
+
+        log.info("Application data cleared (excluding: {}).", keepList);
+        scheduleWrite();
     }
 
     /**

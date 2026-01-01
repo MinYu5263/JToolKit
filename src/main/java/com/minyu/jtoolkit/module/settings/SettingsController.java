@@ -3,12 +3,10 @@ package com.minyu.jtoolkit.module.settings;
 import com.minyu.jtoolkit.core.service.AppConfig;
 import com.minyu.jtoolkit.core.service.AppConfigManager;
 import com.minyu.jtoolkit.core.service.ThemeManager;
+import com.minyu.jtoolkit.system.service.StorageService;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -19,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import java.net.URL;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 @Slf4j
@@ -32,16 +31,22 @@ public class SettingsController implements Initializable {
     private Spinner<Integer> fontSizeSpinner;
     @FXML
     private TextField shortcutField;
+    @FXML
+    private Button btnClearPageData;
+    @FXML
+    private Button btnClearAllData;
 
     private KeyCombination currentKeyCombination;
 
     private final AppConfigManager appConfigManager;
+    private final StorageService storageService;
 
     private record ThemeItem(String displayName, String themeId) {
     }
 
-    public SettingsController(AppConfigManager appConfigManager) {
+    public SettingsController(AppConfigManager appConfigManager, StorageService storageService) {
         this.appConfigManager = appConfigManager;
+        this.storageService = storageService;
     }
 
     @Override
@@ -166,5 +171,46 @@ public class SettingsController implements Initializable {
             appConfigManager.updateShortcut("search", combination.getName());
             rootBox.requestFocus();
         });
+    }
+
+    @FXML
+    private void onClearPageData() {
+        if (showConfirmDialog("确定要清除业务数据吗？", "这将删除所有工具产生的记录（如JSON工具的历史、最近打开的文件等），但会保留主题、字体和快捷键设置。")) {
+            storageService.clearExclude("app_config");
+            showInfoDialog("清理完成", "业务数据已重置。");
+        }
+    }
+
+    @FXML
+    private void onClearAllData() {
+        if (showConfirmDialog("警告：确定要清空所有数据吗？", "此操作不可恢复！\n应用将重置为初始状态（包括主题和设置），建议重启应用以避免显示异常。")) {
+            // 清空所有
+            storageService.clearAll();
+            showInfoDialog("重置完成", "所有数据已清空，请重启应用。");
+        }
+    }
+
+    // 通用确认弹窗
+    private boolean showConfirmDialog(String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("确认操作");
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+
+        // 适配当前窗口 (如果有 owner 可以设置 initOwner)
+        alert.initOwner(rootBox.getScene().getWindow());
+
+        Optional<ButtonType> result = alert.showAndWait();
+        return result.isPresent() && result.get() == ButtonType.OK;
+    }
+
+    // 通用提示弹窗
+    private void showInfoDialog(String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("提示");
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.initOwner(rootBox.getScene().getWindow());
+        alert.show();
     }
 }

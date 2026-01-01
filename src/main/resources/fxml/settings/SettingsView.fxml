@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.minyu.jtoolkit.core.component.ConfigCard?>
-<?import com.minyu.jtoolkit.core.component.ConfigGroup?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import java.lang.String?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21"
       fx:controller="com.minyu.jtoolkit.module.settings.SettingsController"
       fx:id="rootBox"
@@ -25,6 +26,27 @@
         <ConfigCard title="搜索快捷键" description="点击输入框并按下组合键（支持 Ctrl, Alt, Shift）">
             <action>
                 <TextField fx:id="shortcutField" prefWidth="200" editable="false" promptText="点击录制快捷键..."/>
+            </action>
+        </ConfigCard>
+        <ConfigCard title="清空数据" description="">
+            <action>
+                <HBox spacing="10">
+                    <Button text="仅清除页面数据" onAction="#onClearPageData">
+                        <styleClass>
+                            <String fx:value="button-outlined"/>
+                            <String fx:value="danger"/>
+                        </styleClass>
+                        <tooltip>
+                            <Tooltip text="保留主题和快捷键设置，清除其他缓存"/>
+                        </tooltip>
+                    </Button>
+
+                    <Button text="清空所有数据" onAction="#onClearAllData">
+                        <styleClass>
+                            <String fx:value="danger"/>
+                        </styleClass>
+                    </Button>
+                </HBox>
             </action>
         </ConfigCard>
     </VBox>
