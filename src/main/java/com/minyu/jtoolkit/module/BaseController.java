@@ -14,10 +14,9 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 /**
- * 视图控制器基类
- * <p>规范了 Controller 的生命周期：初始化视图 -> 加载数据(默认/历史) -> 注册监听</p>
+ * 视图控制器基类，规范生命周期：初始化视图 -> 加载数据 -> 注册监听
  *
- * @param <T> 视图状态实体类 (ViewData)
+ * @param <T> 视图状态实体类
  */
 public abstract class BaseController<T extends PersistentState> implements Initializable {
     // 自动保存延迟时间（毫秒）
@@ -45,10 +44,10 @@ public abstract class BaseController<T extends PersistentState> implements Initi
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // 1. 初始化视图组件（设置 CellFactory, Converter, 初始显隐状态等）
+        // 1. 初始化视图组件（设置CellFactory、Converter等）
         initView();
 
-        // 2. 加载数据（根据是否有存档，分发到 restoreValues 或 initDefaultValues）
+        // 2. 加载数据（有存档则恢复，否则初始化默认值）
         loadStateOrDefaults();
 
         // 3. 注册自动保存监听
@@ -56,41 +55,36 @@ public abstract class BaseController<T extends PersistentState> implements Initi
     }
 
     /**
-     * 【步骤1】初始化视图属性
-     * <p>子类实现：处理与数据无关的 UI 设置，如 TableView 的列绑定、ComboBox 的转换器等</p>
+     * 初始化视图属性（子类实现：处理与数据无关的UI设置）
      */
     protected void initView() {
 
     }
 
     /**
-     * 【步骤2-A】恢复历史值
-     * <p>子类实现：将从数据库读取的 state 设置到 UI 组件中</p>
+     * 恢复历史值（子类实现：将读取的state设置到UI组件）
      *
      * @param state 历史保存的状态对象
      */
     protected abstract void restoreValues(T state);
 
     /**
-     * 【步骤2-B】初始化默认值
-     * <p>钩子方法：当没有历史存档时调用。子类按需重写（例如设置下拉框默认选中第一项）</p>
+     * 初始化默认值（无历史存档时调用，子类按需重写）
      */
     protected void initDefaultValues() {
     }
 
     /**
-     * 【步骤3】获取需要自动保存的属性列表
-     * <p>子类实现：返回需要监听的属性列表。如果不需要自动保存，返回 null 或空列表</p>
+     * 获取需自动保存的属性列表（子类实现：返回需监听的属性列表，无需自动保存可返回空）
      *
-     * @return 观察对象列表，如 List.of(textField.textProperty())
+     * @return 观察对象列表，如List.of(textField.textProperty())
      */
     protected List<Observable> getObservables() {
         return List.of();
     }
 
     /**
-     * 【核心功能】从 UI 提取值
-     * <p>子类实现：将当前 UI 组件的值封装为 State 对象</p>
+     * 从UI提取值（子类实现：封装当前UI值为State对象）
      *
      * @return 状态对象
      */
@@ -106,12 +100,12 @@ public abstract class BaseController<T extends PersistentState> implements Initi
     }
 
     /**
-     * 获取视图状态在数据库中的唯一标识
+     * 获取视图状态在存储中的唯一标识
      */
     protected abstract String getViewKey();
 
     /**
-     * 获取状态类的Class对象，用于反序列化
+     * 获取状态类Class（用于反序列化）
      */
     protected abstract Class<T> getStorageType();
 
@@ -129,7 +123,7 @@ public abstract class BaseController<T extends PersistentState> implements Initi
     }
 
     /**
-     * 内部流程：注册自动保存
+     * 注册自动保存
      */
     private void registerAutoSave() {
         List<Observable> observables = getObservables();
