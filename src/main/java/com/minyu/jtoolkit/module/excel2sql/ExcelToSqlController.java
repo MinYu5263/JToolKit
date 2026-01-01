@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class ExcelToSqlController extends BaseController<ExcelToSqlViewState> {
+public class ExcelToSqlController extends BaseController<ExcelToSqlPersistentState> {
 
     @FXML private TextField filePathField;
     @FXML private ComboBox<String> sheetCombo;
@@ -238,12 +238,12 @@ public class ExcelToSqlController extends BaseController<ExcelToSqlViewState> {
     }
 
     @Override
-    protected Class<ExcelToSqlViewState> getStorageType() {
-        return ExcelToSqlViewState.class;
+    protected Class<ExcelToSqlPersistentState> getStorageType() {
+        return ExcelToSqlPersistentState.class;
     }
 
     @Override
-    protected void restoreValues(ExcelToSqlViewState state) {
+    protected void restoreValues(ExcelToSqlPersistentState state) {
         if (state == null) return;
 
         if (state.getLastFilePath() != null) {
@@ -256,8 +256,8 @@ public class ExcelToSqlController extends BaseController<ExcelToSqlViewState> {
     }
 
     @Override
-    protected ExcelToSqlViewState captureValues() {
-        ExcelToSqlViewState state = new ExcelToSqlViewState();
+    protected ExcelToSqlPersistentState captureValues() {
+        ExcelToSqlPersistentState state = new ExcelToSqlPersistentState();
         state.setLastFilePath(filePathField.getText());
         state.setTableName(tableNameField.getText());
         state.setSkipHeader(chkSkipHeader.isSelected());

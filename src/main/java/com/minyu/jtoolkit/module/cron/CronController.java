@@ -16,7 +16,7 @@ import java.time.ZonedDateTime;
 import java.util.Optional;
 
 @Component
-public class CronController extends BaseController<CronViewState> {
+public class CronController extends BaseController<CronPersistentState> {
 
     @FXML private TextField cronExpressionField;
     @FXML private TextArea resultArea;
@@ -186,12 +186,12 @@ public class CronController extends BaseController<CronViewState> {
     }
 
     @Override
-    protected Class<CronViewState> getStorageType() {
-        return CronViewState.class;
+    protected Class<CronPersistentState> getStorageType() {
+        return CronPersistentState.class;
     }
 
     @Override
-    protected void restoreValues(CronViewState state) {
+    protected void restoreValues(CronPersistentState state) {
         if (state != null && state.getLastExpression() != null) {
             cronExpressionField.setText(state.getLastExpression());
             // 注意：这里没有做复杂的 String -> UI 逆向解析，
@@ -201,7 +201,7 @@ public class CronController extends BaseController<CronViewState> {
     }
 
     @Override
-    protected CronViewState captureValues() {
-        return new CronViewState(cronExpressionField.getText());
+    protected CronPersistentState captureValues() {
+        return new CronPersistentState(cronExpressionField.getText());
     }
 }

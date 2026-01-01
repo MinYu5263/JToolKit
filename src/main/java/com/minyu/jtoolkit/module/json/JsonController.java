@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public class JsonController extends BaseController<JsonViewState> {
+public class JsonController extends BaseController<JsonPersistentState> {
 
     @FXML
     private TextArea inputArea;
@@ -66,19 +66,19 @@ public class JsonController extends BaseController<JsonViewState> {
     }
 
     @Override
-    protected Class<JsonViewState> getStorageType() {
-        return JsonViewState.class;
+    protected Class<JsonPersistentState> getStorageType() {
+        return JsonPersistentState.class;
     }
 
     @Override
-    protected void restoreValues(JsonViewState state) {
+    protected void restoreValues(JsonPersistentState state) {
         inputArea.setText(state.getInputContent());
         outputArea.setText(state.getOutputContent());
     }
 
     @Override
-    protected JsonViewState captureValues() {
-        JsonViewState state = new JsonViewState();
+    protected JsonPersistentState captureValues() {
+        JsonPersistentState state = new JsonPersistentState();
         state.setInputContent(inputArea.getText());
         state.setOutputContent(outputArea.getText());
         return state;

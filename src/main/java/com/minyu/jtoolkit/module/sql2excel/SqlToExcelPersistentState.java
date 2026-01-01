@@ -1,6 +1,6 @@
 package com.minyu.jtoolkit.module.sql2excel;
 
-import com.minyu.jtoolkit.core.model.ViewState;
+import com.minyu.jtoolkit.core.model.PersistentState;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class SqlToExcelViewState implements ViewState {
+public class SqlToExcelPersistentState implements PersistentState {
 
     // 保存所有配置过的连接信息
     private List<DbConnectionProfile> profiles = new ArrayList<>();

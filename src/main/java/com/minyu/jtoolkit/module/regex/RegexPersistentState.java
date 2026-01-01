@@ -1,7 +1,7 @@
 package com.minyu.jtoolkit.module.regex;
 
 
-import com.minyu.jtoolkit.core.model.ViewState;
+import com.minyu.jtoolkit.core.model.PersistentState;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegexViewState implements ViewState {
+public class RegexPersistentState implements PersistentState {
     private String regexPattern;
     private String sourceText;
     private boolean ignoreCase;

@@ -1,6 +1,6 @@
 package com.minyu.jtoolkit.core.service;
 
-import com.minyu.jtoolkit.system.service.ViewDataService;
+import com.minyu.jtoolkit.system.service.StorageService;
 import jakarta.annotation.PostConstruct;
 import javafx.stage.Stage;
 import lombok.Getter;
@@ -22,7 +22,7 @@ public class AppConfigManager {
     @Value("${jtoolkit.font-size:14}") // 如果yml没配，默认14
     private Integer defaultFontSize;
 
-    private final ViewDataService viewDataService;
+    private final StorageService storageService;
     private final ThemeManager themeManager;
     private final HotKeyManager hotKeyManager;
     private final FontManager fontManager;
@@ -31,11 +31,11 @@ public class AppConfigManager {
     @Getter
     private AppConfig currentConfig;
 
-    public AppConfigManager(ViewDataService viewDataService,
+    public AppConfigManager(StorageService storageService,
                             ThemeManager themeManager,
                             HotKeyManager hotKeyManager,
                             FontManager fontManager) {
-        this.viewDataService = viewDataService;
+        this.storageService = storageService;
         this.themeManager = themeManager;
         this.hotKeyManager = hotKeyManager;
         this.fontManager = fontManager;
@@ -45,7 +45,7 @@ public class AppConfigManager {
     public void initAppConfig() {
         log.info("Initializing application configuration...");
 
-        currentConfig = viewDataService.loadState(STORAGE_KEY, AppConfig.class);
+        currentConfig = storageService.load(STORAGE_KEY, AppConfig.class);
         // 没有数据则设置默认值
         if (currentConfig == null) {
             currentConfig = new AppConfig();
@@ -83,6 +83,6 @@ public class AppConfigManager {
     }
 
     private void persistConfig() {
-        viewDataService.saveState(STORAGE_KEY, currentConfig);
+        storageService.save(STORAGE_KEY, currentConfig);
     }
 }

@@ -1,13 +1,13 @@
 package com.minyu.jtoolkit.module.json;
 
-import com.minyu.jtoolkit.core.model.ViewState;
+import com.minyu.jtoolkit.core.model.PersistentState;
 import lombok.Data;
 
 /**
- * JsonViewState
+ * JsonPersistentState
  */
 @Data
-public class JsonViewState implements ViewState {
+public class JsonPersistentState implements PersistentState {
     /**
      * 输入区域的文本
      */

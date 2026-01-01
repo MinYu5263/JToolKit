@@ -19,10 +19,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class FileTreeController extends BaseController<FileTreeViewState> {
+public class FileTreeController extends BaseController<FileTreePersistentState> {
 
     // === UI 组件 ===
-    @FXML private ListView<FileTreeViewState.HistoryItem> historyListView;
+    @FXML private ListView<FileTreePersistentState.HistoryItem> historyListView;
     @FXML private TextField pathField;
     @FXML private TextArea resultArea;
     @FXML private Label statusLabel;
@@ -36,7 +36,7 @@ public class FileTreeController extends BaseController<FileTreeViewState> {
     @FXML private TextField ignoreField;
 
     // 数据源
-    private final ObservableList<FileTreeViewState.HistoryItem> historyData = FXCollections.observableArrayList();
+    private final ObservableList<FileTreePersistentState.HistoryItem> historyData = FXCollections.observableArrayList();
 
     @FXML
     public void initView() {
@@ -193,7 +193,7 @@ public class FileTreeController extends BaseController<FileTreeViewState> {
         // 检查是否已存在
         boolean exists = historyData.stream().anyMatch(h -> h.getPath().equals(path));
         if (!exists) {
-            historyData.add(0, new FileTreeViewState.HistoryItem(path, dir.getName()));
+            historyData.add(0, new FileTreePersistentState.HistoryItem(path, dir.getName()));
             if (historyData.size() > 20) historyData.remove(historyData.size() - 1); // 限制最近20条
         }
     }
@@ -253,12 +253,12 @@ public class FileTreeController extends BaseController<FileTreeViewState> {
     }
 
     @Override
-    protected Class<FileTreeViewState> getStorageType() {
-        return FileTreeViewState.class;
+    protected Class<FileTreePersistentState> getStorageType() {
+        return FileTreePersistentState.class;
     }
 
     @Override
-    protected void restoreValues(FileTreeViewState state) {
+    protected void restoreValues(FileTreePersistentState state) {
         if (state == null) return;
 
         if (state.getHistory() != null) {
@@ -287,8 +287,8 @@ public class FileTreeController extends BaseController<FileTreeViewState> {
     }
 
     @Override
-    protected FileTreeViewState captureValues() {
-        FileTreeViewState state = new FileTreeViewState();
+    protected FileTreePersistentState captureValues() {
+        FileTreePersistentState state = new FileTreePersistentState();
         state.setHistory(new ArrayList<>(historyData));
         state.setLastPath(pathField.getText());
         state.setIgnorePattern(ignoreField.getText());

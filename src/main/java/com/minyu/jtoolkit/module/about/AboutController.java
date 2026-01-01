@@ -20,7 +20,7 @@ public class AboutController {
     @FXML private Label systemInfoLabel;
 
     @FXML
-    public void initView() {
+    public void initialize() {
         try {
             appLogo.setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/logo_128.png"))));
             appLogo.setFitWidth(64);

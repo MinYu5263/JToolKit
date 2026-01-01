@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigInteger;
 
 @Component
-public class RadixController extends BaseController<RadixViewState> {
+public class RadixController extends BaseController<RadixPersistentState> {
 
     @FXML private ToggleButton formatToggle;
     @FXML private TextField hexField;
@@ -158,12 +158,12 @@ public class RadixController extends BaseController<RadixViewState> {
     }
 
     @Override
-    protected Class<RadixViewState> getStorageType() {
-        return RadixViewState.class;
+    protected Class<RadixPersistentState> getStorageType() {
+        return RadixPersistentState.class;
     }
 
     @Override
-    protected void restoreValues(RadixViewState state) {
+    protected void restoreValues(RadixPersistentState state) {
         if (state == null) return;
 
         formatToggle.setSelected(state.isFormatEnabled());
@@ -179,8 +179,8 @@ public class RadixController extends BaseController<RadixViewState> {
     }
 
     @Override
-    protected RadixViewState captureValues() {
-        RadixViewState state = new RadixViewState();
+    protected RadixPersistentState captureValues() {
+        RadixPersistentState state = new RadixPersistentState();
         String cleanDec = decField.getText().replaceAll("[,\\s]", "");
         state.setDecimalValue(cleanDec);
         state.setFormatEnabled(formatToggle.isSelected());

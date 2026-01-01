@@ -16,7 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
-public class TextAnalyzerController extends BaseController<TextAnalyzerViewState> {
+public class TextAnalyzerController extends BaseController<TextAnalyzerPersistentState> {
 
     @FXML private TextArea textArea;
 
@@ -215,12 +215,12 @@ public class TextAnalyzerController extends BaseController<TextAnalyzerViewState
     }
 
     @Override
-    protected Class<TextAnalyzerViewState> getStorageType() {
-        return TextAnalyzerViewState.class;
+    protected Class<TextAnalyzerPersistentState> getStorageType() {
+        return TextAnalyzerPersistentState.class;
     }
 
     @Override
-    protected void restoreValues(TextAnalyzerViewState state) {
+    protected void restoreValues(TextAnalyzerPersistentState state) {
         if (state != null) {
             // 恢复时也不应该视为用户输入，防止覆盖 originalText
             isProgrammaticChange = true;
@@ -231,8 +231,8 @@ public class TextAnalyzerController extends BaseController<TextAnalyzerViewState
     }
 
     @Override
-    protected TextAnalyzerViewState captureValues() {
-        TextAnalyzerViewState state = new TextAnalyzerViewState();
+    protected TextAnalyzerPersistentState captureValues() {
+        TextAnalyzerPersistentState state = new TextAnalyzerPersistentState();
         state.setText(textArea.getText());
         state.setOriginalText(originalText);
         return state;

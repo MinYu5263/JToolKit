@@ -1,7 +1,7 @@
 package com.minyu.jtoolkit.module;
 
-import com.minyu.jtoolkit.core.model.ViewState;
-import com.minyu.jtoolkit.system.service.ViewDataService;
+import com.minyu.jtoolkit.core.model.PersistentState;
+import com.minyu.jtoolkit.system.service.StorageService;
 import javafx.animation.PauseTransition;
 import javafx.beans.Observable;
 import javafx.fxml.Initializable;
@@ -19,12 +19,12 @@ import java.util.ResourceBundle;
  *
  * @param <T> 视图状态实体类 (ViewData)
  */
-public abstract class BaseController<T extends ViewState> implements Initializable {
+public abstract class BaseController<T extends PersistentState> implements Initializable {
     // 自动保存延迟时间（毫秒）
     protected static final long AUTO_SAVE_DELAY_MS = 1000;
     private final PauseTransition autoSaveTimer;
     private final Class<T> stateType;
-    private ViewDataService viewDataService;
+    private StorageService storageService;
 
     @SuppressWarnings("unchecked")
     public BaseController() {
@@ -34,13 +34,13 @@ public abstract class BaseController<T extends ViewState> implements Initializab
     }
 
     @Autowired
-    public void setViewStateService(ViewDataService viewDataService) {
-        this.viewDataService = viewDataService;
+    public void setViewStateService(StorageService storageService) {
+        this.storageService = storageService;
     }
 
     @Autowired
-    public void setJsonFileViewDataService(ViewDataService viewDataService) {
-        this.viewDataService = viewDataService;
+    public void setJsonFileViewDataService(StorageService storageService) {
+        this.storageService = storageService;
     }
 
     @Override
@@ -120,7 +120,7 @@ public abstract class BaseController<T extends ViewState> implements Initializab
      */
     protected void loadStateOrDefaults() {
         String key = getViewKey();
-        T state = viewDataService.loadState(key, this.stateType);
+        T state = storageService.load(key, this.stateType);
         if (state != null) {
             restoreValues(state);
         } else {
@@ -146,7 +146,7 @@ public abstract class BaseController<T extends ViewState> implements Initializab
     protected void saveValues() {
         T state = captureValues();
         if (state != null) {
-            viewDataService.saveState(getViewKey(), state);
+            storageService.save(getViewKey(), state);
         }
     }
 }

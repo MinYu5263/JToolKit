@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 @Component
-public class RegexController extends BaseController<RegexViewState> {
+public class RegexController extends BaseController<RegexPersistentState> {
 
     // === UI 组件 ===
     @FXML private TextField regexField;
@@ -176,12 +176,12 @@ public class RegexController extends BaseController<RegexViewState> {
     }
 
     @Override
-    protected Class<RegexViewState> getStorageType() {
-        return RegexViewState.class;
+    protected Class<RegexPersistentState> getStorageType() {
+        return RegexPersistentState.class;
     }
 
     @Override
-    protected void restoreValues(RegexViewState state) {
+    protected void restoreValues(RegexPersistentState state) {
         if (state == null) return;
 
         regexField.setText(state.getRegexPattern());
@@ -195,8 +195,8 @@ public class RegexController extends BaseController<RegexViewState> {
     }
 
     @Override
-    protected RegexViewState captureValues() {
-        return new RegexViewState(
+    protected RegexPersistentState captureValues() {
+        return new RegexPersistentState(
                 regexField.getText(),
                 sourceTextArea.getText(),
                 chkIgnoreCase.isSelected(),

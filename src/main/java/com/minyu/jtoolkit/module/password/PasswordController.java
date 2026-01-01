@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import java.security.SecureRandom;
 
 @Component
-public class PasswordController extends BaseController<PasswordViewState> {
+public class PasswordController extends BaseController<PasswordPersistentState> {
 
     @FXML
     private TextField passwordField;
@@ -151,12 +151,12 @@ public class PasswordController extends BaseController<PasswordViewState> {
     }
 
     @Override
-    protected Class<PasswordViewState> getStorageType() {
-        return PasswordViewState.class;
+    protected Class<PasswordPersistentState> getStorageType() {
+        return PasswordPersistentState.class;
     }
 
     @Override
-    protected void restoreValues(PasswordViewState state) {
+    protected void restoreValues(PasswordPersistentState state) {
         if (state == null) return;
 
         lengthSlider.setValue(state.getLength());
@@ -173,8 +173,8 @@ public class PasswordController extends BaseController<PasswordViewState> {
     }
 
     @Override
-    protected PasswordViewState captureValues() {
-        PasswordViewState state = new PasswordViewState();
+    protected PasswordPersistentState captureValues() {
+        PasswordPersistentState state = new PasswordPersistentState();
         state.setLength((int) lengthSlider.getValue());
         state.setUseUpper(chkUpper.isSelected());
         state.setUseLower(chkLower.isSelected());

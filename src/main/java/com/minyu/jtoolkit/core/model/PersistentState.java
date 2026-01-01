@@ -5,5 +5,5 @@ import java.io.Serializable;
 /**
  * ViewData
  */
-public interface ViewState extends Serializable {
+public interface PersistentState extends Serializable {
 }

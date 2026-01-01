@@ -4,8 +4,8 @@ import cn.idev.excel.ExcelWriter;
 import cn.idev.excel.FastExcel;
 import cn.idev.excel.write.metadata.WriteSheet;
 import com.minyu.jtoolkit.module.BaseController;
-import com.minyu.jtoolkit.module.sql2excel.SqlToExcelViewState.DbConnectionProfile;
-import com.minyu.jtoolkit.module.sql2excel.SqlToExcelViewState.QueryTaskState;
+import com.minyu.jtoolkit.module.sql2excel.SqlToExcelPersistentState.DbConnectionProfile;
+import com.minyu.jtoolkit.module.sql2excel.SqlToExcelPersistentState.QueryTaskState;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class SqlToExcelController extends BaseController<SqlToExcelViewState> {
+public class SqlToExcelController extends BaseController<SqlToExcelPersistentState> {
 
     // === UI Components ===
     @FXML private ComboBox<DbConnectionProfile> profileCombo;
@@ -456,12 +456,12 @@ public class SqlToExcelController extends BaseController<SqlToExcelViewState> {
     }
 
     @Override
-    protected Class<SqlToExcelViewState> getStorageType() {
-        return SqlToExcelViewState.class;
+    protected Class<SqlToExcelPersistentState> getStorageType() {
+        return SqlToExcelPersistentState.class;
     }
 
     @Override
-    protected void restoreValues(SqlToExcelViewState state) {
+    protected void restoreValues(SqlToExcelPersistentState state) {
         if(state == null) return;
         if(state.getProfiles() != null) profiles.setAll(state.getProfiles());
         if(state.getTasks() != null) {
@@ -470,8 +470,8 @@ public class SqlToExcelController extends BaseController<SqlToExcelViewState> {
     }
 
     @Override
-    protected SqlToExcelViewState captureValues() {
-        SqlToExcelViewState state = new SqlToExcelViewState();
+    protected SqlToExcelPersistentState captureValues() {
+        SqlToExcelPersistentState state = new SqlToExcelPersistentState();
         state.setProfiles(new ArrayList<>(profiles));
         List<QueryTaskState> ts = tasks.stream().map(t -> new QueryTaskState(t.getSheetName(), t.getSql())).collect(Collectors.toList());
         state.setTasks(ts);

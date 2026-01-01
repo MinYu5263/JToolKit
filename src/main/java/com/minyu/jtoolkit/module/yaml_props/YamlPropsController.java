@@ -22,7 +22,7 @@ import java.nio.file.Files;
 
 @Slf4j
 @Component
-public class YamlPropsController extends BaseController<YamlPropsViewState> {
+public class YamlPropsController extends BaseController<YamlPropsPersistentState> {
 
     @FXML
     private ToggleButton directionToggle;
@@ -182,12 +182,12 @@ public class YamlPropsController extends BaseController<YamlPropsViewState> {
     }
 
     @Override
-    protected Class<YamlPropsViewState> getStorageType() {
-        return YamlPropsViewState.class;
+    protected Class<YamlPropsPersistentState> getStorageType() {
+        return YamlPropsPersistentState.class;
     }
 
     @Override
-    protected void restoreValues(YamlPropsViewState state) {
+    protected void restoreValues(YamlPropsPersistentState state) {
         if (state == null) return;
 
         // 恢复方向
@@ -201,8 +201,8 @@ public class YamlPropsController extends BaseController<YamlPropsViewState> {
     }
 
     @Override
-    protected YamlPropsViewState captureValues() {
-        YamlPropsViewState state = new YamlPropsViewState();
+    protected YamlPropsPersistentState captureValues() {
+        YamlPropsPersistentState state = new YamlPropsPersistentState();
         state.setSourceText(sourceArea.getText());
         state.setTargetText(targetArea.getText());
         state.setPropToYaml(!directionToggle.isSelected());

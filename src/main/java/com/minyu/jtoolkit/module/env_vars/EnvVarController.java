@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class EnvVarController extends BaseController<EnvVarViewState> {
+public class EnvVarController extends BaseController<EnvVarPersistentState> {
 
     // === UI 组件注入 ===
     @FXML
@@ -182,12 +182,12 @@ public class EnvVarController extends BaseController<EnvVarViewState> {
     }
 
     @Override
-    protected Class<EnvVarViewState> getStorageType() {
-        return EnvVarViewState.class;
+    protected Class<EnvVarPersistentState> getStorageType() {
+        return EnvVarPersistentState.class;
     }
 
     @Override
-    protected void restoreValues(EnvVarViewState state) {
+    protected void restoreValues(EnvVarPersistentState state) {
         if (state == null) return;
 
         if (state.getLastSelectedFormat() != null) {
@@ -196,7 +196,7 @@ public class EnvVarController extends BaseController<EnvVarViewState> {
 
         if (state.getItems() != null) {
             generatorList.clear();
-            for (EnvVarViewState.EnvVarItemState item : state.getItems()) {
+            for (EnvVarPersistentState.EnvVarItemState item : state.getItems()) {
                 generatorList.add(new GeneratorItem(item.getKey(), item.getValue()));
             }
             generatePreview();
@@ -209,12 +209,12 @@ public class EnvVarController extends BaseController<EnvVarViewState> {
     }
 
     @Override
-    protected EnvVarViewState captureValues() {
-        EnvVarViewState state = new EnvVarViewState();
+    protected EnvVarPersistentState captureValues() {
+        EnvVarPersistentState state = new EnvVarPersistentState();
         state.setLastSelectedFormat(formatChoice.getValue());
 
-        List<EnvVarViewState.EnvVarItemState> items = generatorList.stream()
-                .map(i -> new EnvVarViewState.EnvVarItemState(i.getKey(), i.getValue()))
+        List<EnvVarPersistentState.EnvVarItemState> items = generatorList.stream()
+                .map(i -> new EnvVarPersistentState.EnvVarItemState(i.getKey(), i.getValue()))
                 .collect(Collectors.toList());
         state.setItems(items);
 
