@@ -8,3 +8,5 @@ jtoolkit:
 spring:
   application:
     name: JToolKit
+  main:
+    lazy-initialization: true
