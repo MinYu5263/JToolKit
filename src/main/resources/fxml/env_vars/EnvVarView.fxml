@@ -1,70 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox prefHeight="600.0" prefWidth="800.0" spacing="10.0"
-      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.minyu.jtoolkit.module.env_vars.EnvVarController">
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.minyu.jtoolkit.module.env_vars.EnvVarController"
+      spacing="10.0" prefHeight="600.0" prefWidth="800.0">
 
     <padding>
         <Insets top="10" right="10" bottom="10" left="10"/>
     </padding>
 
-    <TabPane fx:id="mainTabPane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Label text="环境变量" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+        <Label fx:id="osInfoLabel" text="(Windows)" textFill="grey"/>
 
-        <Tab text="系统/JVM 变量查看">
+        <HBox HBox.hgrow="ALWAYS"/>
+
+        <TextField fx:id="searchField" promptText="搜索变量名或值..." prefWidth="250"/>
+        <Button text="刷新" onAction="#onRefreshAll"/>
+    </HBox>
+
+    <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+
+        <Tab text="用户变量 (User)">
             <VBox spacing="5.0">
-                <padding><Insets top="5"/></padding>
+                <padding><Insets top="10" right="5" bottom="5" left="5"/></padding>
+                <Label text="仅对当前用户生效" style="-fx-text-fill: #666; -fx-font-size: 11px;"/>
 
-                <HBox spacing="10.0" alignment="CENTER_LEFT">
-                    <TextField fx:id="searchField" promptText="搜索 Key 或 Value..." HBox.hgrow="ALWAYS"/>
-                    <ComboBox fx:id="typeCombo" prefWidth="150.0"/>
-                    <Button text="刷新" onAction="#onRefresh"/>
-                </HBox>
-
-                <TableView fx:id="systemTable" VBox.vgrow="ALWAYS">
+                <TableView fx:id="userTable" VBox.vgrow="ALWAYS">
                     <columns>
-                        <TableColumn fx:id="sysKeyCol" text="变量名 (Key)" prefWidth="250"/>
-                        <TableColumn fx:id="sysValueCol" text="变量值 (Value)" prefWidth="500"/>
+                        <TableColumn fx:id="userKeyCol" text="变量名 (Variable)" prefWidth="200"/>
+                        <TableColumn fx:id="userValueCol" text="变量值 (Value)" prefWidth="400"/>
                     </columns>
                     <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
                     </columnResizePolicy>
                 </TableView>
+
+                <HBox spacing="10.0">
+                    <Button fx:id="btnAddUser" text="新建" onAction="#onAddUserVar"/>
+                    <Button fx:id="btnEditUser" text="编辑" onAction="#onEditUserVar"/>
+                    <Button fx:id="btnDelUser" text="删除" onAction="#onDeleteUserVar">
+                        <styleClass><String fx:value="danger"/></styleClass>
+                    </Button>
+                </HBox>
             </VBox>
         </Tab>
 
-        <Tab text="配置脚本生成器">
-            <SplitPane dividerPositions="0.6" VBox.vgrow="ALWAYS">
-                <VBox spacing="5.0">
-                    <padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
-                    <ToolBar>
-                        <Button text="+ 添加行" onAction="#onAddRow"/>
-                        <Button text="- 删除选中" onAction="#onDeleteRow"/>
-                        <Button text="清空" onAction="#onClearRows"/>
-                    </ToolBar>
-                    <TableView fx:id="generatorTable" VBox.vgrow="ALWAYS" editable="true">
-                        <columns>
-                            <TableColumn fx:id="genKeyCol" text="Key (双击编辑)" prefWidth="150"/>
-                            <TableColumn fx:id="genValueCol" text="Value (双击编辑)" prefWidth="250"/>
-                        </columns>
-                        <columnResizePolicy>
-                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-                        </columnResizePolicy>
-                    </TableView>
-                </VBox>
+        <Tab text="系统变量 (System)">
+            <VBox spacing="5.0">
+                <padding><Insets top="10" right="5" bottom="5" left="5"/></padding>
+                <Label text="对所有用户生效 (需要管理员权限)" style="-fx-text-fill: #666; -fx-font-size: 11px;"/>
 
-                <VBox spacing="5.0">
-                    <padding><Insets top="5" left="5"/></padding>
-                    <Label text="导出格式:"/>
-                    <ChoiceBox fx:id="formatChoice" maxWidth="Infinity"/>
-                    <TextArea fx:id="previewArea" VBox.vgrow="ALWAYS" editable="false" wrapText="true"
-                              style="-fx-font-family: 'Consolas', 'Monospaced';"/>
-                    <Button text="复制结果" maxWidth="Infinity" onAction="#onCopyResult"/>
-                </VBox>
-            </SplitPane>
+                <TableView fx:id="sysTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="sysKeyCol" text="变量名 (Variable)" prefWidth="200"/>
+                        <TableColumn fx:id="sysValueCol" text="变量值 (Value)" prefWidth="400"/>
+                    </columns>
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                    </columnResizePolicy>
+                </TableView>
+
+                <HBox spacing="10.0">
+                    <Button fx:id="btnAddSys" text="新建" onAction="#onAddSysVar"/>
+                    <Button fx:id="btnEditSys" text="编辑" onAction="#onEditSysVar"/>
+                    <Button fx:id="btnDelSys" text="删除" onAction="#onDeleteSysVar">
+                        <styleClass><String fx:value="danger"/></styleClass>
+                        <tooltip><Tooltip text="删除系统变量可能导致系统不稳定，请谨慎操作"/></tooltip>
+                    </Button>
+                </HBox>
+            </VBox>
         </Tab>
+
     </TabPane>
 </VBox>

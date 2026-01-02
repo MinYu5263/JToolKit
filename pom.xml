@@ -30,6 +30,7 @@
         <mybatis-plus.version>3.5.12</mybatis-plus.version>
         <cron-utils.version>9.2.1</cron-utils.version>
         <easyexcel.version>4.0.3</easyexcel.version>
+        <jna-platform.version>5.14.0</jna-platform.version>
     </properties>
 
     <repositories>
@@ -137,6 +138,12 @@
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-properties</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna-platform</artifactId>
+            <version>${jna-platform.version}</version>
         </dependency>
     </dependencies>
 
