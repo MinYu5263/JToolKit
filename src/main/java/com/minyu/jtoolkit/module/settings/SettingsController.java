@@ -3,6 +3,7 @@ package com.minyu.jtoolkit.module.settings;
 import com.minyu.jtoolkit.core.service.AppConfig;
 import com.minyu.jtoolkit.core.service.AppConfigManager;
 import com.minyu.jtoolkit.core.service.ThemeManager;
+import com.minyu.jtoolkit.core.util.AppLifecycleUtils;
 import com.minyu.jtoolkit.system.service.StorageService;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -219,6 +220,33 @@ public class SettingsController implements Initializable {
         } catch (IOException e) {
             log.error("Failed to open data directory", e);
             showInfoDialog("打开失败", "无法打开文件夹：" + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void onRestartApp() {
+        if (showConfirmDialog("确认重启", "确定要立即重启应用吗？\n未保存的内容可能会丢失。")) {
+            try {
+                AppLifecycleUtils.restart();
+            } catch (Exception e) {
+                showInfoDialog("重启失败", "无法自动重启，请手动操作。\n错误：" + e.getMessage());
+            }
+        }
+    }
+
+    @FXML
+    private void onRestartAsAdmin() {
+        if (AppLifecycleUtils.isAdmin()) {
+            showInfoDialog("提示", "当前已经是管理员身份运行。");
+            return;
+        }
+
+        if (showConfirmDialog("提升权限", "确定要以管理员身份重启应用吗？\n系统将弹出 UAC 提示框。")) {
+            try {
+                AppLifecycleUtils.restartAsAdmin();
+            } catch (Exception e) {
+                showInfoDialog("重启失败", "操作被取消或发生错误。\n" + e.getMessage());
+            }
         }
     }
 

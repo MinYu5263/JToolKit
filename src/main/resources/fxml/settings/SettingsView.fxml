@@ -64,5 +64,13 @@
                 </HBox>
             </action>
         </ConfigCard>
+        <ConfigCard title="重启应用">
+            <action>
+                <HBox spacing="10">
+                    <Button text="立即重启" onAction="#onRestartApp"/>
+                    <Button text="以管理员身份重启" onAction="#onRestartAsAdmin"/>
+                </HBox>
+            </action>
+        </ConfigCard>
     </VBox>
 </VBox>

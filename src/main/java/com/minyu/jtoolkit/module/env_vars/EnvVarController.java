@@ -1,6 +1,6 @@
 package com.minyu.jtoolkit.module.env_vars;
 
-import com.minyu.jtoolkit.core.util.PrivilegeUtils;
+import com.minyu.jtoolkit.core.util.AppLifecycleUtils;
 import com.minyu.jtoolkit.module.BaseController;
 import com.minyu.jtoolkit.system.service.EnvVarService;
 import javafx.beans.Observable;
@@ -191,7 +191,7 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
     }
 
     private boolean ensureAdmin() {
-        if (PrivilegeUtils.isAdmin()) {
+        if (AppLifecycleUtils.isAdmin()) {
             return true;
         }
 
@@ -202,7 +202,7 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            PrivilegeUtils.relaunchAsAdmin();
+            AppLifecycleUtils.restartAsAdmin();
         }
 
         return false;

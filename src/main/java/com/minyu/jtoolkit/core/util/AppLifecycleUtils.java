@@ -10,10 +10,12 @@ import java.io.File;
 import java.util.Optional;
 
 /**
- * 系统提权工具类
+ * 应用生命周期工具类：负责权限检查、自动重启等
+ * (原 PrivilegeUtils 重构升级版)
  */
 @Slf4j
-public class PrivilegeUtils {
+public class AppLifecycleUtils {
+
     public interface Shell32Ext extends StdCallLibrary {
         Shell32Ext INSTANCE = Native.load("shell32", Shell32Ext.class);
 
@@ -38,15 +40,27 @@ public class PrivilegeUtils {
     }
 
     /**
-     * 以管理员身份重启当前应用
-     * 兼容模式：
-     * 1. 如果是打包后的 EXE 运行 -> 直接重启 EXE
-     * 2. 如果是 Jar 包运行 -> java -jar xxx.jar
+     * 普通重启应用
      */
-    public static void relaunchAsAdmin() {
+    public static void restart() {
+        performRestart(false);
+    }
+
+    /**
+     * 以管理员身份重启应用 (会弹出 UAC 提示)
+     */
+    public static void restartAsAdmin() {
+        performRestart(true);
+    }
+
+    /**
+     * 执行重启的核心逻辑
+     *
+     * @param asAdmin 是否请求管理员权限
+     */
+    private static void performRestart(boolean asAdmin) {
         try {
-            // 获取当前进程的执行命令 (Java 9+ API)
-            // 结果可能是 "C:\Program Files\JToolKit\JToolKit.exe" 或者 "C:\Java\bin\javaw.exe"
+            // 1. 获取当前进程的执行命令 (Java 9+ API)
             Optional<String> commandOpt = ProcessHandle.current().info().command();
 
             if (commandOpt.isEmpty()) {
@@ -70,37 +84,52 @@ public class PrivilegeUtils {
                     runCommand = executablePath;
                     args = "-jar \"" + currentJar.getAbsolutePath() + "\"";
                 } else {
-                    throw new RuntimeException("当前环境（IDE或非标准Jar）不支持自动重启提权，请手动以管理员运行。");
+                    throw new RuntimeException("当前环境（IDE或非标准Jar）不支持自动重启，请手动重启。");
                 }
             } else {
+                // === Native 模式 (如 jpackage 打包后的 exe) ===
                 log.info("Detected Native Launcher: {}", executablePath);
             }
 
-            log.info("Relaunching: {} {}", runCommand, args);
+            // 2. 决定启动模式
+            // "runas" = 以管理员身份运行
+            // "open"  = 普通打开 (如果传 null 也是默认打开)
+            String verb = asAdmin ? "runas" : "open";
 
+            log.info("Restarting app... Mode: {}, Command: {} {}", verb, runCommand, args);
+
+            // 3. 调用 Windows ShellExecute API 执行启动
             WinDef.INT_PTR result = Shell32.INSTANCE.ShellExecute(
                     null,
-                    "runas",
+                    verb,
                     runCommand,
                     args,
                     null,
-                    1
+                    1 // SW_SHOWNORMAL (正常显示窗口)
             );
 
+            // 4. 检查结果并退出旧进程
+            // ShellExecute 返回值大于 32 表示成功
             int ret = result.intValue();
             if (ret > 32) {
+                // 启动成功后，关闭当前应用
+                // 使用 Platform.exit() 确保 JavaFX 线程退出，配合 System.exit 确保进程终止
+                javafx.application.Platform.exit();
                 System.exit(0);
             } else {
                 log.warn("Restart failed or cancelled by user. Error code: " + ret);
+                throw new RuntimeException("重启操作被取消或失败，错误码: " + ret);
             }
 
         } catch (Exception e) {
-            log.error("Failed to relaunch as admin", e);
-            // 这里可以抛出异常让 Controller 捕获并弹窗提示用户手动操作
-            throw new RuntimeException("无法自动重启，请尝试手动右键以管理员身份运行程序。", e);
+            log.error("Failed to restart app", e);
+            throw new RuntimeException("无法自动重启: " + e.getMessage(), e);
         }
     }
 
+    /**
+     * 获取当前运行的 Jar 包路径
+     */
     private static File getCurrentJarPath() {
         try {
             // 策略 1: 检查 java.class.path
@@ -131,7 +160,7 @@ public class PrivilegeUtils {
             }
 
             // 策略 3: IDE 开发环境兜底
-            // 如果上面都没找到，返回 null，让外层抛出明确的异常（IDE 环境无法这样重启）
+            // 如果上面都没找到，返回 null
             return null;
 
         } catch (Exception e) {
