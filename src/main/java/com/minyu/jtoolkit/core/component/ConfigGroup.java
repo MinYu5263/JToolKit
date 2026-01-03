@@ -22,11 +22,12 @@ public class ConfigGroup extends VBox {
     private final VBox container = new VBox();
     private final RotateTransition rotateTransition;
     private final BooleanProperty expanded = new SimpleBooleanProperty(true);
+    private final FontIcon arrowIcon;
 
     public ConfigGroup() {
         getStyleClass().add(STYLE_CLASS);
 
-        FontIcon arrowIcon = new FontIcon(Material2AL.KEYBOARD_ARROW_DOWN);
+        arrowIcon = new FontIcon(Material2AL.KEYBOARD_ARROW_DOWN);
         header.setAction(arrowIcon);
         header.setCursor(javafx.scene.Cursor.HAND);
 
@@ -40,7 +41,7 @@ public class ConfigGroup extends VBox {
 
         expanded.addListener((obs, oldVal, newVal) -> updateState(newVal));
 
-        updateState(true);
+        updateState(isExpanded());
     }
 
     public ObservableList<Node> getItems() {
@@ -51,8 +52,16 @@ public class ConfigGroup extends VBox {
         container.setVisible(isExpanded);
         container.setManaged(isExpanded);
 
-        rotateTransition.setToAngle(isExpanded ? 180 : 0);
-        rotateTransition.play();
+        int targetAngle = isExpanded ? 0 : 90;
+
+        if (header.getScene() == null) {
+            arrowIcon.setRotate(targetAngle);
+            // 确保动画对象的状态也同步，防止后续播放时跳变
+            rotateTransition.jumpTo(Duration.ZERO);
+        } else {
+            rotateTransition.setToAngle(targetAngle);
+            rotateTransition.play();
+        }
 
         if (isExpanded) {
             getStyleClass().add("expanded");

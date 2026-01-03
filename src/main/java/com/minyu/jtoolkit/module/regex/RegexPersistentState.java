@@ -12,7 +12,13 @@ import lombok.NoArgsConstructor;
 public class RegexPersistentState implements PersistentState {
     private String regexPattern;
     private String sourceText;
-    private boolean ignoreCase;
-    private boolean multiline;
-    private boolean dotAll;
+
+    // 选项
+    private boolean isGlobal = true;
+    private boolean isIgnoreCase;
+    private boolean isMultiline;
+    private boolean isDotAll;
+    private boolean isComments;
+    private boolean isUnicode;
+    private boolean isCanonEq;
 }
