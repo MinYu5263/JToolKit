@@ -37,7 +37,7 @@ public class JfxRuntime extends Application {
 
     @Override
     public void start(Stage stage) {
-        // showSplashScreen(stage);
+        showSplashScreen(stage);
 
         new Thread(() -> {
             try {

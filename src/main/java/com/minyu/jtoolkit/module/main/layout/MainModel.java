@@ -109,9 +109,10 @@ public class MainModel {
         text.setExpanded(true);
 
         TreeItem<Nav> sysTools = group("系统工具", Material2AL.ACCOUNT_TREE);
-        sysTools.getChildren().add(
-                item("环境变量助手", "fxml/env_vars/EnvVarView.fxml")
-        );
+        sysTools.getChildren().setAll(List.of(
+                item("环境变量助手", "fxml/env_vars/EnvVarView.fxml"),
+                item("Git配置助手", "fxml/git_config/GitConfigView.fxml")
+        ));
         sysTools.setExpanded(true);
 
         root.getChildren().setAll(List.of(

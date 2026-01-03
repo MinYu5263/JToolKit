@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import atlantafx.base.controls.CustomTextField?>
+<?import atlantafx.base.controls.ToggleSwitch?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+<?import java.lang.String?>
+<SplitPane xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.minyu.jtoolkit.module.git_config.GitConfigController"
+           dividerPositions="0.25">
+
+    <VBox spacing="10.0">
+        <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+        </padding>
+        <Label styleClass="title-4" text="配置作用域"/>
+        <Label styleClass="text-muted" text="选择全局或特定项目"/>
+        <ListView fx:id="scopeListView" VBox.vgrow="ALWAYS"/>
+        <HBox spacing="10.0">
+            <Button fx:id="btnAddRepo" onAction="#onAddRepo" text="添加项目">
+                <graphic>
+                    <FontIcon iconLiteral="mdal-add"/>
+                </graphic>
+            </Button>
+            <Button fx:id="btnRemoveRepo" onAction="#onRemoveRepo" text="移除">
+                <graphic>
+                    <FontIcon iconLiteral="mdal-delete"/>
+                </graphic>
+                <styleClass>
+                    <String fx:value="danger"/>
+                </styleClass>
+            </Button>
+        </HBox>
+    </VBox>
+
+    <VBox spacing="15.0">
+        <padding>
+            <Insets bottom="15.0" left="20.0" right="20.0" top="15.0"/>
+        </padding>
+
+        <HBox alignment="CENTER_LEFT" spacing="15.0">
+            <VBox>
+                <Label fx:id="currentScopeLabel" styleClass="title-3" text="全局配置"/>
+                <Label fx:id="currentPathLabel" styleClass="text-muted" text="Global Configuration"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button onAction="#onOpenSSHDialog" text="配置 SSH 密钥">
+                <graphic>
+                    <FontIcon iconLiteral="mdmz-vpn_key"/>
+                </graphic>
+            </Button>
+            <Button onAction="#onSaveConfig" text="保存修改">
+                <styleClass>
+                    <String fx:value="accent"/>
+                </styleClass>
+                <graphic>
+                    <FontIcon iconLiteral="mdmz-save"/>
+                </graphic>
+            </Button>
+        </HBox>
+
+        <Separator/>
+
+        <TabPane fx:id="configTabPane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+            <Tab text="常用设置 (Common)">
+                <VBox spacing="20.0">
+                    <padding>
+                        <Insets top="20.0"/>
+                    </padding>
+
+                    <Label styleClass="title-4" text="用户信息"/>
+                    <GridPane hgap="15.0" vgap="15.0">
+                        <columnConstraints>
+                            <ColumnConstraints minWidth="100.0"/>
+                            <ColumnConstraints hgrow="ALWAYS"/>
+                        </columnConstraints>
+                        <Label text="用户名 (Name):" GridPane.rowIndex="0"/>
+                        <TextField fx:id="fieldName" promptText="e.g. John Doe" GridPane.columnIndex="1"
+                                   GridPane.rowIndex="0"/>
+                        <Label text="邮箱 (Email):" GridPane.rowIndex="1"/>
+                        <TextField fx:id="fieldEmail" promptText="e.g. john@company.com" GridPane.columnIndex="1"
+                                   GridPane.rowIndex="1"/>
+                    </GridPane>
+
+                    <Separator/>
+
+                    <Label styleClass="title-4" text="网络代理"/>
+                    <HBox alignment="CENTER_LEFT" spacing="15.0">
+                        <Label text="启用代理:"/>
+                        <ToggleSwitch fx:id="toggleProxy" text="Disabled"/>
+                    </HBox>
+
+                    <GridPane fx:id="proxyConfigPane" disable="true" hgap="15.0" vgap="15.0">
+                        <columnConstraints>
+                            <ColumnConstraints minWidth="100.0"/>
+                            <ColumnConstraints hgrow="ALWAYS"/>
+                        </columnConstraints>
+                        <Label text="协议类型:" GridPane.rowIndex="0"/>
+                        <ChoiceBox fx:id="choiceProtocol" prefWidth="150.0" GridPane.columnIndex="1"
+                                   GridPane.rowIndex="0"/>
+                        <Label text="代理地址:" GridPane.rowIndex="1"/>
+                        <TextField fx:id="fieldProxyHost" text="127.0.0.1:7890" GridPane.columnIndex="1"
+                                   GridPane.rowIndex="1"/>
+                    </GridPane>
+                </VBox>
+            </Tab>
+
+            <Tab text="所有配置 (All Configs)">
+                <VBox spacing="10.0">
+                    <padding>
+                        <Insets bottom="10.0" left="5.0" right="5.0" top="10.0"/>
+                    </padding>
+                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <CustomTextField fx:id="searchConfigField" promptText="搜索配置 Key 或 Value..."
+                                         HBox.hgrow="ALWAYS">
+                            <left>
+                                <Label>
+                                    <graphic>
+                                        <FontIcon iconLiteral="mdmz-search" iconColor="#888888"/>
+                                    </graphic>
+                                    <padding>
+                                        <Insets left="8" right="5"/>
+                                    </padding>
+                                </Label>
+                            </left>
+                        </CustomTextField>
+                        <Button onAction="#onRefreshAllConfig" text="刷新">
+                            <graphic>
+                                <FontIcon iconLiteral="mdmz-refresh"/>
+                            </graphic>
+                        </Button>
+                        <Button onAction="#onAddRawConfig" text="添加">
+                            <graphic>
+                                <FontIcon iconLiteral="mdal-add"/>
+                            </graphic>
+                        </Button>
+                    </HBox>
+
+                    <TableView fx:id="allConfigTable" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="colKey" prefWidth="250" text="Key"/>
+                            <TableColumn fx:id="colValue" prefWidth="350" text="Value"/>
+                        </columns>
+                        <columnResizePolicy>
+                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                        </columnResizePolicy>
+                    </TableView>
+                    <Label styleClass="text-muted" text="双击行可编辑配置值"/>
+                </VBox>
+            </Tab>
+        </TabPane>
+    </VBox>
+</SplitPane>
