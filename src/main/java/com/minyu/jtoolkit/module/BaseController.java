@@ -107,7 +107,11 @@ public abstract class BaseController<T extends PersistentState> implements Initi
     /**
      * 获取状态类Class（用于反序列化）
      */
-    protected abstract Class<T> getStorageType();
+    protected Class<T> getStorageType() {
+        return null;
+    }
+
+    ;
 
     /**
      * 加载视图状态并恢复UI

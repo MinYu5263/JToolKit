@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import atlantafx.base.controls.ToggleSwitch?>
+<?import com.minyu.jtoolkit.core.component.ConfigCard?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" spacing="10.0" xmlns="http://javafx.com/javafx/21"
+      fx:controller="com.minyu.jtoolkit.module.xml.XmlController">
+
+    <ConfigCard title="缩进">
+        <action>
+            <ComboBox fx:id="indentCombo" prefWidth="120.0"/>
+        </action>
+    </ConfigCard>
+    <ConfigCard title="压缩模式">
+        <action>
+            <ToggleSwitch fx:id="compactSwitch"/>
+        </action>
+    </ConfigCard>
+
+    <SplitPane dividerPositions="0.5" VBox.vgrow="ALWAYS">
+        <VBox spacing="5">
+            <padding>
+                <Insets right="5.0"/>
+            </padding>
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="XML 输入"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button mnemonicParsing="false" onAction="#onPaste" text="粘贴"/>
+                <Button mnemonicParsing="false" onAction="#onClearInput" text="清空"/>
+            </HBox>
+            <TextArea fx:id="inputArea" styleClass="code-area" wrapText="true" VBox.vgrow="ALWAYS"/>
+        </VBox>
+
+        <VBox spacing="5">
+            <padding>
+                <Insets left="5.0"/>
+            </padding>
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="格式化结果"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button mnemonicParsing="false" onAction="#onCopyOutput" text="复制"/>
+            </HBox>
+            <TextArea fx:id="outputArea" styleClass="code-area" editable="false" wrapText="true" VBox.vgrow="ALWAYS"/>
+        </VBox>
+    </SplitPane>
+</VBox>
