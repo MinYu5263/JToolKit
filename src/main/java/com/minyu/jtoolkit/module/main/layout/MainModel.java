@@ -96,7 +96,7 @@ public class MainModel {
                 item("Excel转SQL", "fxml/excel2sql/ExcelToSqlView.fxml"),
                 item("SQL转Ecel", "fxml/sql2excel/SqlToExcelView.fxml"),
                 item("yaml与properties互转", "fxml/yaml_props/YamlPropsView.fxml"),
-                item("数字进制", "fxml/radix/RadixView.fxml")
+                item("数字进制", "fxml/number_base/NumberBaseView.fxml")
         ));
         converter.setExpanded(true);
 

@@ -4,7 +4,7 @@ import com.minyu.jtoolkit.core.model.PersistentState;
 import lombok.Data;
 
 @Data
-public class RadixPersistentState implements PersistentState {
+public class NumberPersistentState implements PersistentState {
     private String decimalValue;
     private boolean formatEnabled;
 }
