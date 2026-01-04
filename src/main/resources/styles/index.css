@@ -4,6 +4,8 @@
 @import "components/config-card.css";
 @import "components/config-group.css";
 
+@import "base/typography.css";
+
 .root {
     -fx-font-family: "Inter", "System", sans-serif;
 }

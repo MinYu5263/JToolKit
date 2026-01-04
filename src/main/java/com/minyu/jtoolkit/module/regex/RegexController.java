@@ -274,7 +274,7 @@ public class RegexController extends BaseController<RegexPersistentState> {
     // === 持久化 (保持不变) ===
     @Override
     protected String getViewKey() {
-        return "tool.regex.tester";
+        return "regex_tester";
     }
 
     @Override
