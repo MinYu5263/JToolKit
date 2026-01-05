@@ -3,12 +3,12 @@ package com.minyu.jtoolkit.core.component;
 import atlantafx.base.controls.Tile;
 import javafx.animation.RotateTransition;
 import javafx.beans.DefaultProperty;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -25,12 +25,29 @@ public class ConfigGroup extends VBox {
     private final BooleanProperty expanded = new SimpleBooleanProperty(true);
     private final FontIcon arrowIcon;
 
+    private final HBox actionContainer = new HBox(10);
+    private final ObjectProperty<Node> userAction = new SimpleObjectProperty<>();
+
     public ConfigGroup() {
         getStyleClass().add(STYLE_CLASS);
 
         arrowIcon = new FontIcon(Material2AL.KEYBOARD_ARROW_DOWN);
-        header.setAction(arrowIcon);
-        header.setCursor(javafx.scene.Cursor.HAND);
+        actionContainer.setAlignment(Pos.CENTER_RIGHT);
+        actionContainer.getChildren().add(arrowIcon);
+        header.setAction(actionContainer);
+        header.setCursor(Cursor.HAND);
+
+        userAction.addListener((obs, oldVal, newVal) -> {
+            if (oldVal != null) {
+                actionContainer.getChildren().remove(oldVal);
+            }
+            actionContainer.getChildren().remove(arrowIcon);
+
+            if (newVal != null) {
+                actionContainer.getChildren().add(newVal);
+            }
+            actionContainer.getChildren().add(arrowIcon);
+        });
 
         container.setFillWidth(true);
         container.getStyleClass().add("content-container");
@@ -114,14 +131,14 @@ public class ConfigGroup extends VBox {
     }
 
     public ObjectProperty<Node> actionProperty() {
-        return header.actionProperty();
+        return userAction;
     }
 
     public Node getAction() {
-        return (Node) header.actionProperty().get();
+        return userAction.get();
     }
 
     public void setAction(Node action) {
-        header.actionProperty().set(action);
+        userAction.set(action);
     }
 }
