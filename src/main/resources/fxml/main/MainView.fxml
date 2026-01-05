@@ -2,6 +2,7 @@
 
 <?import atlantafx.base.controls.ModalPane?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.StackPane?>
 <StackPane fx:id="rootPane"
@@ -10,14 +11,14 @@
            fx:controller="com.minyu.jtoolkit.module.main.MainController">
 
     <BorderPane fx:id="mainLayout">
-        <left>
-        </left>
         <center>
-            <StackPane fx:id="contentArea">
-                <padding>
-                    <Insets top="10" right="10" bottom="10" left="10"/>
-                </padding>
-            </StackPane>
+            <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER">
+                <StackPane fx:id="contentArea">
+                    <padding>
+                        <Insets top="20" right="20" bottom="20" left="20"/>
+                    </padding>
+                </StackPane>
+            </ScrollPane>
         </center>
     </BorderPane>
 
