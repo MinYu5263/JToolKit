@@ -1,0 +1,31 @@
+.button,
+.toggle-button,
+.text-field,
+.password-field,
+.text-area,
+.combo-box-base,
+.date-picker,
+.spinner {
+    -fx-padding: 4px 8px;
+}
+
+.combo-box .list-cell {
+    -fx-padding: 4px 8px;
+}
+
+.table-view, .tree-table-view {
+    -fx-fixed-cell-size: 28px;
+}
+
+.table-view .column-header,
+.tree-table-view .column-header {
+    -fx-padding: 4px 8px;
+}
+
+.titled-pane > .title {
+    -fx-padding: 4px 8px;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab {
+    -fx-padding: 4px 8px;
+}
