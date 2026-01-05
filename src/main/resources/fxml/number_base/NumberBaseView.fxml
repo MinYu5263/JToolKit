@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import atlantafx.base.controls.ToggleSwitch?>
-<?import com.minyu.jtoolkit.core.component.ConfigCard?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
+<?import com.minyu.jtoolkit.core.component.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.minyu.jtoolkit.module.radix.NumberBaseController"
@@ -19,47 +17,8 @@
 
     <Label fx:id="statusLabel" style="-fx-text-fill: -color-danger-fg;" wrapText="true" minHeight="0"/>
 
-    <VBox spacing="5.0">
-        <HBox alignment="CENTER_LEFT" spacing="10.0">
-            <Label text="十六进制"/>
-            <Region HBox.hgrow="ALWAYS"/>
-            <Button mnemonicParsing="false" onAction="#onPasteHex" text="粘贴"/>
-            <Button mnemonicParsing="false" onAction="#onCopyHex" text="复制"/>
-            <Button mnemonicParsing="false" onAction="#onClearHex" text="清空"/>
-        </HBox>
-        <TextField fx:id="hexField"/>
-    </VBox>
-
-    <VBox spacing="5.0">
-        <HBox alignment="CENTER_LEFT" spacing="10.0">
-            <Label text="十进制"/>
-            <Region HBox.hgrow="ALWAYS"/>
-            <Button mnemonicParsing="false" onAction="#onPasteDec" text="粘贴"/>
-            <Button mnemonicParsing="false" onAction="#onCopyDec" text="复制"/>
-            <Button mnemonicParsing="false" onAction="#onClearDec" text="清空"/>
-        </HBox>
-        <TextField fx:id="decField"/>
-    </VBox>
-
-    <VBox spacing="5.0">
-        <HBox alignment="CENTER_LEFT" spacing="10.0">
-            <Label text="八进制"/>
-            <Region HBox.hgrow="ALWAYS"/>
-            <Button mnemonicParsing="false" onAction="#onPasteOct" text="粘贴"/>
-            <Button mnemonicParsing="false" onAction="#onCopyOct" text="复制"/>
-            <Button mnemonicParsing="false" onAction="#onClearOct" text="清空"/>
-        </HBox>
-        <TextField fx:id="octField"/>
-    </VBox>
-
-    <VBox spacing="5.0">
-        <HBox alignment="CENTER_LEFT" spacing="10.0">
-            <Label text="二进制"/>
-            <Region HBox.hgrow="ALWAYS"/>
-            <Button mnemonicParsing="false" onAction="#onPasteBin" text="粘贴"/>
-            <Button mnemonicParsing="false" onAction="#onCopyBin" text="复制"/>
-            <Button mnemonicParsing="false" onAction="#onClearBin" text="清空"/>
-        </HBox>
-        <TextField fx:id="binField"/>
-    </VBox>
+    <EnhancedTextField fx:id="hexField" title="十六进制"/>
+    <EnhancedTextField fx:id="decField" title="十进制"/>
+    <EnhancedTextField fx:id="octField" title="八进制"/>
+    <EnhancedTextField fx:id="binField" title="二进制"/>
 </VBox>
