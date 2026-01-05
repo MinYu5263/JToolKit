@@ -4,6 +4,7 @@ import atlantafx.base.controls.Tile;
 import javafx.animation.RotateTransition;
 import javafx.beans.DefaultProperty;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
@@ -110,5 +111,17 @@ public class ConfigGroup extends VBox {
 
     public void setGraphic(Node node) {
         header.setGraphic(node);
+    }
+
+    public ObjectProperty<Node> actionProperty() {
+        return header.actionProperty();
+    }
+
+    public Node getAction() {
+        return (Node) header.actionProperty().get();
+    }
+
+    public void setAction(Node action) {
+        header.actionProperty().set(action);
     }
 }
