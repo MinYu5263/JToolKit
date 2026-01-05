@@ -35,5 +35,5 @@
     -fx-border-width: 0 0 1px 0; /* 只留底部分割线 */
     -fx-border-radius: 0;
     -fx-background-radius: 0;
-    -fx-background-color: transparent; /* 背景透明，复用 Group 的背景 */
+    -fx-background-color: -color-neutral-subtle; /* 背景透明，复用 Group 的背景 */
 }
