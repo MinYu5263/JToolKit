@@ -11,14 +11,10 @@
       spacing="10.0">
 
     <ConfigCard title="缩进">
-        <action>
-            <ComboBox fx:id="indentCombo"/>
-        </action>
+        <ComboBox fx:id="indentCombo"/>
     </ConfigCard>
     <ConfigCard title="压缩模式">
-        <action>
-            <ToggleSwitch fx:id="compactSwitch"/>
-        </action>
+        <ToggleSwitch fx:id="compactSwitch"/>
     </ConfigCard>
 
     <SplitPane dividerPositions="0.5" VBox.vgrow="ALWAYS">

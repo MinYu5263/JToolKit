@@ -13,13 +13,11 @@
       spacing="10.0">
 
     <ConfigCard title="转换格式">
-        <action>
-            <Button fx:id="switchBtn" onAction="#onToggleDirection">
-                <graphic>
-                    <FontIcon iconLiteral="fth-repeat"/>
-                </graphic>
-            </Button>
-        </action>
+        <Button fx:id="switchBtn" onAction="#onToggleDirection">
+            <graphic>
+                <FontIcon iconLiteral="fth-repeat"/>
+            </graphic>
+        </Button>
     </ConfigCard>
 
     <SplitPane dividerPositions="0.5" VBox.vgrow="ALWAYS">

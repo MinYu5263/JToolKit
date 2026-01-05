@@ -9,14 +9,10 @@
       fx:controller="com.minyu.jtoolkit.module.xml.XmlController">
 
     <ConfigCard title="缩进">
-        <action>
-            <ComboBox fx:id="indentCombo" prefWidth="120.0"/>
-        </action>
+        <ComboBox fx:id="indentCombo" prefWidth="120.0"/>
     </ConfigCard>
     <ConfigCard title="压缩模式">
-        <action>
-            <ToggleSwitch fx:id="compactSwitch"/>
-        </action>
+        <ToggleSwitch fx:id="compactSwitch"/>
     </ConfigCard>
 
     <SplitPane dividerPositions="0.5" VBox.vgrow="ALWAYS">

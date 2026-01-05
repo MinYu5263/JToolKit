@@ -10,9 +10,7 @@
       spacing="10">
 
     <ConfigCard title="数字格式化">
-        <action>
-            <ToggleSwitch fx:id="formatSwitch"/>
-        </action>
+        <ToggleSwitch fx:id="formatSwitch"/>
     </ConfigCard>
 
     <Label fx:id="statusLabel" style="-fx-text-fill: -color-danger-fg;" wrapText="true" minHeight="0"/>
