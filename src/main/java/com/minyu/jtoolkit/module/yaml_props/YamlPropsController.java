@@ -4,48 +4,37 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import com.minyu.jtoolkit.core.component.EnhancedTextArea;
 import com.minyu.jtoolkit.module.BaseController;
+import javafx.beans.Observable;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
-import javafx.stage.FileChooser;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
+import java.util.List;
 
 @Slf4j
 @Component
 public class YamlPropsController extends BaseController<YamlPropsPersistentState> {
 
+    // 当前转换方向状态
+    private final BooleanProperty propToYaml = new SimpleBooleanProperty(true);
     @FXML
-    private ToggleButton directionToggle;
-    @FXML
-    private Label leftLabel;
-    @FXML
-    private Label rightLabel;
-    @FXML
-    private TextArea sourceArea;
-    @FXML
-    private TextArea targetArea;
-    @FXML
-    private Label statusLabel;
+    private EnhancedTextArea sourceInput;
 
     // Jackson Mappers
     private final JavaPropsMapper propsMapper;
     private final YAMLMapper yamlMapper;
+    @FXML
+    private EnhancedTextArea targetOutput;
+    // 防止在恢复数据(restoreValues)时触发监听器里的“内容交换”逻辑
+    private boolean isRestoring = false;
 
     public YamlPropsController() {
-        // 初始化 Mapper
         this.propsMapper = new JavaPropsMapper();
-
-        // YAML 配置：去除文档开头的 ---，尽量不使用引号
         this.yamlMapper = new YAMLMapper();
         this.yamlMapper.configure(YAMLGenerator.Feature.WRITE_DOC_START_MARKER, false);
         this.yamlMapper.configure(YAMLGenerator.Feature.MINIMIZE_QUOTES, true);
@@ -53,159 +42,107 @@ public class YamlPropsController extends BaseController<YamlPropsPersistentState
 
     @FXML
     public void initView() {
-        
-
-        // 监听输入，实时转换
-        sourceArea.textProperty().addListener((obs, old, newVal) -> tryConvert());
-
-        // 自动保存
-        super.observeChanges(sourceArea.textProperty(), directionToggle.selectedProperty());
+        propToYaml.addListener((obs, oldVal, isPropToYaml) -> {
+            updateUiText(isPropToYaml);
+            if (StringUtils.isNotBlank(sourceInput.getText()) && !isRestoring) {
+                sourceInput.setText(targetOutput.getText());
+            }
+        });
+        sourceInput.textProperty().addListener((obs, old, newVal) -> tryConvert());
     }
 
     // ================== 核心转换逻辑 ==================
 
     private void tryConvert() {
-        String input = sourceArea.getText();
+        String input = sourceInput.getText();
+
+        // 空值处理
         if (input == null || input.isBlank()) {
-            targetArea.clear();
-            statusLabel.setText("就绪");
+            targetOutput.setText("");
             return;
         }
 
-        boolean isPropToYaml = !directionToggle.isSelected(); // Toggle 未选中状态默认为 Prop -> Yaml
-
         try {
             String result;
-            if (isPropToYaml) {
-                // Properties -> YAML
-                // 1. 读取 Props 为通用 JsonNode 树
+            if (propToYaml.get()) {
                 JsonNode node = propsMapper.readTree(input);
-                // 2. 将树写入为 YAML
                 result = yamlMapper.writeValueAsString(node);
             } else {
-                // YAML -> Properties
-                // 1. 读取 YAML 为通用 JsonNode 树
                 JsonNode node = yamlMapper.readTree(input);
-                // 2. 将树写入为 Properties (Jackson 会自动处理层级 . 连接)
                 result = propsMapper.writeValueAsString(node);
             }
-
-            targetArea.setText(result);
-            statusLabel.setText("转换成功");
-            statusLabel.setStyle("-fx-text-fill: green;");
+            targetOutput.setText(result);
 
         } catch (Exception e) {
-            // 转换失败不清空，但在状态栏提示
-            statusLabel.setText("格式错误: " + e.getMessage());
-            statusLabel.setStyle("-fx-text-fill: red;");
+            log.debug("Convert failed: {}", e.getMessage());
         }
     }
 
     // ================== 交互事件 ==================
 
+    /**
+     * 切换转换方向
+     */
     @FXML
     public void onToggleDirection() {
-        boolean isPropToYaml = !directionToggle.isSelected();
-        updateLabels(isPropToYaml);
-
-        // 交换内容（如果用户想反着转回去）
-        String currentSource = sourceArea.getText();
-        String currentTarget = targetArea.getText();
-
-        if (!currentTarget.isEmpty()) {
-            sourceArea.setText(currentTarget);
-            // targetArea 会被监听器自动触发更新，不需要手动设
-        } else {
-            // 如果没结果，就只清空重新算
-            tryConvert();
-        }
+        propToYaml.set(!propToYaml.get());
     }
 
-    private void updateLabels(boolean isPropToYaml) {
+    private void updateUiText(boolean isPropToYaml) {
         if (isPropToYaml) {
-            directionToggle.setText("Properties ➡ YAML");
-            leftLabel.setText("Properties (Source)");
-            rightLabel.setText("YAML (Result)");
+            sourceInput.setTitle("Properties");
+            targetOutput.setTitle("YAML");
         } else {
-            directionToggle.setText("YAML ➡ Properties");
-            leftLabel.setText("YAML (Source)");
-            rightLabel.setText("Properties (Result)");
+            sourceInput.setTitle("YAML");
+            targetOutput.setTitle("Properties");
         }
     }
 
-    @FXML
-    public void onImportFile() {
-        FileChooser fc = new FileChooser();
-        fc.setTitle("导入配置文件");
-        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Config Files", "*.properties", "*.yml", "*.yaml"));
-        File file = fc.showOpenDialog(sourceArea.getScene().getWindow());
-
-        if (file != null) {
-            try {
-                String content = Files.readString(file.toPath());
-                sourceArea.setText(content);
-
-                // 智能识别：如果是 .yml 结尾，自动切到 Yaml->Prop 模式
-                if (file.getName().endsWith(".yml") || file.getName().endsWith(".yaml")) {
-                    directionToggle.setSelected(true); // 选中 = YAML -> Properties
-                    updateLabels(false);
-                } else if (file.getName().endsWith(".properties")) {
-                    directionToggle.setSelected(false);
-                    updateLabels(true);
-                }
-
-            } catch (IOException e) {
-                new Alert(Alert.AlertType.ERROR, "读取文件失败: " + e.getMessage()).show();
-            }
-        }
-    }
-
-    @FXML
-    public void onClear() {
-        sourceArea.clear();
-        targetArea.clear();
-    }
-
-    @FXML
-    public void onCopyResult() {
-        ClipboardContent content = new ClipboardContent();
-        content.putString(targetArea.getText());
-        Clipboard.getSystemClipboard().setContent(content);
-        statusLabel.setText("结果已复制");
-    }
-
-    // ================== BaseController 实现 ==================
+    // ================== 持久化状态 ==================
 
     @Override
     protected String getViewKey() {
-        return "tool.code.yaml_props";
+        return "yaml_props";
     }
 
     @Override
-    protected Class<YamlPropsPersistentState> getStorageType() {
-        return YamlPropsPersistentState.class;
+    protected List<Observable> getObservables() {
+        return List.of(sourceInput.textProperty(), propToYaml);
     }
 
     @Override
     protected void restoreValues(YamlPropsPersistentState state) {
         if (state == null) return;
+        isRestoring = true;
+        try {
+            propToYaml.set(state.isPropToYaml());
+            if (state.getSourceText() != null) {
+                sourceInput.setText(state.getSourceText());
+            }
+        } finally {
+            isRestoring = false;
+        }
+    }
 
-        // 恢复方向
-        directionToggle.setSelected(!state.isPropToYaml());
-        updateLabels(state.isPropToYaml());
+    @Override
+    protected void initDefaultValues() {
+        sourceInput.setTitle("Properties");
+        targetOutput.setTitle("YAML");
 
-        // 恢复内容 (会触发监听器自动转换)
-        if (state.getSourceText() != null) {
-            sourceArea.setText(state.getSourceText());
+        isRestoring = true;
+        try {
+            propToYaml.set(true);
+        } finally {
+            isRestoring = false;
         }
     }
 
     @Override
     protected YamlPropsPersistentState captureValues() {
         YamlPropsPersistentState state = new YamlPropsPersistentState();
-        state.setSourceText(sourceArea.getText());
-        state.setTargetText(targetArea.getText());
-        state.setPropToYaml(!directionToggle.isSelected());
+        state.setSourceText(sourceInput.getText());
+        state.setTargetText(targetOutput.getText());
+        state.setPropToYaml(propToYaml.get());
         return state;
     }
 }

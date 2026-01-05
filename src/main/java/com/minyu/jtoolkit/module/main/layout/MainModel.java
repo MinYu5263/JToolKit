@@ -93,9 +93,9 @@ public class MainModel {
 
         TreeItem<Nav> converter = group("转换工具", Material2AL.FLIP_CAMERA_ANDROID);
         converter.getChildren().setAll(List.of(
-                item("Excel转SQL", "fxml/excel2sql/ExcelToSqlView.fxml"),
-                item("SQL转Ecel", "fxml/sql2excel/SqlToExcelView.fxml"),
-                item("yaml与properties互转", "fxml/yaml_props/YamlPropsView.fxml"),
+                item("Excel > SQL", "fxml/excel2sql/ExcelToSqlView.fxml"),
+                item("SQL > Excel", "fxml/sql2excel/SqlToExcelView.fxml"),
+                item("Properties <> YAML", "fxml/yaml_props/YamlPropsView.fxml"),
                 item("数字进制", "fxml/number_base/NumberBaseView.fxml")
         ));
         converter.setExpanded(true);
