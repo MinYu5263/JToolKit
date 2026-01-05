@@ -1,9 +1,12 @@
 package com.minyu.jtoolkit.core.component;
 
+import atlantafx.base.theme.Styles;
 import javafx.beans.property.*;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
@@ -50,6 +53,10 @@ public abstract class EnhancedInputBase<T extends TextInputControl> extends VBox
     private Button importButton;
     private Button exportButton;
     private Separator separator;
+    // 按钮插槽
+    private final HBox leadingContainer = new HBox(5);
+    private final HBox trailingContainer = new HBox(5);
+
     public EnhancedInputBase() {
         this.inputControl = createInputControl();
         this.titleLabel = new Label();
@@ -77,25 +84,32 @@ public abstract class EnhancedInputBase<T extends TextInputControl> extends VBox
         exportButton = createButton("导出", Feather.SAVE, this::exportFile);
         copyButton = createButton("复制", Material2OutlinedAL.CONTENT_COPY, this::copyText);
         separator = new Separator(Orientation.VERTICAL);
-        separator.setPadding(new Insets(0, 5, 0, 5));
+        separator.getStyleClass().add(Styles.SMALL);
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        HBox inputButtons = new HBox(2);
+        HBox inputButtons = new HBox(5);
         inputButtons.getChildren().addAll(pasteButton, importButton, clearButton);
 
-        HBox outputButtons = new HBox(2);
+        HBox outputButtons = new HBox(5);
         outputButtons.getChildren().addAll(exportButton, copyButton);
+
+        leadingContainer.setAlignment(Pos.CENTER);
+        trailingContainer.setAlignment(Pos.CENTER);
+        HBox.setMargin(leadingContainer, new Insets(0, 5, 0, 0));
+        HBox.setMargin(trailingContainer, new Insets(0, 0, 0, 5));
 
         HBox titleBar = new HBox();
         titleBar.setAlignment(Pos.CENTER_LEFT);
         titleBar.getChildren().addAll(
                 titleLabel,
                 spacer,
+                leadingContainer,
                 inputButtons,
                 separator,
-                outputButtons
+                outputButtons,
+                trailingContainer
         );
 
         this.getChildren().addAll(titleBar, inputControl);
@@ -301,6 +315,14 @@ public abstract class EnhancedInputBase<T extends TextInputControl> extends VBox
 
     public void setShowExport(boolean v) {
         showExport.set(v);
+    }
+
+    public ObservableList<Node> getLeadingActions() {
+        return leadingContainer.getChildren();
+    }
+
+    public ObservableList<Node> getTrailingActions() {
+        return trailingContainer.getChildren();
     }
 
     // 定义模式枚举
