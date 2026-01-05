@@ -1,6 +1,3 @@
-/* =============================================================================
-   ConfigCard (基础卡片)
-   ============================================================================= */
 .config-card {
     -fx-background-color: -color-bg-default;
     -fx-border-color: -color-border-muted;
@@ -8,4 +5,15 @@
     -fx-border-radius: 4px;
     -fx-background-radius: 4px;
     -fx-padding: 8px 12px;
+}
+
+.config-group .content-container > .config-card {
+    -fx-border-width: 0 0 1px 0;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-background-color: -color-neutral-subtle;
+}
+
+.config-group .content-container > .config-card.last-node {
+    -fx-border-width: 0;
 }

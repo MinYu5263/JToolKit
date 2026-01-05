@@ -14,7 +14,6 @@ import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2AL;
 
-
 @DefaultProperty("items")
 public class ConfigGroup extends VBox {
     private static final String STYLE_CLASS = "config-group";
@@ -53,6 +52,13 @@ public class ConfigGroup extends VBox {
         container.getStyleClass().add("content-container");
         this.getChildren().addAll(header, container);
 
+        container.getChildren().addListener((javafx.collections.ListChangeListener<Node>) c -> {
+            while (c.next()) {
+                if (c.wasAdded() || c.wasRemoved()) {
+                    updateLastNodeStyle();
+                }
+            }
+        });
         rotateTransition = new RotateTransition(Duration.millis(200), arrowIcon);
 
         header.setOnMouseClicked(e -> setExpanded(!isExpanded()));
@@ -87,6 +93,26 @@ public class ConfigGroup extends VBox {
         } else {
             getStyleClass().remove("expanded");
             header.getStyleClass().remove("expanded");
+        }
+    }
+
+    /**
+     * 遍历容器内的所有子节点，给最后一个节点添加 "last-node" 样式类，
+     * 并确保其他节点没有该样式类。
+     */
+    private void updateLastNodeStyle() {
+        ObservableList<Node> children = container.getChildren();
+        int size = children.size();
+
+        for (int i = 0; i < size; i++) {
+            Node child = children.get(i);
+            if (i == size - 1) {
+                if (!child.getStyleClass().contains("last-node")) {
+                    child.getStyleClass().add("last-node");
+                }
+            } else {
+                child.getStyleClass().remove("last-node");
+            }
         }
     }
 

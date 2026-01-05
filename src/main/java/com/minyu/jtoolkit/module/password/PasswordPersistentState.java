@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 public class PasswordPersistentState implements PersistentState {
     private int length = 16;
+    private int quantity = 1;
     private boolean useUpper = true;
     private boolean useLower = true;
     private boolean useDigits = true;

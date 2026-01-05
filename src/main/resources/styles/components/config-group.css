@@ -1,6 +1,4 @@
-/* =============================================================================
-   ConfigGroup (折叠组)
-   ============================================================================= */
+/* === 基础样式 === */
 .config-group {
     -fx-background-color: -color-bg-default;
     -fx-border-color: -color-border-muted;
@@ -9,17 +7,17 @@
     -fx-background-radius: 4px;
 }
 
-/* 头部样式 */
+/* 头部 (Tile) */
 .config-group > .tile {
     -fx-padding: 8px 12px;
     -fx-background-radius: 4px;
 }
 
-/* 当展开时，头部底部的圆角要去掉 */
+/* 头部展开状态：底部直角+分割线 */
 .config-group > .tile.expanded {
     -fx-background-radius: 4px 4px 0 0;
     -fx-border-color: -color-border-muted;
-    -fx-border-width: 0 0 1px 0; /* 加一条底部分割线 */
+    -fx-border-width: 0 0 1px 0;
 }
 
 /* 内容容器 */
@@ -28,12 +26,25 @@
     -fx-background-radius: 0 0 4px 4px;
 }
 
-/* =============================================================================
-   嵌套逻辑：当 ConfigCard 在 ConfigGroup 内部时
-   ============================================================================= */
-.config-group .content-container > .config-card {
-    -fx-border-width: 0 0 1px 0; /* 只留底部分割线 */
+/* === 嵌套逻辑 (ConfigGroup inside ConfigGroup) === */
+.config-group .content-container > .config-group {
+    -fx-border-width: 0 0 1px 0;
+    -fx-border-color: -color-border-muted;
     -fx-border-radius: 0;
     -fx-background-radius: 0;
-    -fx-background-color: -color-neutral-subtle; /* 背景透明，复用 Group 的背景 */
+    -fx-background-color: transparent;
+}
+
+.config-group .content-container > .config-group > .tile {
+    -fx-background-color: -color-neutral-subtle;
+    -fx-background-radius: 0;
+}
+
+.config-group .content-container > .config-group > .tile.expanded {
+    -fx-background-radius: 0;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.config-group .content-container > .config-group.last-node {
+    -fx-border-width: 0;
 }

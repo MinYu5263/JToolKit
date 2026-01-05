@@ -1,185 +1,171 @@
 package com.minyu.jtoolkit.module.password;
 
+import atlantafx.base.controls.ToggleSwitch;
+import com.minyu.jtoolkit.core.component.EnhancedTextArea;
 import com.minyu.jtoolkit.module.BaseController;
+import javafx.beans.Observable;
 import javafx.fxml.FXML;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
+import java.util.List;
 
 @Component
 public class PasswordController extends BaseController<PasswordPersistentState> {
+    @FXML
+    private Spinner<Integer> lengthSpinner;
+    @FXML
+    private ToggleSwitch lowerSwitch;
+    @FXML
+    private ToggleSwitch upperSwitch;
+    @FXML
+    private ToggleSwitch digitsSwitch;
+    @FXML
+    private ToggleSwitch specialSwitch;
+    @FXML
+    private TextField excludeField; // 排除字符输入框
 
     @FXML
-    private TextField passwordField;
+    private Spinner<Integer> quantitySpinner; // 新增：生成数量控制
     @FXML
-    private Label msgLabel;
+    private EnhancedTextArea resultArea;
 
-    @FXML
-    private Slider lengthSlider;
-    @FXML
-    private Label lengthLabel;
-
-    @FXML
-    private CheckBox chkUpper;
-    @FXML
-    private CheckBox chkLower;
-    @FXML
-    private CheckBox chkDigits;
-    @FXML
-    private CheckBox chkSpecial;
-    @FXML
-    private TextField excludeField;
-
-    // 字符常量定义
     private static final String UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String LOWER = "abcdefghijklmnopqrstuvwxyz";
     private static final String DIGITS = "0123456789";
     private static final String SPECIAL = "!@#$%^&*()-_=+[]{}|;:,.<>?";
-
-    // 强随机数生成器
     private final SecureRandom secureRandom = new SecureRandom();
+
+    private boolean isRestoring = false;
 
     @FXML
     public void initView() {
-        
+        quantitySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 1));
 
-        // 1. 长度滑块监听
-        lengthLabel.setText(String.valueOf((int) lengthSlider.getValue()));
-        lengthSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-            lengthLabel.setText(String.valueOf(newVal.intValue()));
-            onGenerate(); // 拖动滑块实时生成
-        });
+        lengthSpinner.valueProperty().addListener((obs, old, val) -> tryGenerate());
+        quantitySpinner.valueProperty().addListener((obs, old, val) -> tryGenerate());
 
-        // 2. 选项变更监听
-        super.observeChanges(
-                chkUpper.selectedProperty(), chkLower.selectedProperty(),
-                chkDigits.selectedProperty(), chkSpecial.selectedProperty(),
-                excludeField.textProperty()
-        );
+        lowerSwitch.selectedProperty().addListener((obs, old, val) -> tryGenerate());
+        upperSwitch.selectedProperty().addListener((obs, old, val) -> tryGenerate());
+        digitsSwitch.selectedProperty().addListener((obs, old, val) -> tryGenerate());
+        specialSwitch.selectedProperty().addListener((obs, old, val) -> tryGenerate());
 
-        // 绑定所有触发生成的事件
-        chkUpper.selectedProperty().addListener(e -> onGenerate());
-        chkLower.selectedProperty().addListener(e -> onGenerate());
-        chkDigits.selectedProperty().addListener(e -> onGenerate());
-        chkSpecial.selectedProperty().addListener(e -> onGenerate());
-        excludeField.textProperty().addListener(e -> onGenerate());
-
-        // 3. 首次生成
-        onGenerate();
+        excludeField.textProperty().addListener((obs, old, val) -> tryGenerate());
     }
 
+    /**
+     * 点击“生成密码”按钮时调用
+     */
     @FXML
     public void onGenerate() {
-        int length = (int) lengthSlider.getValue();
-        StringBuilder poolBuilder = new StringBuilder();
+        tryGenerate();
+    }
 
-        // 1. 构建基础池
-        if (chkUpper.isSelected()) poolBuilder.append(UPPER);
-        if (chkLower.isSelected()) poolBuilder.append(LOWER);
-        if (chkDigits.isSelected()) poolBuilder.append(DIGITS);
-        if (chkSpecial.isSelected()) poolBuilder.append(SPECIAL);
+    private void tryGenerate() {
+        if (isRestoring) return;
+
+        StringBuilder poolBuilder = new StringBuilder();
+        if (upperSwitch.isSelected()) poolBuilder.append(UPPER);
+        if (lowerSwitch.isSelected()) poolBuilder.append(LOWER);
+        if (digitsSwitch.isSelected()) poolBuilder.append(DIGITS);
+        if (specialSwitch.isSelected()) poolBuilder.append(SPECIAL);
 
         String rawPool = poolBuilder.toString();
 
-        // 2. 处理排除字符 (支持空格分隔，或者直接连写)
         String excludeStr = excludeField.getText();
         if (excludeStr != null && !excludeStr.isEmpty()) {
-            // 去掉空格，把每个字符都当做要排除的对象
-            String toExclude = excludeStr.replace(" ", "");
+            String toExclude = excludeStr.replace(" ", ""); // 允许用户用空格分隔
             for (char c : toExclude.toCharArray()) {
                 rawPool = rawPool.replace(String.valueOf(c), "");
             }
         }
 
-        // 3. 校验池子是否为空
         if (rawPool.isEmpty()) {
-            passwordField.setText("");
-            passwordField.setPromptText("错误：字符池为空，请检查选项");
+            resultArea.setText("错误：字符池为空，请至少选择一种字符类型或减少排除项。");
             return;
         }
 
-        // 4. 生成密码
-        StringBuilder sb = new StringBuilder(length);
+        int length = lengthSpinner.getValue();
+        int quantity = quantitySpinner.getValue();
         char[] pool = rawPool.toCharArray();
 
-        // 简单策略：直接从池中随机取 (对于极高安全要求，应确保每类至少出现一次，
-        // 但对于日常使用，纯随机取在长度>8时概率上基本包含各类字符)
-        for (int i = 0; i < length; i++) {
-            int index = secureRandom.nextInt(pool.length);
-            sb.append(pool[index]);
+        StringBuilder finalOutput = new StringBuilder();
+
+        for (int k = 0; k < quantity; k++) {
+            StringBuilder singlePwd = new StringBuilder(length);
+            for (int i = 0; i < length; i++) {
+                int index = secureRandom.nextInt(pool.length);
+                singlePwd.append(pool[index]);
+            }
+
+            finalOutput.append(singlePwd);
+
+            if (k < quantity - 1) {
+                finalOutput.append("\n");
+            }
         }
 
-        // 5. (可选) 打乱结果 (虽然 SecureRandom 选出来的已经是乱的了，这步主要是心理安慰)
-        // 只有当采用"强制每类字符取一个"策略时，shuffle 才有意义。
-        // 这里采用纯随机策略，所以直接输出即可。
-
-        passwordField.setText(sb.toString());
-        msgLabel.setText(""); // 清空之前的提示
-    }
-
-    @FXML
-    public void onCopy() {
-        String pwd = passwordField.getText();
-        if (pwd == null || pwd.isEmpty()) return;
-
-        ClipboardContent content = new ClipboardContent();
-        content.putString(pwd);
-        Clipboard.getSystemClipboard().setContent(content);
-
-        msgLabel.setText("已复制到剪贴板！");
-        // 2秒后清除提示
-        new Thread(() -> {
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException ignored) {
-            }
-            javafx.application.Platform.runLater(() -> msgLabel.setText(""));
-        }).start();
+        resultArea.setText(finalOutput.toString());
     }
 
     // ================== BaseController 实现 ==================
 
     @Override
     protected String getViewKey() {
-        return "tool.password.generator";
+        return "password_generator";
     }
 
     @Override
-    protected Class<PasswordPersistentState> getStorageType() {
-        return PasswordPersistentState.class;
+    protected List<Observable> getObservables() {
+        return List.of(
+                lengthSpinner.valueProperty(),
+                quantitySpinner.valueProperty(),
+                lowerSwitch.selectedProperty(),
+                upperSwitch.selectedProperty(),
+                digitsSwitch.selectedProperty(),
+                specialSwitch.selectedProperty(),
+                excludeField.textProperty()
+        );
     }
 
     @Override
     protected void restoreValues(PasswordPersistentState state) {
         if (state == null) return;
 
-        lengthSlider.setValue(state.getLength());
-        chkUpper.setSelected(state.isUseUpper());
-        chkLower.setSelected(state.isUseLower());
-        chkDigits.setSelected(state.isUseDigits());
-        chkSpecial.setSelected(state.isUseSpecial());
-        if (state.getExcludeChars() != null) {
-            excludeField.setText(state.getExcludeChars());
-        }
+        isRestoring = true;
+        try {
+            if (lengthSpinner.getValueFactory() != null)
+                lengthSpinner.getValueFactory().setValue(state.getLength());
 
-        // 恢复完状态后，强制刷新一次
-        onGenerate();
+            if (quantitySpinner.getValueFactory() != null)
+                quantitySpinner.getValueFactory().setValue(state.getQuantity());
+
+            lowerSwitch.setSelected(state.isUseLower());
+            upperSwitch.setSelected(state.isUseUpper());
+            digitsSwitch.setSelected(state.isUseDigits());
+            specialSwitch.setSelected(state.isUseSpecial());
+
+            if (state.getExcludeChars() != null) {
+                excludeField.setText(state.getExcludeChars());
+            }
+        } finally {
+            isRestoring = false;
+        }
+        tryGenerate();
     }
 
     @Override
     protected PasswordPersistentState captureValues() {
         PasswordPersistentState state = new PasswordPersistentState();
-        state.setLength((int) lengthSlider.getValue());
-        state.setUseUpper(chkUpper.isSelected());
-        state.setUseLower(chkLower.isSelected());
-        state.setUseDigits(chkDigits.isSelected());
-        state.setUseSpecial(chkSpecial.isSelected());
+        state.setLength(lengthSpinner.getValue());
+        state.setQuantity(quantitySpinner.getValue());
+        state.setUseLower(lowerSwitch.isSelected());
+        state.setUseUpper(upperSwitch.isSelected());
+        state.setUseDigits(digitsSwitch.isSelected());
+        state.setUseSpecial(specialSwitch.isSelected());
         state.setExcludeChars(excludeField.getText());
         return state;
     }

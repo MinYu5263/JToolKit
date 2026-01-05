@@ -32,14 +32,11 @@ public class TextAnalyzerController extends BaseController<TextAnalyzerPersisten
     public void initView() {
         
 
-        // 1. 核心监听：文本变化
         textArea.textProperty().addListener((obs, old, val) -> {
-            // 只有当不是程序(转换按钮)触发的修改时，才视为用户输入，更新原文
             if (!isProgrammaticChange) {
                 originalText = val;
             }
             updateStats();
-            // 自动保存 (注意：这里不需要 BaseController 的 observeChanges，因为我们手动控制更精细)
             saveValues();
         });
 
@@ -211,7 +208,7 @@ public class TextAnalyzerController extends BaseController<TextAnalyzerPersisten
 
     @Override
     protected String getViewKey() {
-        return "tool.text.analyzer";
+        return "text_analyzer";
     }
 
     @Override
