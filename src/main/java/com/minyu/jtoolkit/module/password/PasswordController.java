@@ -158,6 +158,11 @@ public class PasswordController extends BaseController<PasswordPersistentState> 
     }
 
     @Override
+    protected void initDefaultValues() {
+        tryGenerate();
+    }
+
+    @Override
     protected PasswordPersistentState captureValues() {
         PasswordPersistentState state = new PasswordPersistentState();
         state.setLength(lengthSpinner.getValue());
