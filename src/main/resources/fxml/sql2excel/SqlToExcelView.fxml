@@ -16,13 +16,13 @@
         </padding>
 
         <Label text="选择连接:" style="-fx-font-weight: bold;"/>
-        <ComboBox fx:id="profileCombo" promptText="请选择或创建连接..." prefWidth="200"/>
+        <ComboBox fx:id="profileCombo" promptText="请选择或创建连接" prefWidth="200"/>
         <Button text="⚙ 管理连接" onAction="#onManageConnections"/>
 
         <Separator orientation="VERTICAL"/>
 
         <Label text="选择数据库:"/>
-        <ComboBox fx:id="databaseCombo" promptText="等待连接..." prefWidth="200" editable="true"/>
+        <ComboBox fx:id="databaseCombo" promptText="等待连接" prefWidth="200" editable="true"/>
         <Button fx:id="btnRefreshDb" text="⟳" onAction="#onRefreshDatabases">
             <tooltip>
                 <Tooltip text="刷新数据库列表"/>

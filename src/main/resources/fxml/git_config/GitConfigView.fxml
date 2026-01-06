@@ -114,7 +114,7 @@
                         <Insets bottom="10.0" left="5.0" right="5.0" top="10.0"/>
                     </padding>
                     <HBox alignment="CENTER_LEFT" spacing="10.0">
-                        <CustomTextField fx:id="searchConfigField" promptText="搜索配置 Key 或 Value..."
+                        <CustomTextField fx:id="searchConfigField" promptText="搜索配置 Key 或 Value"
                                          HBox.hgrow="ALWAYS">
                             <left>
                                 <Label>

@@ -51,7 +51,7 @@ public class PathEditorDialog extends Dialog<String> {
         rightBar.setPadding(new Insets(0, 0, 0, 10));
 
         Button btnAdd = new Button("新建");
-        Button btnBrowse = new Button("浏览...");
+        Button btnBrowse = new Button("浏览");
         Button btnEdit = new Button("编辑");
         Button btnDelete = new Button("删除");
         Separator sep = new Separator();
@@ -80,7 +80,7 @@ public class PathEditorDialog extends Dialog<String> {
 
         // 新建
         btnAdd.setOnAction(e -> {
-            pathList.add("在此处输入新路径...");
+            pathList.add("在此处输入新路径");
             listView.getSelectionModel().selectLast();
             listView.edit(pathList.size() - 1);
         });

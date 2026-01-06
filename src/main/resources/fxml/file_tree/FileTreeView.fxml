@@ -3,7 +3,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
 <SplitPane dividerPositions="0.25" prefHeight="600.0" prefWidth="900.0"
            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="com.minyu.jtoolkit.module.file_tree.FileTreeController">
@@ -31,8 +30,8 @@
         <padding><Insets top="15" right="15" bottom="15" left="10"/></padding>
 
         <HBox spacing="10.0" alignment="CENTER_LEFT">
-            <TextField fx:id="pathField" promptText="选择文件夹路径..." HBox.hgrow="ALWAYS"/>
-            <Button text="浏览..." onAction="#onBrowse"/>
+            <TextField fx:id="pathField" promptText="选择文件夹路径" HBox.hgrow="ALWAYS"/>
+            <Button text="浏览" onAction="#onBrowse"/>
             <Button text="生成结构树" onAction="#onGenerate"/>
         </HBox>
 

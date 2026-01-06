@@ -86,7 +86,7 @@ public class CronController extends BaseController<CronPersistentState> {
         secCycleStep.valueProperty().addListener(e -> autoGenerate());
         secRangeStart.valueProperty().addListener(e -> autoGenerate());
         secRangeEnd.valueProperty().addListener(e -> autoGenerate());
-        // ... (对所有 Spinner 绑定 autoGenerate)
+        //  (对所有 Spinner 绑定 autoGenerate)
 
         // 文本框手动修改监听
         cronExpressionField.textProperty().addListener((obs, old, newVal) -> {

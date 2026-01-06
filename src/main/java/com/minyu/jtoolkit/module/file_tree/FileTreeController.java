@@ -94,8 +94,8 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
         TreeStyle style = getSelectedStyle();
 
         // 3. 异步执行生成任务
-        statusLabel.setText("生成中...");
-        resultArea.setText("正在扫描文件树，请稍候...");
+        statusLabel.setText("生成中");
+        resultArea.setText("正在扫描文件树，请稍候");
 
         Task<String> task = new Task<>() {
             @Override

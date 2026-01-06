@@ -3,7 +3,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
 <VBox prefHeight="600.0" prefWidth="900.0" spacing="10.0"
       xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.minyu.jtoolkit.module.excel2sql.ExcelToSqlController">
@@ -12,8 +11,8 @@
 
     <HBox spacing="10.0" alignment="CENTER_LEFT">
         <Label text="Excel 文件:"/>
-        <TextField fx:id="filePathField" promptText="拖拽或选择 Excel 文件 (.xlsx, .xls, .csv)..." HBox.hgrow="ALWAYS"/>
-        <Button text="浏览..." onAction="#onBrowse"/>
+        <TextField fx:id="filePathField" promptText="拖拽或选择 Excel 文件 (.xlsx, .xls, .csv)" HBox.hgrow="ALWAYS"/>
+        <Button text="浏览" onAction="#onBrowse"/>
         <ComboBox fx:id="sheetCombo" promptText="选择 Sheet" prefWidth="150"/>
         <Button text="加载预览" onAction="#onLoadPreview"/>
     </HBox>

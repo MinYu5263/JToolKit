@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.minyu.jtoolkit.core.component.ConfigCard?>
+<?import com.minyu.jtoolkit.core.component.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import java.lang.String?>
+<?import java.lang.*?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21"
       fx:controller="com.minyu.jtoolkit.module.settings.SettingsController"
       fx:id="rootBox"
@@ -14,63 +14,51 @@
 
     <VBox spacing="10.0">
         <ConfigCard title="主题" description="选择要使用的应用主题">
-            <action>
-                <ComboBox fx:id="themeCombo" prefWidth="200"/>
-            </action>
+            <ComboBox fx:id="themeCombo" prefWidth="200"/>
         </ConfigCard>
         <ConfigCard title="字体大小" description="调整全局字体大小">
-            <action>
-                <Spinner fx:id="fontSizeSpinner" prefWidth="120"/>
-            </action>
+            <Spinner fx:id="fontSizeSpinner" prefWidth="120"/>
         </ConfigCard>
         <ConfigCard title="搜索快捷键" description="点击输入框并按下组合键（支持 Ctrl, Alt, Shift）">
-            <action>
-                <TextField fx:id="shortcutField" prefWidth="200" editable="false" promptText="点击录制快捷键..."/>
-            </action>
+            <TextField fx:id="shortcutField" prefWidth="200" editable="false" promptText="点击录制快捷键"/>
         </ConfigCard>
         <ConfigCard title="应用数据">
-            <action>
-                <Button text="打开目录" onAction="#onOpenDataDir">
-                    <graphic>
-                    </graphic>
-                    <styleClass>
-                        <String fx:value="button-outlined"/>
-                        <String fx:value="accent"/>
-                    </styleClass>
-                    <tooltip>
-                        <Tooltip text="定位到 app_data.json 所在文件夹"/>
-                    </tooltip>
-                </Button>
-            </action>
+            <Button text="打开目录" onAction="#onOpenDataDir">
+                <graphic>
+                </graphic>
+                <styleClass>
+                    <String fx:value="button-outlined"/>
+                    <String fx:value="accent"/>
+                </styleClass>
+                <tooltip>
+                    <Tooltip text="定位到 app_data.json 所在文件夹"/>
+                </tooltip>
+            </Button>
         </ConfigCard>
         <ConfigCard title="清空数据" description="">
-            <action>
-                <HBox spacing="10">
-                    <Button text="仅清除页面数据" onAction="#onClearPageData">
-                        <styleClass>
-                            <String fx:value="button-outlined"/>
-                            <String fx:value="danger"/>
-                        </styleClass>
-                        <tooltip>
-                            <Tooltip text="保留主题和快捷键设置，清除其他缓存"/>
-                        </tooltip>
-                    </Button>
+            <HBox spacing="10">
+                <Button text="仅清除页面数据" onAction="#onClearPageData">
+                    <styleClass>
+                        <String fx:value="button-outlined"/>
+                        <String fx:value="danger"/>
+                    </styleClass>
+                    <tooltip>
+                        <Tooltip text="保留主题和快捷键设置，清除其他缓存"/>
+                    </tooltip>
+                </Button>
 
-                    <Button text="清空所有数据" onAction="#onClearAllData">
-                        <styleClass>
-                            <String fx:value="danger"/>
-                        </styleClass>
-                    </Button>
-                </HBox>
-            </action>
+                <Button text="清空所有数据" onAction="#onClearAllData">
+                    <styleClass>
+                        <String fx:value="danger"/>
+                    </styleClass>
+                </Button>
+            </HBox>
         </ConfigCard>
         <ConfigCard title="重启应用">
-            <action>
-                <HBox spacing="10">
-                    <Button text="立即重启" onAction="#onRestartApp"/>
-                    <Button text="以管理员身份重启" onAction="#onRestartAsAdmin"/>
-                </HBox>
-            </action>
+            <HBox spacing="10">
+                <Button text="立即重启" onAction="#onRestartApp"/>
+                <Button text="以管理员身份重启" onAction="#onRestartAsAdmin"/>
+            </HBox>
         </ConfigCard>
     </VBox>
 </VBox>

@@ -146,7 +146,7 @@ public class RegexController extends BaseController<RegexPersistentState> {
         swIgnoreCase.selectedProperty().addListener(e -> {
             if (btnToggleView.isSelected()) runRegex();
         });
-        // ... (其他开关同理，可根据需要添加)
+        //  (其他开关同理，可根据需要添加)
     }
 
     /**

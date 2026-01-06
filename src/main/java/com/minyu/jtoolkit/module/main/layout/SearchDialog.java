@@ -43,7 +43,7 @@ public final class SearchDialog extends ModalDialog {
     }
 
     private VBox createContent() {
-        var placeholder = new Label("Type to search...");
+        var placeholder = new Label("Type to search");
         placeholder.getStyleClass().addAll(Styles.TITLE_4, Styles.TEXT_MUTED);
 
         searchField = new CustomTextField();

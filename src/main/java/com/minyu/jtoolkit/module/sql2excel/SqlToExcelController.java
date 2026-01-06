@@ -113,7 +113,7 @@ public class SqlToExcelController extends BaseController<SqlToExcelPersistentSta
         DbConnectionProfile profile = profileCombo.getValue();
         if (profile == null) return;
 
-        connStatusLabel.setText("正在连接服务器...");
+        connStatusLabel.setText("正在连接服务器");
         connStatusLabel.setStyle("-fx-text-fill: orange;");
         databaseCombo.setDisable(true);
 
@@ -221,7 +221,7 @@ public class SqlToExcelController extends BaseController<SqlToExcelPersistentSta
             return;
         }
 
-        previewStatusLabel.setText("查询中...");
+        previewStatusLabel.setText("查询中");
         previewTable.getItems().clear();
         previewTable.getColumns().clear();
 
@@ -276,7 +276,7 @@ public class SqlToExcelController extends BaseController<SqlToExcelPersistentSta
 
     @FXML
     public void onBatchExport() {
-        // ... (与之前逻辑基本一致，只需修改获取 Connection 的部分) ...
+        //  (与之前逻辑基本一致，只需修改获取 Connection 的部分) 
         // 使用 createConnection(profileCombo.getValue(), databaseCombo.getValue())
         // 此处为了节省篇幅，省略重复代码，请参考上一版本 onBatchExport，仅替换获取连接逻辑即可。
         if (tasks.isEmpty()) return;
@@ -292,7 +292,7 @@ public class SqlToExcelController extends BaseController<SqlToExcelPersistentSta
         File file = fc.showSaveDialog(editorArea.getScene().getWindow());
         if(file == null) return;
 
-        connStatusLabel.setText("导出中...");
+        connStatusLabel.setText("导出中");
 
         Task<Void> task = new Task<>() {
             @Override
@@ -395,7 +395,8 @@ public class SqlToExcelController extends BaseController<SqlToExcelPersistentSta
 
         btnNew.setOnAction(e -> {
             list.getSelectionModel().clearSelection();
-            nameField.clear(); nameField.setPromptText("新连接...");
+            nameField.clear();
+            nameField.setPromptText("新连接");
             hostField.setText("localhost"); userField.clear(); passField.clear();
         });
 

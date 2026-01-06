@@ -314,11 +314,11 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
 
         // 变量值输入框 (改为 TextField 以匹配单行路径的 UI 风格)
         TextField valueField = new TextField(value);
-        valueField.setPromptText("变量值路径...");
+        valueField.setPromptText("变量值路径");
 
         // --- 新增：浏览按钮栏 ---
-        Button btnBrowseDir = new Button("浏览目录(D)...");
-        Button btnBrowseFile = new Button("浏览文件(F)...");
+        Button btnBrowseDir = new Button("浏览目录(D)");
+        Button btnBrowseFile = new Button("浏览文件(F)");
 
         // 浏览目录逻辑
         btnBrowseDir.setOnAction(e -> {

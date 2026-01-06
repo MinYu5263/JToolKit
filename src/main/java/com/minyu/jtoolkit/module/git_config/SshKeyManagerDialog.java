@@ -56,7 +56,7 @@ public class SshKeyManagerDialog extends Dialog<Void> {
         keyList.getSelectionModel().selectedItemProperty().addListener((obs, old, newVal) -> loadKeyContent(newVal));
         VBox.setVgrow(keyList, Priority.ALWAYS);
 
-        Button btnGenerate = new Button("生成新密钥...");
+        Button btnGenerate = new Button("生成新密钥");
         btnGenerate.setMaxWidth(Double.MAX_VALUE);
         btnGenerate.setOnAction(e -> showGenerateDialog());
 
@@ -68,7 +68,7 @@ public class SshKeyManagerDialog extends Dialog<Void> {
 
         keyContentArea.setEditable(false);
         keyContentArea.setWrapText(true);
-        keyContentArea.setPromptText("公钥内容将显示在这里...");
+        keyContentArea.setPromptText("公钥内容将显示在这里");
         VBox.setVgrow(keyContentArea, Priority.ALWAYS);
 
         Button btnCopy = new Button("复制到剪贴板");

@@ -19,4 +19,8 @@
     <EnhancedTextField fx:id="decField" title="十进制"/>
     <EnhancedTextField fx:id="octField" title="八进制"/>
     <EnhancedTextField fx:id="binField" title="二进制"/>
+
+    <PathTextField/>
+
+    <PathTextField pickerMode="DIRECTORY"/>
 </VBox>

@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import atlantafx.base.controls.ToggleSwitch?>
-<?import com.minyu.jtoolkit.core.component.ConfigCard?>
-<?import com.minyu.jtoolkit.core.component.ConfigGroup?>
+<?import atlantafx.base.controls.*?>
+<?import com.minyu.jtoolkit.core.component.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.TextFlow?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
-
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.minyu.jtoolkit.module.regex.RegexController"
@@ -16,39 +14,25 @@
 
     <ConfigGroup title="匹配选项 (Options)" expanded="false">
         <ConfigCard title="全部匹配 (Global)" description="查找文本中的所有匹配项">
-            <action>
-                <ToggleSwitch fx:id="swGlobal" selected="true"/>
-            </action>
+            <ToggleSwitch fx:id="swGlobal" selected="true"/>
         </ConfigCard>
         <ConfigCard title="忽略大小写 (Case Insensitive)" description="启用 Pattern.CASE_INSENSITIVE">
-            <action>
-                <ToggleSwitch fx:id="swIgnoreCase"/>
-            </action>
+            <ToggleSwitch fx:id="swIgnoreCase"/>
         </ConfigCard>
         <ConfigCard title="多行模式 (Multiline)" description="^ 和 $ 匹配每一行的开头和结尾">
-            <action>
-                <ToggleSwitch fx:id="swMultiline"/>
-            </action>
+            <ToggleSwitch fx:id="swMultiline"/>
         </ConfigCard>
         <ConfigCard title="单行模式 (DotAll)" description="点 (.) 匹配所有字符，包括换行符">
-            <action>
-                <ToggleSwitch fx:id="swDotAll"/>
-            </action>
+            <ToggleSwitch fx:id="swDotAll"/>
         </ConfigCard>
         <ConfigCard title="忽略空白符 (Comments)" description="允许正则中使用空格和注释">
-            <action>
-                <ToggleSwitch fx:id="swComments"/>
-            </action>
+            <ToggleSwitch fx:id="swComments"/>
         </ConfigCard>
         <ConfigCard title="Unicode 支持" description="启用 Unicode 字符类">
-            <action>
-                <ToggleSwitch fx:id="swUnicode"/>
-            </action>
+            <ToggleSwitch fx:id="swUnicode"/>
         </ConfigCard>
         <ConfigCard title="规范等价 (Canon Eq)" description="考虑 Unicode 规范等价性">
-            <action>
-                <ToggleSwitch fx:id="swCanonEq"/>
-            </action>
+            <ToggleSwitch fx:id="swCanonEq"/>
         </ConfigCard>
     </ConfigGroup>
 
@@ -80,7 +64,7 @@
 
         <StackPane VBox.vgrow="ALWAYS" alignment="TOP_RIGHT">
 
-            <TextArea fx:id="sourceTextArea" promptText="在此输入或粘贴文本..." wrapText="false"
+            <TextArea fx:id="sourceTextArea" promptText="在此输入或粘贴文本" wrapText="false"
                       style="-fx-font-family: 'JetBrains Mono', 'Consolas', 'Monospaced'; -fx-font-size: 14px;"/>
 
             <ScrollPane fx:id="highlightScroll" fitToWidth="true" fitToHeight="true" visible="false"

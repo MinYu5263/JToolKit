@@ -108,7 +108,7 @@ public class XmlController extends BaseController<XmlPersistentState> {
         } catch (Exception e) {
             // 简单提示，XML 报错通常很长，截取一下
             String msg = e.getMessage();
-            outputArea.setText("XML 格式错误: \n" + (msg.length() > 200 ? msg.substring(0, 200) + "..." : msg));
+            outputArea.setText("XML 格式错误: \n" + (msg.length() > 200 ? msg.substring(0, 200) + "" : msg));
         }
     }
 
@@ -146,7 +146,7 @@ public class XmlController extends BaseController<XmlPersistentState> {
 
         // 设置输出属性
         transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no"); // 保留头部 <?xml...?>
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no"); // 保留头部 <?xml?>
         transformer.setOutputProperty(OutputKeys.INDENT, indent ? "yes" : "no");
 
         // 标准属性设置缩进大小

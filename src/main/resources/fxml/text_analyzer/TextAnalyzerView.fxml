@@ -3,7 +3,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
 <VBox prefHeight="650.0" prefWidth="900.0" spacing="10.0"
       xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.minyu.jtoolkit.module.text_analyzer.TextAnalyzerController">
@@ -41,7 +40,7 @@
                 <Button text="复制" onAction="#onCopy"/>
                 <Button text="粘贴" onAction="#onPaste"/>
             </HBox>
-            <TextArea fx:id="textArea" promptText="在此输入或粘贴文本..." wrapText="true" VBox.vgrow="ALWAYS"/>
+            <TextArea fx:id="textArea" promptText="在此输入或粘贴文本" wrapText="true" VBox.vgrow="ALWAYS"/>
         </VBox>
 
         <VBox spacing="10.0" minWidth="200">

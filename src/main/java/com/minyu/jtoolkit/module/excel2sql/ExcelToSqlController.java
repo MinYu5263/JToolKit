@@ -77,7 +77,7 @@ public class ExcelToSqlController extends BaseController<ExcelToSqlPersistentSta
     private void loadFile(File file) {
         currentFile = file;
         filePathField.setText(file.getAbsolutePath());
-        statusLabel.setText("正在读取 Sheet...");
+        statusLabel.setText("正在读取 Sheet");
 
         // 异步读取 Sheet 列表
         new Thread(() -> {
@@ -159,7 +159,7 @@ public class ExcelToSqlController extends BaseController<ExcelToSqlPersistentSta
 
         String columnsStr = validCols.stream().map(ColumnMapping::getDbField).collect(Collectors.joining(", "));
 
-        statusLabel.setText("生成 SQL 中...");
+        statusLabel.setText("生成 SQL 中");
 
         // 异步任务生成 SQL
         Task<String> task = new Task<>() {
