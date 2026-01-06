@@ -1,0 +1,8 @@
+.path-text-field > .right-pane > .button-icon {
+    -fx-background-insets: 2px;
+    -fx-padding: 4px 8px;
+}
+
+.path-text-field > .right-pane > .button-icon:hover {
+    -fx-background-color: -color-accent-subtle;
+}
