@@ -12,13 +12,16 @@
 
     <BorderPane fx:id="mainLayout">
         <center>
-            <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER">
-                <StackPane fx:id="contentArea">
-                    <padding>
-                        <Insets top="20" right="20" bottom="20" left="20"/>
-                    </padding>
-                </StackPane>
-            </ScrollPane>
+            <StackPane>
+                <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="NEVER">
+                    <StackPane fx:id="contentArea">
+                        <padding>
+                            <Insets top="20" right="20" bottom="20" left="20"/>
+                        </padding>
+                    </StackPane>
+                </ScrollPane>
+                <ModalPane id="content-modal-pane"/>
+            </StackPane>
         </center>
     </BorderPane>
 

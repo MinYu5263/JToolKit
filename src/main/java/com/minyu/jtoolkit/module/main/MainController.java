@@ -51,6 +51,15 @@ public class MainController {
 
         model.selectedPageProperty().addListener((obs, oldVal, newVal) -> {
             if (StringUtils.isNotBlank(newVal)) {
+                var modalPane = (ModalPane) mainLayout.getScene().lookup("#content-modal-pane");
+                if (modalPane == null) {
+                    throw new IllegalStateException(
+                            "ModalPane not found. Check FXML id='content-modal-pane'"
+                    );
+                }
+                if (modalPane.isDisplay()) {
+                    modalPane.hide();
+                }
                 loadView(newVal);
             }
         });
