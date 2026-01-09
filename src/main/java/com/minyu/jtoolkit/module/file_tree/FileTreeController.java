@@ -5,10 +5,10 @@ import atlantafx.base.controls.Tile;
 import atlantafx.base.controls.ToggleSwitch;
 import atlantafx.base.layout.ModalBox;
 import atlantafx.base.theme.Styles;
-import com.minyu.jtoolkit.core.component.ConfigGroup;
 import com.minyu.jtoolkit.core.component.EnhancedTextArea;
 import com.minyu.jtoolkit.core.component.PathTextField;
 import com.minyu.jtoolkit.module.BaseController;
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -41,8 +41,6 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
     // 配置区域
     @FXML
     private ComboBox<TreeStyle> styleCombo;
-    @FXML
-    private ConfigGroup depthGroup;
     @FXML
     private ToggleSwitch noLimitSwitch; // 无限制开关
     @FXML
@@ -91,11 +89,8 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
         depthSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 20, 2));
 
         noLimitSwitch.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            depthSpinner.setDisable(!noLimitSwitch.isSelected());
-            depthGroup.setExpanded(noLimitSwitch.isSelected());
+            depthSpinner.setDisable(noLimitSwitch.isSelected());
         });
-        // 也可以选择在无限制开启时折叠 ConfigGroup 的内部 (取决于 ConfigGroup 实现)
-        // noLimitSwitch.selectedProperty().addListener((obs, old, val) -> depthGroup.setExpanded(!val));
 
         // 4. 忽略列表按钮交互
         editIgnoreBtn.setOnAction(e -> openIgnoreEditor());
@@ -103,9 +98,15 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
         // 5. 历史记录按钮交互
         historyBtn.setOnAction(e -> showHistoryDialog());
 
-        // 6. 注册自动保存
-        super.observeChanges(historyData, ignoreField.textProperty(),
-                noLimitSwitch.selectedProperty(), dirsOnlySwitch.selectedProperty());
+        dirsOnlySwitch.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            onGenerate();
+        });
+        depthSpinner.promptTextProperty().addListener((observable, oldValue, newValue) -> {
+            onGenerate();
+        });
+        ignoreField.textProperty().addListener((observable, oldValue, newValue) -> {
+            onGenerate();
+        });
     }
 
     // ================== 核心交互 ==================
@@ -178,6 +179,7 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
         }
 
         ListView<FileTreePersistentState.HistoryItem> listView = new ListView<>();
+        listView.setItems(historyData);
         HBox.setHgrow(listView, Priority.ALWAYS);
         VBox.setVgrow(listView, Priority.ALWAYS);
         listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -250,7 +252,7 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
 
         ModalBox modalBox = new ModalBox();
         modalBox.addContent(vBox);
-        modalBox.setMaxSize(500, 400);
+        modalBox.setMaxSize(500, 350);
         modalBox.setOnClose(e -> modalPane.hide());
 
         // 让子节点撑满整个容器
@@ -333,12 +335,21 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
         }
     }
 
+    // ================== BaseController 实现 ==================
     @Override
     protected String getViewKey() {
         return "file_tree_generator";
     }
 
-    // ================== BaseController 实现 ==================
+    // 注册触发自动保存
+    @Override
+    protected List<Observable> getObservables() {
+        return List.of(
+                historyData,
+                ignoreField.textProperty(),
+                noLimitSwitch.selectedProperty(),
+                dirsOnlySwitch.selectedProperty());
+    }
 
     @Override
     protected void restoreValues(FileTreePersistentState state) {

@@ -11,7 +11,7 @@
 
     <Label text="选择路径"/>
     <HBox spacing="10">
-        <PathTextField fx:id="pathField" HBox.hgrow="ALWAYS"/>
+        <PathTextField fx:id="pathField" pickerMode="DIRECTORY" editable="false" HBox.hgrow="ALWAYS"/>
         <Button fx:id="historyBtn" text="历史记录"/>
     </HBox>
 
@@ -20,14 +20,12 @@
         <ConfigCard title="格式">
             <ComboBox fx:id="styleCombo"/> <!--ASCII、图标、无序列表-->
         </ConfigCard>
-        <ConfigGroup fx:id="depthGroup" title="深度">
-            <action>
-                <ToggleSwitch fx:id="noLimitSwitch" text="无限制"/><!--开启时展开子项，关闭时折叠子项-->
-            </action>
-            <ConfigCard title="层级">
-                <Spinner fx:id="depthSpinner" prefWidth="120"/>
-            </ConfigCard>
-        </ConfigGroup>
+        <ConfigCard title="层级">
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <ToggleSwitch fx:id="noLimitSwitch" text="无限制" selected="false"/>
+                <Spinner fx:id="depthSpinner" prefWidth="120" disable="true"/>
+            </HBox>
+        </ConfigCard>
         <ConfigCard title="只显示文件夹">
             <ToggleSwitch fx:id="dirsOnlySwitch" selected="false"/>
         </ConfigCard>
