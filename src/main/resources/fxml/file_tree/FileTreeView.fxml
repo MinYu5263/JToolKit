@@ -4,6 +4,8 @@
 <?import com.minyu.jtoolkit.core.component.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import java.lang.String?>
 <VBox xmlns:fx="http://javafx.com/fxml/1"
       xmlns="http://javafx.com/javafx/21"
       fx:controller="com.minyu.jtoolkit.module.file_tree.FileTreeController"
@@ -12,24 +14,28 @@
     <Label text="选择路径"/>
     <HBox spacing="10">
         <PathTextField fx:id="pathField" pickerMode="DIRECTORY" editable="false" HBox.hgrow="ALWAYS"/>
-        <Button fx:id="historyBtn" text="历史记录"/>
+        <Button fx:id="historyBtn" text="历史记录" styleClass="button-icon">
+            <graphic>
+                <FontIcon iconLiteral="fth-clock"/>
+            </graphic>
+        </Button>
     </HBox>
 
     <Label text="配置"/>
     <ConfigGroup title="选项" expanded="false">
         <ConfigCard title="格式">
-            <ComboBox fx:id="styleCombo"/> <!--ASCII、图标、无序列表-->
+            <ComboBox fx:id="styleCombo"/>
         </ConfigCard>
         <ConfigCard title="层级">
             <HBox spacing="10" alignment="CENTER_RIGHT">
-                <ToggleSwitch fx:id="noLimitSwitch" text="无限制" selected="false"/>
+                <ToggleSwitch fx:id="noLimitSwitch" text="无限制" selected="true"/>
                 <Spinner fx:id="depthSpinner" prefWidth="120" disable="true"/>
             </HBox>
         </ConfigCard>
         <ConfigCard title="只显示文件夹">
             <ToggleSwitch fx:id="dirsOnlySwitch" selected="false"/>
         </ConfigCard>
-        <ConfigCard title="忽略配置" description="每个配置都用[]包裹, 并用逗号隔开">
+        <ConfigCard title="忽略配置" description="每个配置用逗号隔开">
             <HBox spacing="10">
                 <TextField fx:id="ignoreField"/>
                 <Button fx:id="editIgnoreBtn" text="打开列表"/>

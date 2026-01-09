@@ -26,5 +26,6 @@
     </BorderPane>
 
     <ModalPane fx:id="modalPane" id="main-modal-pane"/>
+    <ModalPane id="main-modal-pane-1"/>
 
 </StackPane>
