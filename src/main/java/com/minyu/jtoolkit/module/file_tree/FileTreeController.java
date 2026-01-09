@@ -17,6 +17,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -88,8 +89,11 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
 
         // 3. 初始化深度设置
         depthSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 20, 2));
-        // 当"无限制"开启时，禁用数字输入框
-        depthSpinner.disableProperty().bind(noLimitSwitch.selectedProperty());
+
+        noLimitSwitch.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            depthSpinner.setDisable(!noLimitSwitch.isSelected());
+            depthGroup.setExpanded(noLimitSwitch.isSelected());
+        });
         // 也可以选择在无限制开启时折叠 ConfigGroup 的内部 (取决于 ConfigGroup 实现)
         // noLimitSwitch.selectedProperty().addListener((obs, old, val) -> depthGroup.setExpanded(!val));
 
@@ -175,9 +179,7 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
 
         ListView<FileTreePersistentState.HistoryItem> listView = new ListView<>();
         HBox.setHgrow(listView, Priority.ALWAYS);
-        listView.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        listView.setItems(historyData);
-
+        VBox.setVgrow(listView, Priority.ALWAYS);
         listView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             pathField.setText(newValue.getPath());
         });
@@ -190,8 +192,14 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
 
         ModalBox modalBox = new ModalBox();
         modalBox.addContent(vBox);
-        modalBox.setMaxWidth(300);
+        modalBox.setMaxWidth(270);
         modalBox.setOnClose(e -> modalPane.hide());
+
+        // 让子节点撑满整个容器
+        AnchorPane.setTopAnchor(vBox, 0.0);
+        AnchorPane.setBottomAnchor(vBox, 0.0);
+        AnchorPane.setLeftAnchor(vBox, 0.0);
+        AnchorPane.setRightAnchor(vBox, 0.0);
 
         modalPane.setAlignment(Pos.CENTER_RIGHT);
         modalPane.usePredefinedTransitionFactories(Side.RIGHT);
@@ -235,18 +243,21 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
 
         HBox footer = new HBox(10, btnCancel, btnOk);
         footer.setAlignment(Pos.CENTER_RIGHT);
-        footer.setPadding(new Insets(10, 0, 0, 0));
 
         VBox vBox = new VBox(10);
         vBox.setPadding(new Insets(10));
         vBox.getChildren().addAll(tile, textArea, footer);
-        HBox.setHgrow(vBox, Priority.ALWAYS);
 
         ModalBox modalBox = new ModalBox();
         modalBox.addContent(vBox);
         modalBox.setMaxSize(500, 400);
-        // modalBox.setMinSize(500,400);
         modalBox.setOnClose(e -> modalPane.hide());
+
+        // 让子节点撑满整个容器
+        AnchorPane.setTopAnchor(vBox, 0.0);
+        AnchorPane.setBottomAnchor(vBox, 0.0);
+        AnchorPane.setLeftAnchor(vBox, 0.0);
+        AnchorPane.setRightAnchor(vBox, 0.0);
 
         modalPane.setAlignment(Pos.CENTER);
         modalPane.usePredefinedTransitionFactories(null);
