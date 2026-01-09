@@ -1,5 +1,6 @@
 package com.minyu.jtoolkit.core.component;
 
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.TextArea;
@@ -44,5 +45,18 @@ public class EnhancedTextArea extends EnhancedInputBase<TextArea> {
 
     public final void setAreaStyle(String areaStyle) {
         this.areaStyle.set(areaStyle);
+    }
+
+    public final DoubleProperty scrollLeftProperty() {
+        return inputControl.scrollLeftProperty();
+    }
+
+    public final DoubleProperty scrollTopProperty() {
+        return inputControl.scrollTopProperty();
+    }
+
+    public final void bindBidirectionalScrollAll(EnhancedTextArea enhancedTextArea) {
+        inputControl.scrollTopProperty().bindBidirectional(enhancedTextArea.scrollTopProperty());
+        inputControl.scrollLeftProperty().bindBidirectional(enhancedTextArea.scrollLeftProperty());
     }
 }

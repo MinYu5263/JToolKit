@@ -49,6 +49,8 @@ public class YamlPropsController extends BaseController<YamlPropsPersistentState
             }
         });
         sourceInput.textProperty().addListener((obs, old, newVal) -> tryConvert());
+
+        sourceInput.bindBidirectionalScrollAll(targetOutput);
     }
 
     // ================== 核心转换逻辑 ==================

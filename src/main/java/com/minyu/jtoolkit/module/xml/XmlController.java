@@ -63,6 +63,10 @@ public class XmlController extends BaseController<XmlPersistentState> {
         inputArea.textProperty().addListener((o, old, val) -> formatDebounce.playFromStart());
         indentCombo.valueProperty().addListener((o, old, val) -> performFormat());
         compactSwitch.selectedProperty().addListener((o, old, val) -> performFormat());
+
+        // 同步滚动
+        inputArea.scrollTopProperty().bindBidirectional(outputArea.scrollTopProperty());
+        inputArea.scrollLeftProperty().bindBidirectional(outputArea.scrollLeftProperty());
     }
 
     private void initIndentCombo() {
