@@ -91,15 +91,6 @@ public abstract class BaseController<T extends PersistentState> implements Initi
     protected abstract T captureValues();
 
     /**
-     * 注册需监听的组件，变更时触发自动保存
-     */
-    protected void observeChanges(Observable... observables) {
-        for (Observable obs : observables) {
-            obs.addListener(observable -> autoSaveTimer.playFromStart());
-        }
-    }
-
-    /**
      * 获取视图状态在存储中的唯一标识
      */
     protected abstract String getViewKey();

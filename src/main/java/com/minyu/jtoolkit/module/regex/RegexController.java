@@ -2,6 +2,7 @@ package com.minyu.jtoolkit.module.regex;
 
 import atlantafx.base.controls.ToggleSwitch;
 import com.minyu.jtoolkit.module.BaseController;
+import javafx.beans.Observable;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
@@ -10,6 +11,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -120,19 +122,6 @@ public class RegexController extends BaseController<RegexPersistentState> {
     }
 
     private void registerListeners() {
-        // 自动保存 (仅存数据，不存UI临时状态)
-        super.observeChanges(
-                regexField.textProperty(),
-                sourceTextArea.textProperty(),
-                swGlobal.selectedProperty(),
-                swIgnoreCase.selectedProperty(),
-                swMultiline.selectedProperty(),
-                swDotAll.selectedProperty(),
-                swComments.selectedProperty(),
-                swUnicode.selectedProperty(),
-                swCanonEq.selectedProperty()
-        );
-
         // 实时监听输入
         regexField.textProperty().addListener(e -> {
             if (btnToggleView.isSelected()) runRegex(); // 预览模式下实时渲染高亮
@@ -278,8 +267,18 @@ public class RegexController extends BaseController<RegexPersistentState> {
     }
 
     @Override
-    protected Class<RegexPersistentState> getStorageType() {
-        return RegexPersistentState.class;
+    protected List<Observable> getObservables() {
+        return List.of(
+                regexField.textProperty(),
+                sourceTextArea.textProperty(),
+                swGlobal.selectedProperty(),
+                swIgnoreCase.selectedProperty(),
+                swMultiline.selectedProperty(),
+                swDotAll.selectedProperty(),
+                swComments.selectedProperty(),
+                swUnicode.selectedProperty(),
+                swCanonEq.selectedProperty()
+        );
     }
 
     @Override

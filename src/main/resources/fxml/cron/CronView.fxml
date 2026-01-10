@@ -4,112 +4,540 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox prefHeight="600.0" prefWidth="800.0" spacing="10.0"
-      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      spacing="10"
       fx:controller="com.minyu.jtoolkit.module.cron.CronController">
 
-    <padding>
-        <Insets top="15" right="15" bottom="15" left="15"/>
-    </padding>
+    <Label text="定时任务配置"/>
 
-    <TitledPane text="Cron 表达式结果" collapsible="false">
-        <HBox spacing="10.0" alignment="CENTER_LEFT">
-            <TextField fx:id="cronExpressionField" text="* * * * * ? *" HBox.hgrow="ALWAYS"
-                       style="-fx-font-family: 'Consolas', 'Monospaced'; -fx-font-size: 14px;"/>
-            <Button text="复制" onAction="#onCopy"/>
-            <Button text="解析运行时间" onAction="#onParse"/>
-        </HBox>
-    </TitledPane>
+    <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
 
-    <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
-
-        <Tab text="秒 (Seconds)" fx:id="tabSecond">
+        <Tab text="秒">
             <VBox spacing="10.0">
-                <padding><Insets top="10" left="10"/></padding>
+                <padding>
+                    <Insets top="10"/>
+                </padding>
+
                 <fx:define>
                     <ToggleGroup fx:id="secGroup"/>
                 </fx:define>
 
-                <RadioButton fx:id="secTypeEvery" text="每秒 允许的通配符[, - * /]" toggleGroup="$secGroup" selected="true"/>
+                <RadioButton fx:id="secTypeEvery" text="每秒: 允许的通配符[, - * /]" toggleGroup="$secGroup" selected="true"/>
 
-                <HBox spacing="5.0" alignment="CENTER_LEFT">
-                    <RadioButton fx:id="secTypeCycle" text="周期:" toggleGroup="$secGroup"/>
-                    <Label text="从第"/>
-                    <Spinner fx:id="secCycleStart" prefWidth="70" editable="true"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <RadioButton fx:id="secTypeRange" text="周期:" toggleGroup="$secGroup"/>
+                    <Label text="从"/>
+                    <Spinner fx:id="secRangeStart" prefWidth="120" editable="true"/>
+                    <Label text="到"/>
+                    <Spinner fx:id="secRangeEnd" prefWidth="120" editable="true"/>
+                    <Label text="秒"/>
+                </HBox>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <RadioButton fx:id="secTypeIncrement" text="循环:" toggleGroup="$secGroup"/>
+                    <Label text="从"/>
+                    <Spinner fx:id="secIncrementStart" prefWidth="120" editable="true"/>
                     <Label text="秒开始，每"/>
-                    <Spinner fx:id="secCycleStep" prefWidth="70" editable="true"/>
+                    <Spinner fx:id="secIncrementStep" prefWidth="120" editable="true"/>
                     <Label text="秒执行一次"/>
                 </HBox>
 
-                <HBox spacing="5.0" alignment="CENTER_LEFT">
-                    <RadioButton fx:id="secTypeRange" text="区间:" toggleGroup="$secGroup"/>
-                    <Label text="从第"/>
-                    <Spinner fx:id="secRangeStart" prefWidth="70" editable="true"/>
-                    <Label text="秒 到 第"/>
-                    <Spinner fx:id="secRangeEnd" prefWidth="70" editable="true"/>
-                    <Label text="秒"/>
-                </HBox>
+                <VBox spacing="10">
+                    <RadioButton fx:id="secTypeSpecific" text="指定:" toggleGroup="$secGroup"/>
+                    <VBox fx:id="secSpecificContainer">
+                        <padding>
+                            <Insets left="20"/>
+                        </padding>
+                        <HBox spacing="10">
+                            <CheckBox text="00"/>
+                            <CheckBox text="01"/>
+                            <CheckBox text="02"/>
+                            <CheckBox text="03"/>
+                            <CheckBox text="04"/>
+                            <CheckBox text="05"/>
+                            <CheckBox text="06"/>
+                            <CheckBox text="07"/>
+                            <CheckBox text="08"/>
+                            <CheckBox text="09"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <CheckBox text="10"/>
+                            <CheckBox text="11"/>
+                            <CheckBox text="12"/>
+                            <CheckBox text="13"/>
+                            <CheckBox text="14"/>
+                            <CheckBox text="15"/>
+                            <CheckBox text="16"/>
+                            <CheckBox text="17"/>
+                            <CheckBox text="18"/>
+                            <CheckBox text="19"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <CheckBox text="20"/>
+                            <CheckBox text="21"/>
+                            <CheckBox text="22"/>
+                            <CheckBox text="23"/>
+                            <CheckBox text="24"/>
+                            <CheckBox text="25"/>
+                            <CheckBox text="26"/>
+                            <CheckBox text="27"/>
+                            <CheckBox text="28"/>
+                            <CheckBox text="29"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <CheckBox text="30"/>
+                            <CheckBox text="31"/>
+                            <CheckBox text="32"/>
+                            <CheckBox text="33"/>
+                            <CheckBox text="34"/>
+                            <CheckBox text="35"/>
+                            <CheckBox text="36"/>
+                            <CheckBox text="37"/>
+                            <CheckBox text="38"/>
+                            <CheckBox text="39"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <CheckBox text="40"/>
+                            <CheckBox text="41"/>
+                            <CheckBox text="42"/>
+                            <CheckBox text="43"/>
+                            <CheckBox text="44"/>
+                            <CheckBox text="45"/>
+                            <CheckBox text="46"/>
+                            <CheckBox text="47"/>
+                            <CheckBox text="48"/>
+                            <CheckBox text="49"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <CheckBox text="50"/>
+                            <CheckBox text="51"/>
+                            <CheckBox text="52"/>
+                            <CheckBox text="53"/>
+                            <CheckBox text="54"/>
+                            <CheckBox text="55"/>
+                            <CheckBox text="56"/>
+                            <CheckBox text="57"/>
+                            <CheckBox text="58"/>
+                            <CheckBox text="59"/>
+                        </HBox>
+                    </VBox>
+                </VBox>
             </VBox>
         </Tab>
 
-        <Tab text="分 (Minutes)" fx:id="tabMinute">
+        <Tab text="分钟">
             <VBox spacing="10.0">
-                <padding><Insets top="10" left="10"/></padding>
+                <padding>
+                    <Insets top="10"/>
+                </padding>
+
                 <fx:define>
                     <ToggleGroup fx:id="minGroup"/>
                 </fx:define>
 
-                <RadioButton fx:id="minTypeEvery" text="每分 允许的通配符[, - * /]" toggleGroup="$minGroup" selected="true"/>
+                <RadioButton fx:id="minTypeEvery" text="每分钟 允许的通配符[, - * /]" toggleGroup="$minGroup" selected="true"/>
 
-                <HBox spacing="5.0" alignment="CENTER_LEFT">
-                    <RadioButton fx:id="minTypeCycle" text="周期:" toggleGroup="$minGroup"/>
-                    <Label text="从第"/>
-                    <Spinner fx:id="minCycleStart" prefWidth="70" editable="true"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <RadioButton fx:id="minTypeRange" text="周期:" toggleGroup="$minGroup"/>
+                    <Label text="从"/>
+                    <Spinner fx:id="minRangeStart" prefWidth="120" editable="true"/>
+                    <Label text="到"/>
+                    <Spinner fx:id="minRangeEnd" prefWidth="120" editable="true"/>
+                    <Label text="分钟"/>
+                </HBox>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <RadioButton fx:id="minTypeIncrement" text="循环:" toggleGroup="$minGroup"/>
+                    <Label text="从"/>
+                    <Spinner fx:id="minIncrementStart" prefWidth="120" editable="true"/>
                     <Label text="分开始，每"/>
-                    <Spinner fx:id="minCycleStep" prefWidth="70" editable="true"/>
+                    <Spinner fx:id="minIncrementStep" prefWidth="120" editable="true"/>
                     <Label text="分执行一次"/>
                 </HBox>
 
-                <HBox spacing="5.0" alignment="CENTER_LEFT">
-                    <RadioButton fx:id="minTypeRange" text="区间:" toggleGroup="$minGroup"/>
-                    <Label text="从第"/>
-                    <Spinner fx:id="minRangeStart" prefWidth="70" editable="true"/>
-                    <Label text="分 到 第"/>
-                    <Spinner fx:id="minRangeEnd" prefWidth="70" editable="true"/>
-                    <Label text="分"/>
-                </HBox>
+                <VBox spacing="10">
+                    <RadioButton fx:id="minTypeSpecific" text="指定:" toggleGroup="$minGroup"/>
+                    <VBox fx:id="minSpecificContainer">
+                        <padding>
+                            <Insets left="20"/>
+                        </padding>
+                        <HBox spacing="10">
+                            <CheckBox text="00"/>
+                            <CheckBox text="01"/>
+                            <CheckBox text="02"/>
+                            <CheckBox text="03"/>
+                            <CheckBox text="04"/>
+                            <CheckBox text="05"/>
+                            <CheckBox text="06"/>
+                            <CheckBox text="07"/>
+                            <CheckBox text="08"/>
+                            <CheckBox text="09"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <CheckBox text="10"/>
+                            <CheckBox text="11"/>
+                            <CheckBox text="12"/>
+                            <CheckBox text="13"/>
+                            <CheckBox text="14"/>
+                            <CheckBox text="15"/>
+                            <CheckBox text="16"/>
+                            <CheckBox text="17"/>
+                            <CheckBox text="18"/>
+                            <CheckBox text="19"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <CheckBox text="20"/>
+                            <CheckBox text="21"/>
+                            <CheckBox text="22"/>
+                            <CheckBox text="23"/>
+                            <CheckBox text="24"/>
+                            <CheckBox text="25"/>
+                            <CheckBox text="26"/>
+                            <CheckBox text="27"/>
+                            <CheckBox text="28"/>
+                            <CheckBox text="29"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <CheckBox text="30"/>
+                            <CheckBox text="31"/>
+                            <CheckBox text="32"/>
+                            <CheckBox text="33"/>
+                            <CheckBox text="34"/>
+                            <CheckBox text="35"/>
+                            <CheckBox text="36"/>
+                            <CheckBox text="37"/>
+                            <CheckBox text="38"/>
+                            <CheckBox text="39"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <CheckBox text="40"/>
+                            <CheckBox text="41"/>
+                            <CheckBox text="42"/>
+                            <CheckBox text="43"/>
+                            <CheckBox text="44"/>
+                            <CheckBox text="45"/>
+                            <CheckBox text="46"/>
+                            <CheckBox text="47"/>
+                            <CheckBox text="48"/>
+                            <CheckBox text="49"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <CheckBox text="50"/>
+                            <CheckBox text="51"/>
+                            <CheckBox text="52"/>
+                            <CheckBox text="53"/>
+                            <CheckBox text="54"/>
+                            <CheckBox text="55"/>
+                            <CheckBox text="56"/>
+                            <CheckBox text="57"/>
+                            <CheckBox text="58"/>
+                            <CheckBox text="59"/>
+                        </HBox>
+                    </VBox>
+                </VBox>
             </VBox>
         </Tab>
 
-        <Tab text="时 (Hours)" fx:id="tabHour">
+        <Tab text="时">
             <VBox spacing="10.0">
-                <padding><Insets top="10" left="10"/></padding>
-                <fx:define><ToggleGroup fx:id="hourGroup"/></fx:define>
-                <RadioButton fx:id="hourTypeEvery" text="每小时" toggleGroup="$hourGroup" selected="true"/>
-                <HBox spacing="5.0" alignment="CENTER_LEFT">
-                    <RadioButton fx:id="hourTypeCycle" text="周期:" toggleGroup="$hourGroup"/>
-                    <Label text="从第"/>
-                    <Spinner fx:id="hourCycleStart" prefWidth="70" editable="true"/>
+                <padding>
+                    <Insets top="10"/>
+                </padding>
+
+                <fx:define>
+                    <ToggleGroup fx:id="hourGroup"/>
+                </fx:define>
+
+                <RadioButton fx:id="hourTypeEvery" text="每小时: 允许的通配符[, - * /]" toggleGroup="$hourGroup" selected="true"/>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <RadioButton fx:id="hourTypeRange" text="周期:" toggleGroup="$hourGroup"/>
+                    <Label text="从"/>
+                    <Spinner fx:id="hourRangeStart" prefWidth="120" editable="true"/>
+                    <Label text="到"/>
+                    <Spinner fx:id="hourRangeEnd" prefWidth="120" editable="true"/>
+                    <Label text="时"/>
+                </HBox>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <RadioButton fx:id="hourTypeIncrement" text="循环:" toggleGroup="$hourGroup"/>
+                    <Label text="从"/>
+                    <Spinner fx:id="hourIncrementStart" prefWidth="120" editable="true"/>
                     <Label text="时开始，每"/>
-                    <Spinner fx:id="hourCycleStep" prefWidth="70" editable="true"/>
+                    <Spinner fx:id="hourIncrementStep" prefWidth="120" editable="true"/>
                     <Label text="时执行一次"/>
                 </HBox>
-                <HBox spacing="5.0" alignment="CENTER_LEFT">
-                    <RadioButton fx:id="hourTypeRange" text="区间:" toggleGroup="$hourGroup"/>
-                    <Label text="从第"/>
-                    <Spinner fx:id="hourRangeStart" prefWidth="70" editable="true"/>
-                    <Label text="时 到 第"/>
-                    <Spinner fx:id="hourRangeEnd" prefWidth="70" editable="true"/>
-                    <Label text="时"/>
+
+                <VBox spacing="10">
+                    <RadioButton fx:id="hourTypeSpecific" text="指定:" toggleGroup="$hourGroup"/>
+                    <VBox fx:id="hourSpecificContainer">
+                        <padding>
+                            <Insets left="20"/>
+                        </padding>
+                        <HBox spacing="10">
+                            <Label text="上午: "/>
+                            <CheckBox text="00"/>
+                            <CheckBox text="01"/>
+                            <CheckBox text="02"/>
+                            <CheckBox text="03"/>
+                            <CheckBox text="04"/>
+                            <CheckBox text="05"/>
+                            <CheckBox text="06"/>
+                            <CheckBox text="07"/>
+                            <CheckBox text="08"/>
+                            <CheckBox text="09"/>
+                            <CheckBox text="10"/>
+                            <CheckBox text="11"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <Label text="下午: "/>
+                            <CheckBox text="12"/>
+                            <CheckBox text="13"/>
+                            <CheckBox text="14"/>
+                            <CheckBox text="15"/>
+                            <CheckBox text="16"/>
+                            <CheckBox text="17"/>
+                            <CheckBox text="18"/>
+                            <CheckBox text="19"/>
+                            <CheckBox text="20"/>
+                            <CheckBox text="21"/>
+                            <CheckBox text="22"/>
+                            <CheckBox text="23"/>
+                        </HBox>
+                    </VBox>
+                </VBox>
+            </VBox>
+        </Tab>
+
+        <Tab text="日">
+            <VBox spacing="10.0">
+                <padding>
+                    <Insets top="10"/>
+                </padding>
+
+                <fx:define>
+                    <ToggleGroup fx:id="dayGroup"/>
+                </fx:define>
+
+                <RadioButton fx:id="dayTypeEvery" text="每日: 允许的通配符[, - * /]" toggleGroup="$dayGroup" selected="true"/>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <RadioButton fx:id="dayTypeRange" text="周期:" toggleGroup="$dayGroup"/>
+                    <Label text="从"/>
+                    <Spinner fx:id="dayRangeStart" prefWidth="120" editable="true"/>
+                    <Label text="到"/>
+                    <Spinner fx:id="dayRangeEnd" prefWidth="120" editable="true"/>
+                    <Label text="日"/>
+                </HBox>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <RadioButton fx:id="dayTypeIncrement" text="循环:" toggleGroup="$dayGroup"/>
+                    <Label text="从"/>
+                    <Spinner fx:id="dayIncrementStart" prefWidth="120" editable="true"/>
+                    <Label text="日开始，每"/>
+                    <Spinner fx:id="dayIncrementStep" prefWidth="120" editable="true"/>
+                    <Label text="日执行一次"/>
+                </HBox>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <RadioButton fx:id="dayTypeNearestWeekday" text="每月" toggleGroup="$dayGroup"/>
+                    <Spinner fx:id="dayNearestWeekday" prefWidth="120" editable="true"/>
+                    <Label text="号最近的工作日"/>
+                </HBox>
+
+                <RadioButton fx:id="dayTypeLastDay" text="本月最后一天" toggleGroup="$dayGroup"/>
+                <RadioButton fx:id="dayTypeLastWeekday" text="本月最后一个工作日" toggleGroup="$dayGroup"/>
+
+                <VBox spacing="10">
+                    <RadioButton fx:id="dayTypeSpecific" text="指定:" toggleGroup="$dayGroup"/>
+                    <VBox fx:id="daySpecificContainer">
+                        <padding>
+                            <Insets left="20"/>
+                        </padding>
+                        <HBox spacing="10">
+                            <CheckBox text="01"/>
+                            <CheckBox text="02"/>
+                            <CheckBox text="03"/>
+                            <CheckBox text="04"/>
+                            <CheckBox text="05"/>
+                            <CheckBox text="06"/>
+                            <CheckBox text="07"/>
+                            <CheckBox text="08"/>
+                            <CheckBox text="09"/>
+                            <CheckBox text="10"/>
+                            <CheckBox text="11"/>
+                            <CheckBox text="12"/>
+                            <CheckBox text="13"/>
+                            <CheckBox text="14"/>
+                            <CheckBox text="15"/>
+                            <CheckBox text="16"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <CheckBox text="17"/>
+                            <CheckBox text="18"/>
+                            <CheckBox text="19"/>
+                            <CheckBox text="20"/>
+                            <CheckBox text="21"/>
+                            <CheckBox text="22"/>
+                            <CheckBox text="23"/>
+                            <CheckBox text="24"/>
+                            <CheckBox text="25"/>
+                            <CheckBox text="26"/>
+                            <CheckBox text="27"/>
+                            <CheckBox text="28"/>
+                            <CheckBox text="29"/>
+                            <CheckBox text="30"/>
+                            <CheckBox text="31"/>
+                        </HBox>
+                    </VBox>
+                </VBox>
+            </VBox>
+        </Tab>
+
+        <Tab text="月份">
+            <VBox spacing="10.0">
+                <padding>
+                    <Insets top="10"/>
+                </padding>
+
+                <fx:define>
+                    <ToggleGroup fx:id="monthGroup"/>
+                </fx:define>
+
+                <RadioButton fx:id="monthTypeEvery" text="每月: 允许的通配符[, - * /]" toggleGroup="$monthGroup" selected="true"/>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <RadioButton fx:id="monthTypeRange" text="周期:" toggleGroup="$monthGroup"/>
+                    <Label text="从"/>
+                    <Spinner fx:id="monthRangeStart" prefWidth="120" editable="true"/>
+                    <Label text="到"/>
+                    <Spinner fx:id="monthRangeEnd" prefWidth="120" editable="true"/>
+                    <Label text="月"/>
+                </HBox>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <RadioButton fx:id="monthTypeIncrement" text="循环:" toggleGroup="$monthGroup"/>
+                    <Label text="从"/>
+                    <Spinner fx:id="monthIncrementStart" prefWidth="120" editable="true"/>
+                    <Label text="月开始，每"/>
+                    <Spinner fx:id="monthIncrementStep" prefWidth="120" editable="true"/>
+                    <Label text="月执行一次"/>
+                </HBox>
+
+                <VBox spacing="10">
+                    <RadioButton fx:id="monthTypeSpecific" text="指定:" toggleGroup="$monthGroup"/>
+                    <VBox fx:id="monthSpecificContainer">
+                        <padding>
+                            <Insets left="20"/>
+                        </padding>
+                        <HBox spacing="10">
+                            <CheckBox text="01"/>
+                            <CheckBox text="02"/>
+                            <CheckBox text="03"/>
+                            <CheckBox text="04"/>
+                            <CheckBox text="05"/>
+                            <CheckBox text="06"/>
+                            <CheckBox text="07"/>
+                            <CheckBox text="08"/>
+                            <CheckBox text="09"/>
+                            <CheckBox text="10"/>
+                            <CheckBox text="11"/>
+                            <CheckBox text="12"/>
+                        </HBox>
+                    </VBox>
+                </VBox>
+            </VBox>
+        </Tab>
+
+        <Tab text="周">
+            <VBox spacing="10.0">
+                <padding>
+                    <Insets top="10"/>
+                </padding>
+
+                <fx:define>
+                    <ToggleGroup fx:id="weekGroup"/>
+                </fx:define>
+
+                <RadioButton fx:id="weekTypeEvery" text="每周: 允许的通配符[, - * /]" toggleGroup="$weekGroup"/>
+                <RadioButton fx:id="weekTypeNone" text="不指定 (?)" toggleGroup="$weekGroup" selected="true"/>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <RadioButton fx:id="weekTypeRange" text="周期:" toggleGroup="$weekGroup"/>
+                    <Label text="从星期"/>
+                    <Spinner fx:id="weekRangeStart" prefWidth="120" editable="true"/>
+                    <Label text="到"/>
+                    <Spinner fx:id="weekRangeEnd" prefWidth="120" editable="true"/>
+                </HBox>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <RadioButton fx:id="weekTypeNthDay" text="第" toggleGroup="$weekGroup"/>
+                    <Spinner fx:id="weekNthWeek" prefWidth="120" editable="true"/>
+                    <Label text="周的星期"/>
+                    <Spinner fx:id="weekNthDayVal" prefWidth="120" editable="true"/>
+                </HBox>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <RadioButton fx:id="weekTypeLast" text="本月最后一个星期" toggleGroup="$weekGroup"/>
+                    <Spinner fx:id="weekLastDayVal" prefWidth="120" editable="true"/>
+                </HBox>
+
+                <VBox spacing="10">
+                    <RadioButton fx:id="weekTypeSpecific" text="指定:" toggleGroup="$weekGroup"/>
+                    <VBox fx:id="weekSpecificContainer">
+                        <padding>
+                            <Insets left="20"/>
+                        </padding>
+                        <HBox spacing="10">
+                            <CheckBox text="周一"/>
+                            <CheckBox text="周二"/>
+                            <CheckBox text="周三"/>
+                            <CheckBox text="周四"/>
+                            <CheckBox text="周五"/>
+                            <CheckBox text="周六"/>
+                            <CheckBox text="周日"/>
+                        </HBox>
+                    </VBox>
+                </VBox>
+            </VBox>
+        </Tab>
+
+        <Tab text="年">
+            <VBox spacing="10.0">
+                <padding>
+                    <Insets top="10"/>
+                </padding>
+
+                <fx:define>
+                    <ToggleGroup fx:id="yearGroup"/>
+                </fx:define>
+
+                <RadioButton fx:id="yearTypeNone" text="不指定 允许的通配符[, - * /] 非必填" toggleGroup="$yearGroup" selected="true"/>
+                <RadioButton fx:id="yearTypeEvery" text="每年" toggleGroup="$yearGroup"/>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <RadioButton fx:id="yearTypeRange" text="周期:" toggleGroup="$yearGroup"/>
+                    <Label text="从"/>
+                    <Spinner fx:id="yearRangeStart" prefWidth="120" editable="true"/>
+                    <Label text="到"/>
+                    <Spinner fx:id="yearRangeEnd" prefWidth="120" editable="true"/>
+                    <Label text="年"/>
                 </HBox>
             </VBox>
         </Tab>
 
     </TabPane>
 
-    <TitledPane text="最近 5 次运行时间 (基于当前时间)" collapsible="false" VBox.vgrow="ALWAYS">
-        <TextArea fx:id="resultArea" editable="false" wrapText="true"
-                  style="-fx-font-family: 'Consolas', 'Monospaced';"/>
-    </TitledPane>
+    <VBox spacing="10.0">
+        <Label text="Cron 表达式"/>
+        <HBox spacing="10">
+            <TextField fx:id="cronExpressionField" HBox.hgrow="ALWAYS"/>
+            <Button fx:id="btnParse" text="解析/运行"/>
+        </HBox>
+
+        <Label text="最近 5 次运行时间"/>
+        <TextArea fx:id="resultArea" editable="false" wrapText="true" prefRowCount="5"/>
+    </VBox>
 
 </VBox>
