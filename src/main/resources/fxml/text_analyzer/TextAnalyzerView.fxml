@@ -3,48 +3,38 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<VBox prefHeight="650.0" prefWidth="900.0" spacing="10.0"
-      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.minyu.jtoolkit.module.text_analyzer.TextAnalyzerController">
+<?import com.minyu.jtoolkit.core.component.EnhancedTextArea?>
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.minyu.jtoolkit.module.text_analyzer.TextAnalyzerController"
+      spacing="10.0">
 
-    <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
-
-    <TitledPane text="转换工具 (Case Converters)" collapsible="false">
-        <FlowPane hgap="10" vgap="10" prefWrapLength="800">
-            <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
-            <Button text="全小写 (lower case)" onAction="#toLowerCase"/>
-            <Button text="全大写 (UPPER CASE)" onAction="#toUpperCase"/>
-            <Button text="小驼峰 (camelCase)" onAction="#toCamelCase"/>
-            <Button text="大驼峰 (PascalCase)" onAction="#toPascalCase"/>
-            <Button text="蛇形 (snake_case)" onAction="#toSnakeCase"/>
-            <Button text="常量 (CONSTANT_CASE)" onAction="#toConstantCase"/>
-            <Button text="短横线 (kebab-case)" onAction="#toKebabCase"/>
-            <Button text="首字母大写 (Title Case)" onAction="#toTitleCase"/>
-            <Button text="句首大写 (Sentence case)" onAction="#toSentenceCase"/>
-            <Button text="大小写交替 (aLtErNaTiNg)" onAction="#toAlternatingCase"/>
-            <Button text="反转大小写 (InVeRsE cAsE)" onAction="#toInverseCase"/>
-        </FlowPane>
-    </TitledPane>
+    <Label text="转换大小写"/>
+    <FlowPane hgap="10" vgap="10">
+        <Button text="全小写 (lower case)" onAction="#toLowerCase"/>
+        <Button text="全大写 (UPPER CASE)" onAction="#toUpperCase"/>
+        <Button text="小驼峰 (camelCase)" onAction="#toCamelCase"/>
+        <Button text="大驼峰 (PascalCase)" onAction="#toPascalCase"/>
+        <Button text="蛇形 (snake_case)" onAction="#toSnakeCase"/>
+        <Button text="常量 (CONSTANT_CASE)" onAction="#toConstantCase"/>
+        <Button text="短横线 (kebab-case)" onAction="#toKebabCase"/>
+        <Button text="首字母大写 (Title Case)" onAction="#toTitleCase"/>
+        <Button text="句首大写 (Sentence case)" onAction="#toSentenceCase"/>
+        <Button text="大小写交替 (aLtErNaTiNg)" onAction="#toAlternatingCase"/>
+        <Button text="反转大小写 (InVeRsE cAsE)" onAction="#toInverseCase"/>
+    </FlowPane>
 
     <SplitPane dividerPositions="0.75" VBox.vgrow="ALWAYS">
-
-        <VBox spacing="5.0">
-            <padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <Label text="文本内容:"/>
-                <Region HBox.hgrow="ALWAYS"/>
-
+        <EnhancedTextArea fx:id="textArea" title="文本" wrapText="true" VBox.vgrow="ALWAYS">
+            <leadingActions>
                 <Button text="显示原文" onAction="#onShowOriginal"/>
-
-                <Button text="清空" onAction="#onClear"/>
-                <Button text="复制" onAction="#onCopy"/>
-                <Button text="粘贴" onAction="#onPaste"/>
-            </HBox>
-            <TextArea fx:id="textArea" promptText="在此输入或粘贴文本" wrapText="true" VBox.vgrow="ALWAYS"/>
-        </VBox>
+            </leadingActions>
+        </EnhancedTextArea>
 
         <VBox spacing="10.0" minWidth="200">
-            <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
             <Label text="统计数据 (Statistics)"/>
             <GridPane vgap="10" hgap="10">
                 <Label text="总长度:" GridPane.rowIndex="0" GridPane.columnIndex="0" textFill="grey"/>

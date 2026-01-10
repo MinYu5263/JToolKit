@@ -1,8 +1,7 @@
 package com.minyu.jtoolkit.core.component;
 
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
+import javafx.scene.control.IndexRange;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -58,5 +57,37 @@ public class EnhancedTextArea extends EnhancedInputBase<TextArea> {
     public final void bindBidirectionalScrollAll(EnhancedTextArea enhancedTextArea) {
         inputControl.scrollTopProperty().bindBidirectional(enhancedTextArea.scrollTopProperty());
         inputControl.scrollLeftProperty().bindBidirectional(enhancedTextArea.scrollLeftProperty());
+    }
+
+    public final BooleanProperty wrapTextProperty() {
+        return inputControl.wrapTextProperty();
+    }
+
+    public final boolean isWrapText() {
+        return inputControl.isWrapText();
+    }
+
+    public final void setWrapText(boolean var1) {
+        inputControl.setWrapText(var1);
+    }
+
+    public final IndexRange getSelection() {
+        return inputControl.getSelection();
+    }
+
+    public final String getSelectedText() {
+        return inputControl.getSelectedText();
+    }
+
+    public final void replaceSelection(String var1) {
+        inputControl.replaceSelection(var1);
+    }
+
+    public final void selectRange(int var1, int var2) {
+        inputControl.selectRange(var1, var2);
+    }
+
+    public final ReadOnlyObjectProperty<IndexRange> selectionProperty() {
+        return inputControl.selectionProperty();
     }
 }

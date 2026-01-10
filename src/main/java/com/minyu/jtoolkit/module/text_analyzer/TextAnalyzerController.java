@@ -1,12 +1,10 @@
 package com.minyu.jtoolkit.module.text_analyzer;
 
+import com.minyu.jtoolkit.core.component.EnhancedTextArea;
 import com.minyu.jtoolkit.module.BaseController;
 import javafx.fxml.FXML;
 import javafx.scene.control.IndexRange;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -18,11 +16,14 @@ import java.util.regex.Pattern;
 @Component
 public class TextAnalyzerController extends BaseController<TextAnalyzerPersistentState> {
 
-    @FXML private TextArea textArea;
+    @FXML
+    private EnhancedTextArea textArea;
 
     // 统计标签
-    @FXML private Label lblTotalLength, lblLines, lblWords;
-    @FXML private Label lblSelLength, lblSelStart, lblSelEnd;
+    @FXML
+    private Label lblTotalLength, lblLines, lblWords;
+    @FXML
+    private Label lblSelLength, lblSelStart, lblSelEnd;
 
     // 核心状态
     private String originalText = "";
@@ -30,7 +31,7 @@ public class TextAnalyzerController extends BaseController<TextAnalyzerPersisten
 
     @FXML
     public void initView() {
-        
+
 
         textArea.textProperty().addListener((obs, old, val) -> {
             if (!isProgrammaticChange) {
@@ -90,13 +91,40 @@ public class TextAnalyzerController extends BaseController<TextAnalyzerPersisten
 
     // ================== 转换 Action (保持不变) ==================
 
-    @FXML public void toLowerCase() { replaceText(String::toLowerCase); }
-    @FXML public void toUpperCase() { replaceText(String::toUpperCase); }
-    @FXML public void toCamelCase() { replaceText(t -> joinWords(t, "", false)); }
-    @FXML public void toPascalCase() { replaceText(t -> joinWords(t, "", true)); }
-    @FXML public void toSnakeCase() { replaceText(t -> joinWords(t, "_", false).toLowerCase()); }
-    @FXML public void toConstantCase() { replaceText(t -> joinWords(t, "_", false).toUpperCase()); }
-    @FXML public void toKebabCase() { replaceText(t -> joinWords(t, "-", false).toLowerCase()); }
+    @FXML
+    public void toLowerCase() {
+        replaceText(String::toLowerCase);
+    }
+
+    @FXML
+    public void toUpperCase() {
+        replaceText(String::toUpperCase);
+    }
+
+    @FXML
+    public void toCamelCase() {
+        replaceText(t -> joinWords(t, "", false));
+    }
+
+    @FXML
+    public void toPascalCase() {
+        replaceText(t -> joinWords(t, "", true));
+    }
+
+    @FXML
+    public void toSnakeCase() {
+        replaceText(t -> joinWords(t, "_", false).toLowerCase());
+    }
+
+    @FXML
+    public void toConstantCase() {
+        replaceText(t -> joinWords(t, "_", false).toUpperCase());
+    }
+
+    @FXML
+    public void toKebabCase() {
+        replaceText(t -> joinWords(t, "-", false).toLowerCase());
+    }
 
     @FXML
     public void toTitleCase() {
@@ -156,7 +184,7 @@ public class TextAnalyzerController extends BaseController<TextAnalyzerPersisten
             String w = words.get(i).toLowerCase();
             if (i > 0) sb.append(delimiter);
             if (capitalizeFirst || (i > 0 && delimiter.isEmpty())) {
-                if (w.length() > 0) sb.append(Character.toUpperCase(w.charAt(0))).append(w.substring(1));
+                if (!w.isEmpty()) sb.append(Character.toUpperCase(w.charAt(0))).append(w.substring(1));
             } else sb.append(w);
         }
         return sb.toString();
@@ -184,24 +212,6 @@ public class TextAnalyzerController extends BaseController<TextAnalyzerPersisten
         lblSelLength.setText(String.valueOf(range.getLength()));
         lblSelStart.setText(String.valueOf(range.getStart()));
         lblSelEnd.setText(String.valueOf(range.getEnd()));
-    }
-
-    // ================== 基础交互 ==================
-
-    @FXML public void onClear() {
-        // 清空通常意味着重置所有状态，包括原文
-        // 这里不加锁，让 Listener 自然触发，将 originalText 也置空
-        textArea.clear();
-    }
-
-    @FXML public void onCopy() {
-        ClipboardContent content = new ClipboardContent();
-        content.putString(textArea.getText());
-        Clipboard.getSystemClipboard().setContent(content);
-    }
-
-    @FXML public void onPaste() {
-        textArea.paste();
     }
 
     // ================== 持久化 ==================
