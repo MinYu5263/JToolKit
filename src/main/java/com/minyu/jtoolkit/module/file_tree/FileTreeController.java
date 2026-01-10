@@ -1,5 +1,6 @@
 package com.minyu.jtoolkit.module.file_tree;
 
+import atlantafx.base.controls.Message;
 import atlantafx.base.controls.ModalPane;
 import atlantafx.base.controls.Tile;
 import atlantafx.base.controls.ToggleSwitch;
@@ -288,7 +289,7 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
         clearAllBtn.setMaxWidth(Double.MAX_VALUE);
         clearAllBtn.setOnAction(e -> {
             // modalPane.hide();
-            showClearAllConfirmation();
+            showClearAllConfirmation(modalPane);
         });
 
         Label label = new Label("历史记录");
@@ -478,12 +479,15 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
     /**
      * 显示清空历史记录的二次确认弹窗
      */
-    private void showClearAllConfirmation() {
-         var modalPane = (ModalPane) pathField.getScene().lookup("#main-modal-pane-1");
+    private void showClearAllConfirmation(ModalPane underlyingModal) {
+         var modalPane = (ModalPane) pathField.getScene().lookup("#main-modal-pane-alert");
 
-        Tile tile = new Tile();
-        tile.setTitle("确认清空?");
-        tile.setDescription("确定要清空所有历史记录吗？\n此操作执行后无法恢复。");
+        var warning = new Message(
+                "警告",
+               "确定要清空所有历史记录吗？ 此操作执行后无法恢复",
+                null
+        );
+        // warning.getStyleClass().add(Styles.WARNING);
 
         Button btnCancel = new Button("取消");
         Button btnConfirm = new Button("确认清空");
@@ -499,12 +503,13 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
             historyData.clear();
             resetUI();
             modalPane.hide();
+            underlyingModal.hide();
         });
 
         HBox footer = new HBox(10, btnCancel, btnConfirm);
         footer.setAlignment(Pos.CENTER_RIGHT);
 
-        VBox root = new VBox(10, tile, footer);
+        VBox root = new VBox(10, warning, footer);
         root.setPadding(new Insets(10));
 
         ModalBox modalBox = new ModalBox(root);
