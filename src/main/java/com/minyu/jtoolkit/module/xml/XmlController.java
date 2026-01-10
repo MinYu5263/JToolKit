@@ -1,15 +1,12 @@
 package com.minyu.jtoolkit.module.xml;
 
 import atlantafx.base.controls.ToggleSwitch;
+import com.minyu.jtoolkit.core.component.EnhancedTextArea;
 import com.minyu.jtoolkit.module.BaseController;
 import javafx.animation.PauseTransition;
 import javafx.beans.Observable;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.DataFormat;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
 import lombok.extern.slf4j.Slf4j;
@@ -44,9 +41,9 @@ public class XmlController extends BaseController<XmlPersistentState> {
             // XML Transformer 对 Tab 支持不如空格方便，这里暂时只提供空格
     );
     @FXML
-    private TextArea inputArea;
+    private EnhancedTextArea inputArea;
     @FXML
-    private TextArea outputArea;
+    private EnhancedTextArea outputArea;
     @FXML
     private ComboBox<IndentOption> indentCombo;
     @FXML
@@ -112,7 +109,7 @@ public class XmlController extends BaseController<XmlPersistentState> {
         } catch (Exception e) {
             // 简单提示，XML 报错通常很长，截取一下
             String msg = e.getMessage();
-            outputArea.setText("XML 格式错误: \n" + (msg.length() > 200 ? msg.substring(0, 200) + "" : msg));
+            outputArea.setText("XML 格式错误: \n" + (msg.length() > 200 ? msg.substring(0, 200) : msg));
         }
     }
 
@@ -198,26 +195,6 @@ public class XmlController extends BaseController<XmlPersistentState> {
                 indentCombo.valueProperty(), compactSwitch.selectedProperty());
     }
 
-    // 操作按钮
-    @FXML
-    public void onPaste() {
-        Clipboard cb = Clipboard.getSystemClipboard();
-        if (cb.hasContent(DataFormat.PLAIN_TEXT)) inputArea.setText(cb.getString());
-    }
-
-    @FXML
-    public void onClearInput() {
-        inputArea.clear();
-    }
-
-    @FXML
-    public void onCopyOutput() {
-        if (outputArea.getText() != null) {
-            ClipboardContent cc = new ClipboardContent();
-            cc.putString(outputArea.getText());
-            Clipboard.getSystemClipboard().setContent(cc);
-        }
-    }
 
     // 内部 Record，XML只需要 int 类型的 size
     private record IndentOption(String label, String key, int size) {

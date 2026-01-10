@@ -5,42 +5,23 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import com.minyu.jtoolkit.core.component.EnhancedTextArea?>
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.minyu.jtoolkit.module.json.JsonController"
       spacing="10.0">
 
     <ConfigCard title="缩进">
-        <ComboBox fx:id="indentCombo"/>
+        <ComboBox fx:id="indentCombo" prefWidth="120.0"/>
     </ConfigCard>
     <ConfigCard title="压缩模式">
         <ToggleSwitch fx:id="compactSwitch"/>
     </ConfigCard>
 
     <SplitPane dividerPositions="0.5" VBox.vgrow="ALWAYS">
-        <VBox spacing="5">
-            <padding>
-                <Insets right="5.0"/>
-            </padding>
-            <HBox alignment="CENTER_LEFT" spacing="10">
-                <Label text="输入"/>
-                <Region HBox.hgrow="ALWAYS"/>
-                <Button mnemonicParsing="false" onAction="#onPaste" text="粘贴"/>
-                <Button mnemonicParsing="false" onAction="#onClearInput" text="清空"/>
-            </HBox>
-            <TextArea fx:id="inputArea" styleClass="code-area" wrapText="true" VBox.vgrow="ALWAYS"/>
-        </VBox>
-
-        <VBox spacing="5">
-            <padding>
-                <Insets left="5.0"/>
-            </padding>
-            <HBox alignment="CENTER_LEFT" spacing="10">
-                <Label text="输出"/>
-                <Region HBox.hgrow="ALWAYS"/>
-                <Button mnemonicParsing="false" onAction="#onCopyOutput" text="复制"/>
-            </HBox>
-            <TextArea fx:id="outputArea" styleClass="code-area" editable="false" wrapText="true" VBox.vgrow="ALWAYS"/>
-        </VBox>
+        <EnhancedTextArea fx:id="inputArea" title="输入" areaStyle="code-area" mode="INPUT" wrapText="true"
+                          VBox.vgrow="ALWAYS"/>
+        <EnhancedTextArea fx:id="outputArea" title="输出" areaStyle="code-area" mode="OUTPUT" editable="false"
+                          wrapText="true" VBox.vgrow="ALWAYS"/>
     </SplitPane>
 </VBox>

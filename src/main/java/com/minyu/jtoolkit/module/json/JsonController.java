@@ -3,15 +3,12 @@ package com.minyu.jtoolkit.module.json;
 import atlantafx.base.controls.ToggleSwitch;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONWriter;
+import com.minyu.jtoolkit.core.component.EnhancedTextArea;
 import com.minyu.jtoolkit.module.BaseController;
 import javafx.animation.PauseTransition;
 import javafx.beans.Observable;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.DataFormat;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
 import lombok.extern.slf4j.Slf4j;
@@ -27,9 +24,9 @@ import java.util.List;
 public class JsonController extends BaseController<JsonPersistentState> {
 
     @FXML
-    private TextArea inputArea;
+    private EnhancedTextArea inputArea;
     @FXML
-    private TextArea outputArea;
+    private EnhancedTextArea outputArea;
     // 定义配置项列表
     private final List<IndentOption> indentOptions = List.of(
             new IndentOption("2个空格", "2space", JSONWriter.Feature.PrettyFormatWith2Space),
@@ -134,30 +131,6 @@ public class JsonController extends BaseController<JsonPersistentState> {
             state.setIndentKey(indentCombo.getValue().key());
         }
         return state;
-    }
-
-    // 常用操作保持不变
-    @FXML
-    public void onPaste() {
-        Clipboard clipboard = Clipboard.getSystemClipboard();
-        if (clipboard.hasContent(DataFormat.PLAIN_TEXT)) {
-            inputArea.setText(clipboard.getString());
-        }
-    }
-
-    @FXML
-    public void onClearInput() {
-        inputArea.clear();
-    }
-
-    @FXML
-    public void onCopyOutput() {
-        String content = outputArea.getText();
-        if (content != null && !content.isEmpty()) {
-            ClipboardContent clipboardContent = new ClipboardContent();
-            clipboardContent.putString(content);
-            Clipboard.getSystemClipboard().setContent(clipboardContent);
-        }
     }
 
     @Override
