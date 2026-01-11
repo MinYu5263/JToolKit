@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CronPersistentState implements PersistentState {
-
     private String lastExpression;
+    private String dateTimeFormat;
+    private Integer executionCount;
 }

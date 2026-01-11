@@ -4,14 +4,15 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import com.minyu.jtoolkit.core.component.ConfigCard?>
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
-      spacing="10"
-      fx:controller="com.minyu.jtoolkit.module.cron.CronController">
+      fx:controller="com.minyu.jtoolkit.module.cron.CronController"
+      VBox.vgrow="ALWAYS"
+      spacing="10">
 
     <Label text="定时任务配置"/>
-
-    <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+    <TabPane tabClosingPolicy="UNAVAILABLE" minHeight="350">
 
         <Tab text="秒">
             <VBox spacing="10.0">
@@ -23,7 +24,8 @@
                     <ToggleGroup fx:id="secGroup"/>
                 </fx:define>
 
-                <RadioButton fx:id="secTypeEvery" text="每秒: 允许的通配符[, - * /]" toggleGroup="$secGroup" selected="true"/>
+                <RadioButton fx:id="secTypeEvery" text="每秒: 允许的通配符[, - * /]" toggleGroup="$secGroup"
+                             selected="true"/>
 
                 <HBox spacing="10" alignment="CENTER_LEFT">
                     <RadioButton fx:id="secTypeRange" text="周期:" toggleGroup="$secGroup"/>
@@ -136,7 +138,8 @@
                     <ToggleGroup fx:id="minGroup"/>
                 </fx:define>
 
-                <RadioButton fx:id="minTypeEvery" text="每分钟 允许的通配符[, - * /]" toggleGroup="$minGroup" selected="true"/>
+                <RadioButton fx:id="minTypeEvery" text="每分钟 允许的通配符[, - * /]" toggleGroup="$minGroup"
+                             selected="true"/>
 
                 <HBox spacing="10" alignment="CENTER_LEFT">
                     <RadioButton fx:id="minTypeRange" text="周期:" toggleGroup="$minGroup"/>
@@ -249,7 +252,8 @@
                     <ToggleGroup fx:id="hourGroup"/>
                 </fx:define>
 
-                <RadioButton fx:id="hourTypeEvery" text="每小时: 允许的通配符[, - * /]" toggleGroup="$hourGroup" selected="true"/>
+                <RadioButton fx:id="hourTypeEvery" text="每小时: 允许的通配符[, - * /]" toggleGroup="$hourGroup"
+                             selected="true"/>
 
                 <HBox spacing="10" alignment="CENTER_LEFT">
                     <RadioButton fx:id="hourTypeRange" text="周期:" toggleGroup="$hourGroup"/>
@@ -320,7 +324,8 @@
                     <ToggleGroup fx:id="dayGroup"/>
                 </fx:define>
 
-                <RadioButton fx:id="dayTypeEvery" text="每日: 允许的通配符[, - * /]" toggleGroup="$dayGroup" selected="true"/>
+                <RadioButton fx:id="dayTypeEvery" text="每日: 允许的通配符[, - * /]" toggleGroup="$dayGroup"
+                             selected="true"/>
 
                 <HBox spacing="10" alignment="CENTER_LEFT">
                     <RadioButton fx:id="dayTypeRange" text="周期:" toggleGroup="$dayGroup"/>
@@ -405,7 +410,8 @@
                     <ToggleGroup fx:id="monthGroup"/>
                 </fx:define>
 
-                <RadioButton fx:id="monthTypeEvery" text="每月: 允许的通配符[, - * /]" toggleGroup="$monthGroup" selected="true"/>
+                <RadioButton fx:id="monthTypeEvery" text="每月: 允许的通配符[, - * /]" toggleGroup="$monthGroup"
+                             selected="true"/>
 
                 <HBox spacing="10" alignment="CENTER_LEFT">
                     <RadioButton fx:id="monthTypeRange" text="周期:" toggleGroup="$monthGroup"/>
@@ -513,7 +519,9 @@
                     <ToggleGroup fx:id="yearGroup"/>
                 </fx:define>
 
-                <RadioButton fx:id="yearTypeNone" text="不指定 允许的通配符[, - * /] 非必填" toggleGroup="$yearGroup" selected="true"/>
+                <RadioButton fx:id="yearTypeNone" text="不指定 允许的通配符[, - * /] 非必填"
+                             toggleGroup="$yearGroup"
+                             selected="true"/>
                 <RadioButton fx:id="yearTypeEvery" text="每年" toggleGroup="$yearGroup"/>
 
                 <HBox spacing="10" alignment="CENTER_LEFT">
@@ -526,18 +534,24 @@
                 </HBox>
             </VBox>
         </Tab>
-
     </TabPane>
 
     <VBox spacing="10.0">
         <Label text="Cron 表达式"/>
         <HBox spacing="10">
             <TextField fx:id="cronExpressionField" HBox.hgrow="ALWAYS"/>
+            <Button fx:id="btnReverseParse" text="反解析到UI"/>
             <Button fx:id="btnParse" text="解析/运行"/>
         </HBox>
 
-        <Label text="最近 5 次运行时间"/>
-        <TextArea fx:id="resultArea" editable="false" wrapText="true" prefRowCount="5"/>
+        <ConfigCard title="输出格式" description="下次计划执行时间的日期时间格式">
+            <TextField fx:id="dateTimeFormatField" prefWidth="230"/>
+        </ConfigCard>
+        <ConfigCard title="下次计划执行次数">
+            <ComboBox fx:id="executionCountCombo" prefWidth="100"/>
+        </ConfigCard>
+        <Label text="下次计划执行时间"/>
+        <TextArea fx:id="resultArea" editable="false" wrapText="true" prefRowCount="5" minHeight="300"/>
     </VBox>
 
 </VBox>
