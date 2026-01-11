@@ -1,5 +1,6 @@
 --name "JToolKit"
 --type app-image
+--icon jtoolkit.ico
 --input target/pure
 --main-jar JToolKit.jar
 --module-path "%JAVA_HOME%/jmods;%PATH_TO_FX_MODS%"
