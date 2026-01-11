@@ -216,7 +216,11 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
 
     private void showHistoryDialog() {
         var modalPane = (ModalPane) pathField.getScene().lookup("#main-modal-pane");
-        if (modalPane == null) return;
+        if (modalPane == null) {
+            throw new IllegalStateException(
+                    "ModalPane not found in Scene. Make sure MainView.fxml has a ModalPane with id='main-modal-pane'"
+            );
+        }
 
         // === 功能点 2：每次打开时，将当前目录置顶 ===
         String currentPath = pathField.getText();
@@ -357,7 +361,11 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
 
     private void openIgnoreEditor() {
         var modalPane = (ModalPane) pathField.getScene().lookup("#main-modal-pane");
-        if (modalPane == null) return;
+        if (modalPane == null) {
+            throw new IllegalStateException(
+                    "ModalPane not found in Scene. Make sure MainView.fxml has a ModalPane with id='main-modal-pane'"
+            );
+        }
 
         Tile tile = new Tile("编辑忽略列表", "每行输入一个忽略规则 (支持正则)");
         TextArea textArea = new TextArea();
@@ -481,6 +489,11 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
      */
     private void showClearAllConfirmation(ModalPane underlyingModal) {
          var modalPane = (ModalPane) pathField.getScene().lookup("#main-modal-pane-alert");
+        if (modalPane == null) {
+            throw new IllegalStateException(
+                    "ModalPane not found in Scene. Make sure MainView.fxml has a ModalPane with id='main-modal-pane-alert'"
+            );
+        }
 
         var warning = new Message(
                 "警告",
