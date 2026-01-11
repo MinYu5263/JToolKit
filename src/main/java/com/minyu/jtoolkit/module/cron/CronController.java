@@ -464,11 +464,11 @@ public class CronController extends BaseController<CronPersistentState> {
                 }
             }
             resultArea.setText(sb.toString());
-            resultArea.setStyle("-fx-text-fill: black;");
+            resultArea.setStyle("-fx-text-fill: -color-fg-default;");
 
         } catch (Exception e) {
             resultArea.setText("解析错误: " + e.getMessage());
-            resultArea.setStyle("-fx-text-fill: red;");
+            resultArea.setStyle("-fx-text-fill: -color-danger-fg;");
         }
     }
 
@@ -522,12 +522,12 @@ public class CronController extends BaseController<CronPersistentState> {
             }
 
             resultArea.setText("UI 已根据表达式更新");
-            resultArea.setStyle("-fx-text-fill: green;");
+            resultArea.setStyle("-fx-text-fill: -color-success-emphasis;");
 
         } catch (Exception e) {
             e.printStackTrace();
             resultArea.setText("反解析失败: " + e.getMessage() + "\n可能包含复杂组合暂不支持 UI 映射");
-            resultArea.setStyle("-fx-text-fill: red;");
+            resultArea.setStyle("-fx-text-fill: -color-danger-fg;");
         } finally {
             isRestoring = false; // 解锁
         }
