@@ -33,6 +33,8 @@ public abstract class ModalDialog extends ModalBox {
                     "ModalPane not found in Scene. Make sure MainView.fxml has a ModalPane with id='" + MODAL_PANE_ID + "'"
             );
         }
+        modalPane.setAlignment(Pos.CENTER);
+        modalPane.usePredefinedTransitionFactories(null);
         modalPane.show(this);
     }
 
