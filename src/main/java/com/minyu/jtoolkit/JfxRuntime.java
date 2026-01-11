@@ -115,6 +115,8 @@ public class JfxRuntime extends Application {
         Scene scene = new Scene(root, 500, 300);
         scene.setFill(Color.TRANSPARENT); // 这一步至关重要，否则四个角是白色的
 
+        splashStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/logo_32.png"))));
+
         splashStage.setScene(scene);
         splashStage.centerOnScreen();
         splashStage.show();
