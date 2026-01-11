@@ -1,5 +1,6 @@
 
 @import "modules/sidebar.css";
+@import "modules/regex.css";
 
 @import "components/config-card.css";
 @import "components/config-group.css";

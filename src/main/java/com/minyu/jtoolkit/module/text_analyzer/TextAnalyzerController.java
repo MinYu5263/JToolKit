@@ -222,11 +222,6 @@ public class TextAnalyzerController extends BaseController<TextAnalyzerPersisten
     }
 
     @Override
-    protected Class<TextAnalyzerPersistentState> getStorageType() {
-        return TextAnalyzerPersistentState.class;
-    }
-
-    @Override
     protected void restoreValues(TextAnalyzerPersistentState state) {
         if (state != null) {
             // 恢复时也不应该视为用户输入，防止覆盖 originalText

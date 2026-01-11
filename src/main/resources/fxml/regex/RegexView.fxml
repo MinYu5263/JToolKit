@@ -2,11 +2,10 @@
 
 <?import atlantafx.base.controls.*?>
 <?import com.minyu.jtoolkit.core.component.*?>
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.TextFlow?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
+
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.minyu.jtoolkit.module.regex.RegexController"
@@ -35,7 +34,6 @@
             <ToggleSwitch fx:id="swCanonEq"/>
         </ConfigCard>
     </ConfigGroup>
-
     <VBox spacing="8.0">
         <Label text="正则表达式 (Regular Expression)" styleClass="title-4"/>
 
@@ -62,30 +60,7 @@
                    style="-fx-font-weight: bold; -fx-text-fill: -color-accent-fg;"/>
         </HBox>
 
-        <StackPane VBox.vgrow="ALWAYS" alignment="TOP_RIGHT">
-
-            <TextArea fx:id="sourceTextArea" promptText="在此输入或粘贴文本" wrapText="false"
-                      style="-fx-font-family: 'JetBrains Mono', 'Consolas', 'Monospaced'; -fx-font-size: 14px;"/>
-
-            <ScrollPane fx:id="highlightScroll" fitToWidth="true" fitToHeight="true" visible="false"
-                        style="-fx-background-color: -color-bg-default; -fx-border-color: -color-border-default; -fx-border-radius: 4;">
-                <TextFlow fx:id="highlightTextFlow"
-                          style="-fx-padding: 8; -fx-background-color: -color-bg-default;">
-                </TextFlow>
-            </ScrollPane>
-
-            <ToggleButton fx:id="btnToggleView" text="预览高亮" selected="false" styleClass="small">
-                <graphic>
-                    <FontIcon iconLiteral="mdmz-visibility"/>
-                </graphic>
-                <tooltip>
-                    <Tooltip text="切换 编辑/高亮 模式"/>
-                </tooltip>
-                <StackPane.margin>
-                    <Insets top="10" right="20"/>
-                </StackPane.margin>
-            </ToggleButton>
-        </StackPane>
+        <StackPane fx:id="editorContainer" VBox.vgrow="ALWAYS" alignment="TOP_LEFT"/>
     </VBox>
 
 </VBox>

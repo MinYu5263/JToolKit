@@ -31,6 +31,7 @@
         <cron-utils.version>9.2.1</cron-utils.version>
         <easyexcel.version>4.0.3</easyexcel.version>
         <jna-platform.version>5.14.0</jna-platform.version>
+        <richtextfx.version>0.11.7</richtextfx.version>
     </properties>
 
     <repositories>
@@ -87,6 +88,12 @@
             <groupId>com.github.Dansoftowner</groupId>
             <artifactId>jSystemThemeDetector</artifactId>
             <version>3.9.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fxmisc.richtext</groupId>
+            <artifactId>richtextfx</artifactId>
+            <version>${richtextfx.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
