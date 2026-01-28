@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -26,10 +27,10 @@ public class PasswordController extends BaseController<PasswordPersistentState> 
     @FXML
     private ToggleSwitch specialSwitch;
     @FXML
-    private TextField excludeField; // 排除字符输入框
+    private TextField excludeField;
 
     @FXML
-    private Spinner<Integer> quantitySpinner; // 新增：生成数量控制
+    private Spinner<Integer> quantitySpinner;
     @FXML
     private EnhancedTextArea resultArea;
 
@@ -56,9 +57,6 @@ public class PasswordController extends BaseController<PasswordPersistentState> 
         excludeField.textProperty().addListener((obs, old, val) -> tryGenerate());
     }
 
-    /**
-     * 点击“生成密码”按钮时调用
-     */
     @FXML
     public void onGenerate() {
         tryGenerate();
@@ -67,38 +65,45 @@ public class PasswordController extends BaseController<PasswordPersistentState> 
     private void tryGenerate() {
         if (isRestoring) return;
 
-        StringBuilder poolBuilder = new StringBuilder();
-        if (upperSwitch.isSelected()) poolBuilder.append(UPPER);
-        if (lowerSwitch.isSelected()) poolBuilder.append(LOWER);
-        if (digitsSwitch.isSelected()) poolBuilder.append(DIGITS);
-        if (specialSwitch.isSelected()) poolBuilder.append(SPECIAL);
-
-        String rawPool = poolBuilder.toString();
-
         String excludeStr = excludeField.getText();
-        if (excludeStr != null && !excludeStr.isEmpty()) {
-            String toExclude = excludeStr.replace(" ", ""); // 允许用户用空格分隔
-            for (char c : toExclude.toCharArray()) {
-                rawPool = rawPool.replace(String.valueOf(c), "");
-            }
+
+        // 1. 构建有效的字符池列表 (List of Pools)
+        // 每一个元素代表一个被选中的类别（且剔除了排除字符）
+        List<char[]> activePools = new ArrayList<>();
+
+        if (upperSwitch.isSelected()) {
+            addPoolIfValid(activePools, UPPER, excludeStr);
+        }
+        if (lowerSwitch.isSelected()) {
+            addPoolIfValid(activePools, LOWER, excludeStr);
+        }
+        if (digitsSwitch.isSelected()) {
+            addPoolIfValid(activePools, DIGITS, excludeStr);
+        }
+        if (specialSwitch.isSelected()) {
+            addPoolIfValid(activePools, SPECIAL, excludeStr);
         }
 
-        if (rawPool.isEmpty()) {
-            resultArea.setText("错误：字符池为空，请至少选择一种字符类型或减少排除项。");
+        if (activePools.isEmpty()) {
+            resultArea.setText("错误：有效字符池为空，请检查选项或排除项。");
             return;
         }
 
         int length = lengthSpinner.getValue();
         int quantity = quantitySpinner.getValue();
-        char[] pool = rawPool.toCharArray();
 
         StringBuilder finalOutput = new StringBuilder();
 
         for (int k = 0; k < quantity; k++) {
             StringBuilder singlePwd = new StringBuilder(length);
             for (int i = 0; i < length; i++) {
-                int index = secureRandom.nextInt(pool.length);
-                singlePwd.append(pool[index]);
+                // 2. 第一步随机：从有效的类别池中随机选一个池子 (平衡权重)
+                char[] selectedPool = activePools.get(secureRandom.nextInt(activePools.size()));
+
+                // 3. 第二步随机：从选中的池子中随机选一个字符
+                char selectedChar = selectedPool[secureRandom.nextInt(selectedPool.length)];
+
+                singlePwd.append(selectedChar);
             }
 
             finalOutput.append(singlePwd);
@@ -109,6 +114,24 @@ public class PasswordController extends BaseController<PasswordPersistentState> 
         }
 
         resultArea.setText(finalOutput.toString());
+    }
+
+    /**
+     * 辅助方法：处理排除字符，并将处理后的有效字符集加入列表
+     */
+    private void addPoolIfValid(List<char[]> pools, String sourcePool, String excludeStr) {
+        String processed = sourcePool;
+        if (excludeStr != null && !excludeStr.isEmpty()) {
+            String toExclude = excludeStr.replace(" ", ""); // 允许空格分隔
+            for (char c : toExclude.toCharArray()) {
+                processed = processed.replace(String.valueOf(c), "");
+            }
+        }
+
+        // 只有当该类别在排除后仍有剩余字符时，才加入候选池
+        if (!processed.isEmpty()) {
+            pools.add(processed.toCharArray());
+        }
     }
 
     // ================== BaseController 实现 ==================
