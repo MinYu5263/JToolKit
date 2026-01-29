@@ -174,9 +174,16 @@ public class TextAnalyzerController extends BaseController<TextAnalyzerPersisten
         });
     }
 
-    // ================== 分词算法 (保持不变) ==================
+    // ================== 分词算法 ==================
 
     private String joinWords(String input, String delimiter, boolean capitalizeFirst) {
+        // 如果包含换行符，则将文本按行切分，对每一行递归调用 joinWords，最后再用换行符拼回去
+        if (input.contains("\n")) {
+            return java.util.Arrays.stream(input.split("\n", -1))
+                    .map(line -> joinWords(line, delimiter, capitalizeFirst))
+                    .collect(java.util.stream.Collectors.joining("\n"));
+        }
+
         List<String> words = splitToWords(input);
         if (words.isEmpty()) return "";
         StringBuilder sb = new StringBuilder();
