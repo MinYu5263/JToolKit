@@ -1,6 +1,7 @@
 target/
 dist/
 *.db
+.claude
 
 ### IntelliJ IDEA ###
 .idea/
