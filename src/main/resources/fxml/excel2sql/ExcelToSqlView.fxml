@@ -40,6 +40,12 @@
         <ConfigCard title="SQL 模式">
             <ComboBox fx:id="sqlModeCombo"/>
         </ConfigCard>
+        <ConfigCard title="数据库类型">
+            <ComboBox fx:id="dbDialectCombo"/>
+        </ConfigCard>
+        <ConfigCard title="每批插入条数" description="一个 INSERT 语句包含多少行数据">
+            <ComboBox fx:id="batchSizeCombo"/>
+        </ConfigCard>
         <ConfigCard title="跳过表头" description="Excel 首行作为表头，跳过不生成数据">
             <ToggleSwitch fx:id="skipHeaderSwitch" selected="true"/>
         </ConfigCard>

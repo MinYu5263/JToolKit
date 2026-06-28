@@ -21,8 +21,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.ComboBoxTableCell;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
@@ -32,6 +30,7 @@ import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -40,15 +39,14 @@ import java.util.stream.Collectors;
 @Component
 public class ExcelToSqlController extends BaseController<ExcelToSqlPersistentState> {
 
-    // === 列类型常量 ===
     public static final String TYPE_TEXT = "文本";
     public static final String TYPE_NUMBER = "数字";
+    public static final String TYPE_DATE = "日期";
     public static final String TYPE_NULL = "NULL";
+    public static final String TYPE_AUTO = "自增ID";
     public static final String TYPE_FUNC = "函数";
 
-    private static final List<String> COLUMN_TYPES = List.of(TYPE_TEXT, TYPE_NUMBER, TYPE_NULL, TYPE_FUNC);
-
-    // Excel 日期序列号基准: 1899-12-30
+    private static final List<String> COLUMN_TYPES = List.of(TYPE_TEXT, TYPE_NUMBER, TYPE_DATE, TYPE_NULL, TYPE_AUTO, TYPE_FUNC);
     private static final LocalDate EXCEL_EPOCH = LocalDate.of(1899, 12, 30);
 
     @FXML private PathTextField pathField;
@@ -57,6 +55,8 @@ public class ExcelToSqlController extends BaseController<ExcelToSqlPersistentSta
     @FXML private ToggleSwitch syncTableNameSwitch;
     @FXML private ToggleSwitch skipHeaderSwitch;
     @FXML private ComboBox<String> sqlModeCombo;
+    @FXML private ComboBox<String> dbDialectCombo;
+    @FXML private ComboBox<String> batchSizeCombo;
 
     @FXML private TableView<ColumnMapping> columnTable;
     @FXML private TableColumn<ColumnMapping, String> colIndex;
@@ -74,14 +74,14 @@ public class ExcelToSqlController extends BaseController<ExcelToSqlPersistentSta
     private final ObservableList<String> recentFiles = FXCollections.observableArrayList();
     private File currentFile;
     private boolean isRestoring = false;
+    /** 全局表头配置记忆（key=表头名），跨 Sheet 切换保持，Cell 编辑即时同步 */
+    private final Map<String, ColumnMappingData> columnMemory = new HashMap<>();
 
     @FXML
     public void initView() {
-        // 1. 配置文件选择器过滤
         pathField.getFileChooser().getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("Excel Files", "*.xlsx", "*.xls", "*.csv"));
 
-        // 2. 路径变更 → 加载文件
         pathField.textProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null && !newVal.isBlank()) {
                 File f = new File(newVal);
@@ -91,12 +91,16 @@ public class ExcelToSqlController extends BaseController<ExcelToSqlPersistentSta
             }
         });
 
-        // 3. SQL 模式
         sqlModeCombo.setItems(FXCollections.observableArrayList("INSERT INTO", "REPLACE INTO", "INSERT IGNORE INTO"));
         sqlModeCombo.getSelectionModel().selectFirst();
-        sqlModeCombo.valueProperty().addListener((obs, old, val) -> triggerUpdate());
 
-        // 4. Sheet 切换
+        dbDialectCombo.setItems(FXCollections.observableArrayList("MySQL / PostgreSQL", "Oracle"));
+        dbDialectCombo.getSelectionModel().selectFirst();
+
+        batchSizeCombo.setItems(FXCollections.observableArrayList("1", "5", "10", "50", "100", "500"));
+        batchSizeCombo.setEditable(true);
+        batchSizeCombo.getSelectionModel().selectFirst();
+
         sheetCombo.valueProperty().addListener((obs, old, val) -> {
             if (val != null) {
                 if (syncTableNameSwitch.isSelected()) {
@@ -106,57 +110,29 @@ public class ExcelToSqlController extends BaseController<ExcelToSqlPersistentSta
             }
         });
 
-        // 5. 表名变更 → 重新生成
-        tableNameField.textProperty().addListener((obs, old, val) -> triggerUpdate());
-
-        // 6. 同步开关
         syncTableNameSwitch.selectedProperty().addListener((obs, old, val) -> {
             tableNameField.setDisable(val);
             if (val && sheetCombo.getValue() != null) {
                 tableNameField.setText(toUnderline(sheetCombo.getValue()));
-                triggerUpdate();
             }
         });
 
-        // 7. 跳过表头切换 → 重新生成
-        skipHeaderSwitch.selectedProperty().addListener((obs, old, val) -> triggerUpdate());
-
-        // 8. 初始化表格
         columnTable.setItems(columnMappings);
+        columnTable.setEditable(true);
+
         colIndex.setCellValueFactory(data -> new SimpleStringProperty(String.valueOf(data.getValue().getIndex())));
         colHeader.setCellValueFactory(data -> data.getValue().headerProperty());
+
         colDbField.setCellValueFactory(data -> data.getValue().dbFieldProperty());
-        colDbField.setCellFactory(TextFieldTableCell.forTableColumn());
-        colDbField.setOnEditCommit(event -> {
-            event.getRowValue().setDbField(event.getNewValue());
-            triggerUpdate();
-        });
+        colDbField.setCellFactory(col -> new AlwaysEditingTextFieldCell());
 
-        // 类型列 — ComboBox 编辑器
         colType.setCellValueFactory(data -> data.getValue().typeProperty());
-        colType.setCellFactory(ComboBoxTableCell.forTableColumn(FXCollections.observableArrayList(COLUMN_TYPES)));
-        colType.setOnEditCommit(event -> {
-            event.getRowValue().setType(event.getNewValue());
-            triggerUpdate();
-        });
+        colType.setCellFactory(col -> new AlwaysEditingComboCell());
 
-        // 附加列 — 文本编辑器（用于日期格式或 SQL 函数表达式）
         colFormat.setCellValueFactory(data -> data.getValue().formatProperty());
-        colFormat.setCellFactory(TextFieldTableCell.forTableColumn());
-        colFormat.setOnEditCommit(event -> {
-            event.getRowValue().setFormat(event.getNewValue());
-            triggerUpdate();
-        });
+        colFormat.setCellFactory(col -> new AlwaysEditingTextFieldCell());
 
-        // 9. 历史按钮
         historyBtn.setOnAction(e -> onShowHistory());
-    }
-
-    private void triggerUpdate() {
-        if (isRestoring) return;
-        if (currentFile != null) {
-            onGenerate();
-        }
     }
 
     private void loadFile(File file) {
@@ -208,9 +184,9 @@ public class ExcelToSqlController extends BaseController<ExcelToSqlPersistentSta
 
         final AtomicBoolean first = new AtomicBoolean(true);
 
-        FastExcel.read(currentFile, new AnalysisEventListener<Map<Integer, String>>() {
+        FastExcel.read(currentFile, new AnalysisEventListener<Map<Integer, Object>>() {
             @Override
-            public void invoke(Map<Integer, String> data, AnalysisContext context) {
+            public void invoke(Map<Integer, Object> data, AnalysisContext context) {
                 if (first.getAndSet(false)) {
                     Platform.runLater(() -> updateColumns(data));
                 }
@@ -306,12 +282,21 @@ public class ExcelToSqlController extends BaseController<ExcelToSqlPersistentSta
         modalPane.show(modalBox);
     }
 
-    private void updateColumns(Map<Integer, String> firstRow) {
+    private void updateColumns(Map<Integer, Object> firstRow) {
         columnMappings.clear();
-        firstRow.forEach((index, header) -> {
-            String dbField = toUnderline(header);
-            columnMappings.add(new ColumnMapping(index, header, dbField, TYPE_TEXT, ""));
+        firstRow.forEach((index, value) -> {
+            String header = value != null ? value.toString() : "";
+            ColumnMappingData saved = columnMemory.get(header);
+            if (saved != null) {
+                columnMappings.add(new ColumnMapping(index, header,
+                        saved.getDbField() != null ? saved.getDbField() : toUnderline(header),
+                        saved.getType() != null ? saved.getType() : TYPE_TEXT,
+                        saved.getFormat() != null ? saved.getFormat() : ""));
+            } else {
+                columnMappings.add(new ColumnMapping(index, header, toUnderline(header), TYPE_TEXT, ""));
+            }
         });
+        // 不清理 columnMemory，跨 Sheet 保持表头配置记忆
     }
 
     @FXML
@@ -325,10 +310,10 @@ public class ExcelToSqlController extends BaseController<ExcelToSqlPersistentSta
         String sqlPrefix = sqlModeCombo.getValue();
         int headRow = skipHeaderSwitch.isSelected() ? 1 : 0;
 
-        // 过滤出需要包含在 INSERT 中的列
-        // 排除了：1) 字段名为空的  2) 函数类型且附加字段为空的（自增ID场景）
+        // 过滤列：排除 1) 字段名为空  2) 自增ID+空格式（自增列不参与INSERT）  3) 函数+空格式
         List<ColumnMapping> insertCols = columnMappings.stream()
                 .filter(c -> c.getDbField() != null && !c.getDbField().isBlank())
+                .filter(c -> !(TYPE_AUTO.equals(c.getType()) && c.getFormat().isBlank()))
                 .filter(c -> !(TYPE_FUNC.equals(c.getType()) && c.getFormat().isBlank()))
                 .collect(Collectors.toList());
 
@@ -344,33 +329,40 @@ public class ExcelToSqlController extends BaseController<ExcelToSqlPersistentSta
         Task<String> task = new Task<>() {
             @Override
             protected String call() {
-                StringBuilder sb = new StringBuilder();
+                int batchSize;
+                try {
+                    batchSize = Integer.parseInt(batchSizeCombo.getValue());
+                    if (batchSize < 1) throw new NumberFormatException("批次大小必须 >= 1");
+                } catch (NumberFormatException e) {
+                    throw new RuntimeException("每批插入条数格式错误: " + batchSizeCombo.getValue());
+                }
 
-                FastExcel.read(currentFile, new AnalysisEventListener<Map<Integer, String>>() {
+                List<String> rows = new ArrayList<>();
+                FastExcel.read(currentFile, new AnalysisEventListener<Map<Integer, Object>>() {
                     @Override
-                    public void invoke(Map<Integer, String> rowData, AnalysisContext context) {
-                        StringBuilder valSb = new StringBuilder();
-                        valSb.append("(");
-
+                    public void invoke(Map<Integer, Object> rowData, AnalysisContext context) {
+                        StringBuilder valSb = new StringBuilder("(");
                         for (int i = 0; i < insertCols.size(); i++) {
                             ColumnMapping col = insertCols.get(i);
-                            String rawVal = rowData.get(col.getIndex());
-                            String sqlVal = formatSqlValue(rawVal, col);
-
-                            valSb.append(sqlVal);
-
+                            Object rawVal = rowData.get(col.getIndex());
+                            valSb.append(formatSqlValue(rawVal, col));
                             if (i < insertCols.size() - 1) valSb.append(", ");
                         }
                         valSb.append(")");
-
-                        sb.append(String.format("%s %s (%s) VALUES %s;\n",
-                                sqlPrefix, tableName, columnsStr, valSb.toString()));
+                        rows.add(valSb.toString());
                     }
 
                     @Override
                     public void doAfterAllAnalysed(AnalysisContext context) {}
                 }).sheet(sheetCombo.getValue()).headRowNumber(headRow).doRead();
 
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < rows.size(); i += batchSize) {
+                    int end = Math.min(i + batchSize, rows.size());
+                    String valuesBlock = String.join(", ", rows.subList(i, end));
+                    sb.append(String.format("%s %s (%s) VALUES %s;\n",
+                            sqlPrefix, tableName, columnsStr, valuesBlock));
+                }
                 return sb.toString();
             }
 
@@ -390,10 +382,8 @@ public class ExcelToSqlController extends BaseController<ExcelToSqlPersistentSta
         new Thread(task).start();
     }
 
-    /**
-     * 根据列类型和附加字段，将 Excel 原始值格式化为 SQL 值
-     */
-    private String formatSqlValue(String rawValue, ColumnMapping col) {
+    /** 根据列类型将 Excel 原始值格式化为 SQL 值 */
+    private String formatSqlValue(Object rawValue, ColumnMapping col) {
         String type = col.getType();
         String format = col.getFormat();
 
@@ -402,45 +392,105 @@ public class ExcelToSqlController extends BaseController<ExcelToSqlPersistentSta
             return "NULL";
         }
 
-        // 函数类型 — 直接使用附加字段作为 SQL 表达式
-        if (TYPE_FUNC.equals(type)) {
-            if (format != null && !format.isBlank()) {
-                return format; // e.g., NOW(), SYSDATE, NEXTVAL('seq')
+        // 自增ID类型 — 空格式则列被过滤不参与生成，有格式则作为序列表达式（如 seq.nextval）
+        if (TYPE_AUTO.equals(type)) {
+            // 防御：空格式的列应在 onGenerate 过滤阶段就已排除，不应走到这里
+            if (format == null || format.isBlank()) {
+                throw new RuntimeException("自增ID列附加为空时不应参与生成，请检查列映射配置");
             }
-            return "NULL"; // 不应到达这里（函数+空格式已在过滤阶段排除）
+            return format;
         }
 
-        // 空值处理
-        if (rawValue == null || rawValue.isBlank()) {
+        // 函数类型 — 完全忽略 Excel 原值，只取 UI 配置的附加字段
+        if (TYPE_FUNC.equals(type)) {
+            if (format == null || format.isBlank()) {
+                throw new RuntimeException("选择'函数'类型时，[附加]列不能为空，请输入具体的SQL函数名(如 NOW())！");
+            }
+            return format;
+        }
+
+        // 空值处理（公式单元格无法求值的也会是 null）
+        if (rawValue == null) {
             return "NULL";
         }
 
-        String trimmed = rawValue.trim();
+        String strVal = rawValue.toString().trim();
+        if (strVal.isEmpty()) {
+            return "NULL";
+        }
 
-        // 数字类型 — 不加引号
+        // 数字类型 — 严格校验，拒绝非数字数据；附加字段控制小数位数
         if (TYPE_NUMBER.equals(type)) {
+            double d;
+            if (rawValue instanceof Number) {
+                d = ((Number) rawValue).doubleValue();
+            } else {
+                try {
+                    d = Double.parseDouble(strVal);
+                } catch (NumberFormatException e) {
+                    throw new RuntimeException("列数据格式错误，期望数字但遇到非法字符: " + strVal + "。请清理 Excel 格式后再试！");
+                }
+            }
+
+            // 附加字段：为空保留原始小数位（1.8→1.8, 2.22→2.22），否则按指定位数格式化
+            if (format == null || format.isBlank()) {
+                if (d == Math.floor(d) && !Double.isInfinite(d)) {
+                    return String.valueOf((long) d);  // 整数去 .0
+                }
+                return String.valueOf(d);
+            }
             try {
-                // 验证是有效数字
-                Double.parseDouble(trimmed);
-                return trimmed;
+                int decimals = Integer.parseInt(format.trim());
+                if (decimals < 0) throw new NumberFormatException("小数位数不能为负数");
+                return String.format("%." + decimals + "f", d);
             } catch (NumberFormatException e) {
-                // 非数字时回退为 NULL
-                return "NULL";
+                throw new RuntimeException("列[附加]字段格式错误，期望非负整数(小数位数)但遇到: " + format);
             }
         }
 
-        // 文本类型 (默认) — 加引号
-        String displayValue = trimmed;
-
-        // 如果指定了格式，尝试作为日期格式化（Excel 序列号 → 日期字符串）
-        if (format != null && !format.isBlank()) {
-            try {
-                long serial = Long.parseLong(trimmed);
-                LocalDate date = EXCEL_EPOCH.plusDays(serial);
-                displayValue = date.format(DateTimeFormatter.ofPattern(format));
-            } catch (Exception ignored) {
-                // 解析失败，保持原值
+        // 日期类型 — Excel序列号自动转为日期字符串，生成 TO_DATE 函数
+        if (TYPE_DATE.equals(type)) {
+            String datePattern = (format != null && !format.isBlank()) ? format : "yyyy-MM-dd";
+            String dateStr;
+            if (rawValue instanceof Number) {
+                long serial = ((Number) rawValue).longValue();
+                try {
+                    LocalDate date = EXCEL_EPOCH.plusDays(serial);
+                    dateStr = date.format(DateTimeFormatter.ofPattern(datePattern));
+                } catch (Exception e) {
+                    throw new RuntimeException("日期转换失败（序列号=" + serial + ", 格式=" + datePattern + "）: " + e.getMessage());
+                }
+            } else {
+                dateStr = strVal;
             }
+            if (dateStr.isEmpty()) return "NULL";
+            if ("Oracle".equals(dbDialectCombo.getValue())) {
+                return "TO_DATE('" + dateStr.replace("'", "''") + "', '" + datePattern + "')";
+            }
+            return "'" + dateStr.replace("'", "''") + "'";
+        }
+
+        // 文本类型 — 加引号
+        String displayValue;
+
+        if (rawValue instanceof Number) {
+            double d = ((Number) rawValue).doubleValue();
+
+            if (format != null && !format.isBlank()) {
+                // 日期序列号格式化
+                try {
+                    LocalDate date = EXCEL_EPOCH.plusDays((long) d);
+                    displayValue = date.format(DateTimeFormatter.ofPattern(format));
+                } catch (Exception e) {
+                    displayValue = strVal;
+                }
+            } else if (d == Math.floor(d) && !Double.isInfinite(d)) {
+                displayValue = String.valueOf((long) d);
+            } else {
+                displayValue = String.valueOf(d);
+            }
+        } else {
+            displayValue = strVal;
         }
 
         return "'" + displayValue.replace("'", "''") + "'";
@@ -451,7 +501,97 @@ public class ExcelToSqlController extends BaseController<ExcelToSqlPersistentSta
         return camel.replaceAll("([a-z])([A-Z]+)", "$1_$2").toLowerCase();
     }
 
-    // === BaseController 实现 ===
+    /** 同步 columnMemory 并持久化 */
+    private void updateColumnMemory(ColumnMapping item) {
+        columnMemory.put(item.getHeader(), new ColumnMappingData(
+                item.getIndex(), item.getHeader(), item.getDbField(), item.getType(), item.getFormat()));
+        saveValues();
+    }
+
+    /**
+     * 始终显示 TextField 的单元格 — 单击即可编辑，失焦或回车提交
+     */
+    private class AlwaysEditingTextFieldCell extends TableCell<ColumnMapping, String> {
+        private final TextField textField = new TextField();
+        private String originalValue = "";
+
+        {
+            textField.setMaxWidth(Double.MAX_VALUE);
+            textField.focusedProperty().addListener((obs, old, focused) -> {
+                if (focused) {
+                    originalValue = textField.getText();
+                } else {
+                    commitIfChanged();
+                }
+            });
+            textField.setOnAction(e -> commitIfChanged());
+        }
+
+        private void commitIfChanged() {
+            if (isEmpty() || getTableRow() == null) return;
+            String newVal = textField.getText();
+            if (!newVal.equals(originalValue)) {
+                ColumnMapping item = getTableRow().getItem();
+                if (item != null) {
+                    TableColumn<ColumnMapping, ?> col = getTableColumn();
+                    if (col != null && item.dbFieldProperty().equals(col.getCellObservableValue(item))) {
+                        item.setDbField(newVal);
+                    } else if (col != null && item.formatProperty().equals(col.getCellObservableValue(item))) {
+                        item.setFormat(newVal);
+                    }
+                    updateColumnMemory(item);
+                }
+                originalValue = newVal;
+            }
+        }
+
+        @Override
+        protected void updateItem(String item, boolean empty) {
+            super.updateItem(item, empty);
+            if (empty || item == null) {
+                setGraphic(null);
+                setText(null);
+            } else {
+                textField.setText(item);
+                originalValue = item;
+                setGraphic(textField);
+                setText(null);
+            }
+        }
+    }
+
+    /**
+     * 始终显示 ComboBox 的单元格 — 单击即可下拉选择
+     */
+    private class AlwaysEditingComboCell extends TableCell<ColumnMapping, String> {
+        private final ComboBox<String> combo = new ComboBox<>(FXCollections.observableArrayList(COLUMN_TYPES));
+
+        {
+            combo.setMaxWidth(Double.MAX_VALUE);
+            combo.valueProperty().addListener((obs, old, val) -> {
+                if (val != null && !isEmpty() && getTableRow() != null) {
+                    ColumnMapping item = getTableRow().getItem();
+                    if (item != null && !val.equals(item.getType())) {
+                        item.setType(val);
+                        updateColumnMemory(item);
+                    }
+                }
+            });
+        }
+
+        @Override
+        protected void updateItem(String item, boolean empty) {
+            super.updateItem(item, empty);
+            if (empty) {
+                setGraphic(null);
+                setText(null);
+            } else {
+                combo.setValue(item);
+                setGraphic(combo);
+                setText(null);
+            }
+        }
+    }
 
     @Override
     protected String getViewKey() {
@@ -465,13 +605,17 @@ public class ExcelToSqlController extends BaseController<ExcelToSqlPersistentSta
                 tableNameField.textProperty(),
                 syncTableNameSwitch.selectedProperty(),
                 skipHeaderSwitch.selectedProperty(),
-                sqlModeCombo.valueProperty()
+                sqlModeCombo.valueProperty(),
+                dbDialectCombo.valueProperty(),
+                batchSizeCombo.valueProperty()
         );
     }
 
     @Override
     protected void initDefaultValues() {
         sqlModeCombo.getSelectionModel().selectFirst();
+        dbDialectCombo.getSelectionModel().selectFirst();
+        batchSizeCombo.getSelectionModel().selectFirst();
         skipHeaderSwitch.setSelected(true);
         syncTableNameSwitch.setSelected(true);
         tableNameField.setDisable(true);
@@ -495,6 +639,15 @@ public class ExcelToSqlController extends BaseController<ExcelToSqlPersistentSta
                 File f = new File(state.getLastFilePath());
                 if (f.exists()) pathField.setText(state.getLastFilePath());
             }
+            if (state.getDbDialect() != null) dbDialectCombo.setValue(state.getDbDialect());
+            if (state.getBatchSize() != null) batchSizeCombo.setValue(state.getBatchSize());
+            if (state.getColumnMappings() != null) {
+                for (ColumnMappingData m : state.getColumnMappings()) {
+                    if (m.getHeader() != null && !m.getHeader().isBlank()) {
+                        columnMemory.put(m.getHeader(), m);
+                    }
+                }
+            }
         } finally {
             isRestoring = false;
         }
@@ -508,11 +661,13 @@ public class ExcelToSqlController extends BaseController<ExcelToSqlPersistentSta
         state.setSyncTableName(syncTableNameSwitch.isSelected());
         state.setSkipHeader(skipHeaderSwitch.isSelected());
         state.setSqlMode(sqlModeCombo.getValue());
+        state.setDbDialect(dbDialectCombo.getValue());
+        state.setBatchSize(batchSizeCombo.getValue());
         state.setRecentFiles(new ArrayList<>(recentFiles));
+        state.setColumnMappings(new ArrayList<>(columnMemory.values()));
         return state;
     }
 
-    // === 内部类：表格映射模型 ===
     public static class ColumnMapping {
         private final int index;
         private final SimpleStringProperty header;
@@ -541,5 +696,32 @@ public class ExcelToSqlController extends BaseController<ExcelToSqlPersistentSta
         public SimpleStringProperty dbFieldProperty() { return dbField; }
         public SimpleStringProperty typeProperty() { return type; }
         public SimpleStringProperty formatProperty() { return format; }
+    }
+
+    /** 列映射持久化数据结构 */
+    public static class ColumnMappingData {
+        private int index;
+        private String header;
+        private String dbField;
+        private String type;
+        private String format;
+
+        public ColumnMappingData() {}
+
+        public ColumnMappingData(int index, String header, String dbField, String type, String format) {
+            this.index = index; this.header = header; this.dbField = dbField;
+            this.type = type; this.format = format;
+        }
+
+        public int getIndex() { return index; }
+        public void setIndex(int index) { this.index = index; }
+        public String getHeader() { return header; }
+        public void setHeader(String header) { this.header = header; }
+        public String getDbField() { return dbField; }
+        public void setDbField(String dbField) { this.dbField = dbField; }
+        public String getType() { return type; }
+        public void setType(String type) { this.type = type; }
+        public String getFormat() { return format; }
+        public void setFormat(String format) { this.format = format; }
     }
 }
