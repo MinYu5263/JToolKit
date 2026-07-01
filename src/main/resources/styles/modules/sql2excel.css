@@ -1,0 +1,64 @@
+/* SQL > Excel 模块样式 */
+
+/* 连接状态标签 */
+.sql2excel .status-label {
+    -fx-text-fill: -color-fg-muted;
+    -fx-text-overrun: ellipsis;
+}
+
+.sql2excel .status-connecting {
+    -fx-text-fill: -color-warning-fg;
+}
+
+.sql2excel .status-connected {
+    -fx-text-fill: -color-success-fg;
+}
+
+.sql2excel .status-error {
+    -fx-text-fill: -color-danger-fg;
+}
+
+/* 连接管理 */
+.sql2excel.connection-manager,
+.sql2excel .connection-manager {
+    -fx-background-color: -color-bg-default;
+}
+
+.sql2excel .connection-manager-left {
+    -fx-padding: 14;
+    -fx-background-color: -color-bg-subtle;
+    -fx-border-color: transparent -color-border-default transparent transparent;
+    -fx-border-width: 0 1 0 0;
+}
+
+.sql2excel .connection-manager-right {
+    -fx-padding: 16;
+}
+
+.sql2excel .connection-manager-header > .label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.sql2excel .connection-form .label {
+    -fx-text-fill: -color-fg-muted;
+}
+
+.sql2excel .connection-form .text-field,
+.sql2excel .connection-form .password-field,
+.sql2excel .connection-form .combo-box {
+    -fx-pref-width: 280;
+}
+
+/* 预览页签 */
+.sql2excel .preview-tabs {
+    -fx-tab-min-width: 96;
+}
+
+/* 批量导出按钮 */
+.sql2excel .export-button {
+    -fx-background-color: -color-success-emphasis;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 8 16;
+}

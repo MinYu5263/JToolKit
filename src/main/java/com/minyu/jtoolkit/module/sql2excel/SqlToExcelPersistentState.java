@@ -20,16 +20,8 @@ public class SqlToExcelPersistentState implements PersistentState {
     // 上次选中的数据库（用于自动恢复）
     private String lastSelectedDatabase;
 
-    // 任务列表保持不变
-    private List<QueryTaskState> tasks = new ArrayList<>();
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class QueryTaskState {
-        private String sheetName;
-        private String sql;
-    }
+    // 主 SQL 文本框内容
+    private String savedSqlContent;
 
     @Data
     @NoArgsConstructor

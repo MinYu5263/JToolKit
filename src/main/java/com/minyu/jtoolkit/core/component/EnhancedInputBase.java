@@ -10,6 +10,8 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -24,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Locale;
 
 /**
  * EnhancedInputBase
@@ -53,6 +56,7 @@ public abstract class EnhancedInputBase<T extends TextInputControl> extends VBox
     private Button importButton;
     private Button exportButton;
     private Separator separator;
+    private final FileChooser importFileChooser = new FileChooser();
     // 按钮插槽
     private final HBox leadingContainer = new HBox(5);
     private final HBox trailingContainer = new HBox(5);
@@ -64,6 +68,7 @@ public abstract class EnhancedInputBase<T extends TextInputControl> extends VBox
         initBaseView();
         setupBaseListeners();
         setupBaseBindings();
+        setupDragAndDrop();
 
         applyMode(Mode.ALL);
     }
@@ -85,6 +90,9 @@ public abstract class EnhancedInputBase<T extends TextInputControl> extends VBox
         copyButton = createButton("复制", Material2OutlinedAL.CONTENT_COPY, this::copyText);
         separator = new Separator(Orientation.VERTICAL);
         separator.getStyleClass().add(Styles.SMALL);
+        importFileChooser.setTitle("选择文件");
+        importFileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(
+                "文本文件", "*.txt", "*.log", "*.java", "*.json", "*.xml"));
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
@@ -170,6 +178,39 @@ public abstract class EnhancedInputBase<T extends TextInputControl> extends VBox
         btn.managedProperty().bind(prop);
     }
 
+    private void setupDragAndDrop() {
+        setupDragAndDrop(this);
+        setupDragAndDrop(inputControl);
+    }
+
+    private void setupDragAndDrop(Node target) {
+        target.setOnDragOver(event -> {
+            Dragboard dragboard = event.getDragboard();
+            if (dragboard.hasFiles() && dragboard.getFiles().stream().anyMatch(this::isAcceptedImportFile)) {
+                event.acceptTransferModes(TransferMode.COPY);
+            }
+            event.consume();
+        });
+
+        target.setOnDragDropped(event -> {
+            Dragboard dragboard = event.getDragboard();
+            boolean success = false;
+            if (dragboard.hasFiles()) {
+                File file = dragboard.getFiles().stream()
+                        .filter(this::isAcceptedImportFile)
+                        .findFirst()
+                        .orElse(null);
+                if (file != null) {
+                    success = loadFileIntoInput(file);
+                } else {
+                    new Alert(Alert.AlertType.WARNING, "文件类型不匹配，请选择允许导入的文件类型。").show();
+                }
+            }
+            event.setDropCompleted(success);
+            event.consume();
+        });
+    }
+
     private Button createButton(String text, org.kordamp.ikonli.Ikon ikon, Runnable action) {
         Button btn = new Button();
         FontIcon fontIcon = new FontIcon(ikon);
@@ -202,17 +243,52 @@ public abstract class EnhancedInputBase<T extends TextInputControl> extends VBox
     }
 
     public void importFile() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("选择文件");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("文本文件", "*.txt", "*.log", "*.java", "*.json", "*.xml"));
-        File file = fileChooser.showOpenDialog(this.getScene().getWindow());
+        File file = importFileChooser.showOpenDialog(this.getScene().getWindow());
         if (file != null) {
-            try {
-                inputControl.setText(Files.readString(file.toPath(), StandardCharsets.UTF_8));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            loadFileIntoInput(file);
         }
+    }
+
+    private boolean loadFileIntoInput(File file) {
+        try {
+            inputControl.setText(Files.readString(file.toPath(), StandardCharsets.UTF_8));
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "文件读取失败:\n" + e.getMessage()).show();
+            return false;
+        }
+    }
+
+    private boolean isAcceptedImportFile(File file) {
+        if (file == null || !file.isFile()) {
+            return false;
+        }
+        ObservableList<FileChooser.ExtensionFilter> filters = importFileChooser.getExtensionFilters();
+        if (filters.isEmpty()) {
+            return true;
+        }
+        String fileName = file.getName().toLowerCase(Locale.ROOT);
+        return filters.stream()
+                .flatMap(filter -> filter.getExtensions().stream())
+                .anyMatch(extension -> matchesExtension(fileName, extension));
+    }
+
+    private boolean matchesExtension(String fileName, String extensionPattern) {
+        if (extensionPattern == null || extensionPattern.isBlank()) {
+            return false;
+        }
+        String pattern = extensionPattern.toLowerCase(Locale.ROOT).trim();
+        if ("*".equals(pattern) || "*.*".equals(pattern)) {
+            return true;
+        }
+        if (pattern.startsWith("*.")) {
+            return fileName.endsWith(pattern.substring(1));
+        }
+        if (pattern.startsWith(".")) {
+            return fileName.endsWith(pattern);
+        }
+        return fileName.equals(pattern);
     }
 
     public void exportFile() {
@@ -323,6 +399,10 @@ public abstract class EnhancedInputBase<T extends TextInputControl> extends VBox
 
     public ObservableList<Node> getTrailingActions() {
         return trailingContainer.getChildren();
+    }
+
+    public final FileChooser getImportFileChooser() {
+        return importFileChooser;
     }
 
     // 定义模式枚举

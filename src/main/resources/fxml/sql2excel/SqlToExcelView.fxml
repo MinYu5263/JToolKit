@@ -1,80 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import com.minyu.jtoolkit.core.component.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<VBox xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21"
-      fx:controller="com.minyu.jtoolkit.module.sql2excel.SqlToExcelController">
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.minyu.jtoolkit.module.sql2excel.SqlToExcelController"
+      spacing="10"
+      styleClass="sql2excel">
 
-    <padding>
-        <Insets top="10" right="10" bottom="10" left="10"/>
-    </padding>
-
-    <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-background-color: #f4f4f4; -fx-background-radius: 5;">
-        <padding>
-            <Insets top="10" right="10" bottom="10" left="10"/>
-        </padding>
-
-        <Label text="选择连接:" style="-fx-font-weight: bold;"/>
-        <ComboBox fx:id="profileCombo" promptText="请选择或创建连接" prefWidth="200"/>
-        <Button text="⚙ 管理连接" onAction="#onManageConnections"/>
-
+<!--    <Label text="数据库连接"/>-->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="数据库连接:" minWidth="-Infinity"/>
+        <ComboBox fx:id="profileCombo" promptText="请选择或创建连接" prefWidth="160" minWidth="-Infinity"/>
+        <Button text="管理连接" onAction="#onManageConnections" minWidth="-Infinity"/>
         <Separator orientation="VERTICAL"/>
-
-        <Label text="选择数据库:"/>
-        <ComboBox fx:id="databaseCombo" promptText="等待连接" prefWidth="200" editable="true"/>
-        <Button fx:id="btnRefreshDb" text="⟳" onAction="#onRefreshDatabases">
+        <Label text="选择数据库:" minWidth="-Infinity"/>
+        <ComboBox fx:id="databaseCombo" promptText="等待连接" prefWidth="160" editable="true" minWidth="-Infinity"/>
+        <Button fx:id="btnRefreshDb" styleClass="button-icon" onAction="#onRefreshDatabases" minWidth="-Infinity">
+            <graphic>
+                <FontIcon iconLiteral="fth-refresh-cw"/>
+            </graphic>
             <tooltip>
                 <Tooltip text="刷新数据库列表"/>
             </tooltip>
         </Button>
-
         <Region HBox.hgrow="ALWAYS"/>
-        <Label fx:id="connStatusLabel" text="未连接" textFill="grey"/>
+        <Label fx:id="connStatusLabel" text="未连接" styleClass="status-label" maxWidth="250"/>
     </HBox>
 
-    <SplitPane dividerPositions="0.25" VBox.vgrow="ALWAYS">
+    <EnhancedTextArea fx:id="sqlArea" title="SQL 查询语句" areaStyle="code-area"
+                      promptText="支持多条 SQL（分号分隔），例如:&#10;SELECT * FROM users;&#10;SELECT * FROM orders;"
+                      wrapText="true" VBox.vgrow="ALWAYS" minHeight="200"
+                      mode="INPUT"/>
 
-        <VBox spacing="5.0">
-            <padding>
-                <Insets top="5" right="5" bottom="5" left="5"/>
-            </padding>
-            <Label text="导出任务列表 (Sheets):" style="-fx-font-weight: bold;"/>
-            <ListView fx:id="taskListView" VBox.vgrow="ALWAYS"/>
-            <HBox spacing="5">
-                <Button text="+ 添加查询" onAction="#onAddTask" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
-                <Button text="- 删除" onAction="#onRemoveTask"/>
-            </HBox>
-            <Separator/>
-            <Button text="批量导出所有到 Excel" onAction="#onBatchExport" maxWidth="Infinity"
-                    style="-fx-base: #2e8b57; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10;"/>
-        </VBox>
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Button text="运行预览 (前50行)" onAction="#onPreviewCurrent"/>
+        <Label fx:id="previewStatusLabel" text="准备就绪" styleClass="status-label"/>
+    </HBox>
 
-        <VBox spacing="8.0" fx:id="editorArea" disable="true">
-            <padding>
-                <Insets top="5" right="5" bottom="5" left="5"/>
-            </padding>
+    <TabPane fx:id="previewTabPane" VBox.vgrow="ALWAYS" minHeight="200" tabClosingPolicy="UNAVAILABLE"
+             styleClass="preview-tabs"/>
 
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <Label text="Sheet 名称:"/>
-                <TextField fx:id="sheetNameField" promptText="例如: 用户统计" HBox.hgrow="ALWAYS"/>
-            </HBox>
-
-            <Label text="SQL 查询语句:"/>
-            <TextArea fx:id="sqlArea" promptText="SELECT * FROM users LIMIT 100" wrapText="true" prefHeight="200"
-                      style="-fx-font-family: 'Consolas', 'Monospaced';"/>
-
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <Button text="▶ 运行预览 (前50行)" onAction="#onPreviewCurrent"/>
-                <Label fx:id="previewStatusLabel" text="准备就绪" textFill="grey"/>
-            </HBox>
-
-            <TableView fx:id="previewTable" VBox.vgrow="ALWAYS">
-                <placeholder>
-                    <Label text="暂无数据"/>
-                </placeholder>
-            </TableView>
-        </VBox>
-
-    </SplitPane>
+    <Button text="批量导出所有到 Excel" onAction="#onBatchExport" maxWidth="Infinity"
+            styleClass="export-button"/>
 </VBox>
