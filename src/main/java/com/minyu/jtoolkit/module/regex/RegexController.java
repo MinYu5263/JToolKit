@@ -4,16 +4,18 @@ import atlantafx.base.controls.ToggleSwitch;
 import com.minyu.jtoolkit.module.BaseController;
 import javafx.application.Platform;
 import javafx.beans.Observable;
+import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
-import org.kordamp.ikonli.javafx.FontIcon;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -27,7 +29,6 @@ public class RegexController extends BaseController<RegexPersistentState> {
     // === UI 组件 ===
     @FXML private TextField regexField;
     @FXML private ComboBox<String> templateCombo;
-    @FXML private Label statusLabel;
     @FXML private Label matchCountLabel;
     @FXML private StackPane editorContainer; // 对应 FXML 中的新容器
 
@@ -60,23 +61,47 @@ public class RegexController extends BaseController<RegexPersistentState> {
      */
     private void initCodeArea() {
         codeArea = new CodeArea();
-        // 设置字体
+        codeArea.getStyleClass().addAll("code-area", "regex-editor");
 
         // 这里的 CSS 路径建议根据你的项目实际情况修改，或者在主 Application 中统一加载
         // codeArea.getStylesheets().add(getClass().getResource("/assets/styles/highlight.css").toExternalForm());
 
         // 使用 VirtualizedScrollPane 包裹以支持高性能滚动
         VirtualizedScrollPane<CodeArea> scrollPane = new VirtualizedScrollPane<>(codeArea);
+        scrollPane.getStyleClass().add("regex-editor-scroll");
+
+        // 修复嵌套滚动：内部滚动到边界时，将滚轮事件传递给外层 ScrollPane
+        scrollPane.addEventFilter(ScrollEvent.SCROLL, event -> {
+            double dy = event.getDeltaY();
+            double scrollY = scrollPane.estimatedScrollYProperty().getValue();
+            double totalH = scrollPane.totalHeightEstimateProperty().getValue();
+            double viewH = scrollPane.getHeight();
+
+            boolean atTop = scrollY <= 0 && dy > 0;
+            boolean atBottom = scrollY >= totalH - viewH - 1 && dy < 0;
+            boolean contentFits = totalH <= viewH;
+
+            if (atTop || atBottom || contentFits) {
+                event.consume();
+                Node parent = scrollPane.getParent();
+                if (parent != null) {
+                    Event.fireEvent(parent, event.copyFor(parent, parent));
+                }
+            }
+        });
+
         editorContainer.getChildren().add(scrollPane);
     }
 
     private void initTemplates() {
-        regexTemplates.put("Email 邮箱", "\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*");
-        regexTemplates.put("Mobile 手机号 (CN)", "^1[3-9]\\d{9}$");
-        regexTemplates.put("Date (yyyy-MM-dd)", "\\d{4}-\\d{2}-\\d{2}");
-        regexTemplates.put("IPv4", "((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(\\.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}");
-        regexTemplates.put("Chinese 中文字符", "[\\u4e00-\\u9fa5]+");
-        regexTemplates.put("ID Card 身份证", "^[1-9]\\d{5}(18|19|20)\\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\\d{3}[0-9Xx]$");
+        regexTemplates.put("邮箱", "(?<![A-Za-z0-9._%+-])[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}(?![A-Za-z0-9._%+-])");
+        regexTemplates.put("手机号(+86)", "(?<!\\d)(?:\\+?86[-\\s]?)?1[3-9]\\d[-\\s]?\\d{4}[-\\s]?\\d{4}(?!\\d)");
+        regexTemplates.put("日期", "(?<!\\d)(?:\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])|\\d{4}年(?:0?[1-9]|1[0-2])月(?:0?[1-9]|[12]\\d|3[01])日)(?!\\d)");
+        regexTemplates.put("URL", "https?://[A-Za-z0-9.-]+(?::\\d+)?(?:/[A-Za-z0-9._~:/?#\\[\\]@!$&'()*+,;=%-]*)?");
+        regexTemplates.put("金额", "(?:[$¥])\\s?\\d+(?:\\.\\d{1,2})?");
+        regexTemplates.put("IPv4", "(?<!\\d)(?:25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]?\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]?\\d)){3}(?!\\d)");
+        regexTemplates.put("中文字符", "[\\u4e00-\\u9fa5]+");
+        regexTemplates.put("居民身份证(18位)", "(?<!\\d)[1-9]\\d{5}(?:18|19|20)\\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\\d|3[01])\\d{3}[0-9Xx](?!\\d)");
 
         templateCombo.getItems().addAll(regexTemplates.keySet());
         templateCombo.setOnAction(e -> {
@@ -109,7 +134,6 @@ public class RegexController extends BaseController<RegexPersistentState> {
         // 判空
         if (text == null || text.isEmpty() || regex == null || regex.isEmpty()) {
             codeArea.clearStyle(0, text.length());
-            updateStatus("Ready", "-color-fg-muted", "mdal-info");
             return;
         }
 
@@ -157,21 +181,13 @@ public class RegexController extends BaseController<RegexPersistentState> {
             codeArea.setStyleSpans(0, spans);
 
             matchCountLabel.setText(count + " matches");
-            updateStatus("Regex Valid", "-color-success-fg", "mdal-check_circle");
 
         } catch (PatternSyntaxException e) {
             // 正则语法错误，清除高亮并报错
             codeArea.clearStyle(0, text.length());
-            updateStatus("Invalid Regex: " + e.getDescription(), "-color-danger-fg", "mdal-error");
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private void updateStatus(String msg, String colorCss, String iconLiteral) {
-        statusLabel.setText(msg);
-        statusLabel.setStyle("-fx-text-fill: " + colorCss + ";");
-        statusLabel.setGraphic(new FontIcon(iconLiteral));
     }
 
     // === 持久化实现 ===

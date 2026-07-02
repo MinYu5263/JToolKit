@@ -9,7 +9,8 @@
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.minyu.jtoolkit.module.regex.RegexController"
-      spacing="10">
+      spacing="10"
+      styleClass="regex-tester">
 
     <ConfigGroup title="匹配选项 (Options)" expanded="false">
         <ConfigCard title="全部匹配 (Global)" description="查找文本中的所有匹配项">
@@ -35,32 +36,25 @@
         </ConfigCard>
     </ConfigGroup>
     <VBox spacing="8.0">
-        <Label text="正则表达式 (Regular Expression)" styleClass="title-4"/>
+        <Label text="正则表达式"/>
 
         <HBox spacing="10" alignment="CENTER_LEFT">
-            <TextField fx:id="regexField" promptText="例如: \w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"
+            <TextField fx:id="regexField"
                        HBox.hgrow="ALWAYS"
-                       style="-fx-font-family: 'JetBrains Mono', 'Consolas', 'Monospaced'; -fx-font-size: 14px;"/>
+                       style="-fx-font-family: 'JetBrains Mono', 'Consolas', 'Monospaced';"/>
 
             <ComboBox fx:id="templateCombo" promptText="常用模板" prefWidth="160"/>
         </HBox>
-
-        <Label fx:id="statusLabel" text="Ready" style="-fx-text-fill: -color-fg-muted;">
-            <graphic>
-                <FontIcon iconLiteral="mdal-info"/>
-            </graphic>
-        </Label>
     </VBox>
 
     <VBox spacing="8.0" VBox.vgrow="ALWAYS">
         <HBox alignment="CENTER_LEFT" spacing="10">
-            <Label text="文本内容 (Text)" styleClass="title-4"/>
+            <Label text="文本内容"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Label fx:id="matchCountLabel" text="0 matches"
-                   style="-fx-font-weight: bold; -fx-text-fill: -color-accent-fg;"/>
+                   style="-fx-text-fill: -color-accent-fg;"/>
         </HBox>
-
-        <StackPane fx:id="editorContainer" VBox.vgrow="ALWAYS" alignment="TOP_LEFT"/>
+        <StackPane fx:id="editorContainer" VBox.vgrow="ALWAYS" alignment="TOP_LEFT" minHeight="570"
+                   styleClass="regex-editor-container"/>
     </VBox>
-
 </VBox>

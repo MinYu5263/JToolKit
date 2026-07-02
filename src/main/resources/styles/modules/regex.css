@@ -1,3 +1,31 @@
+.regex-tester .regex-editor-container {
+    -fx-background-color: -color-bg-default;
+    -fx-background-radius: 4;
+    -fx-border-color: -color-border-default;
+    -fx-border-radius: 4;
+    -fx-border-width: 1;
+    -fx-padding: 1;
+}
+
+.regex-tester .regex-editor-container:focused {
+    -fx-border-color: -color-accent-emphasis;
+}
+
+.regex-tester .regex-editor-scroll,
+.regex-tester .regex-editor,
+.regex-tester .regex-editor .virtual-flow,
+.regex-tester .regex-editor .paragraph-box {
+    -fx-background-color: -color-bg-default;
+}
+
+.regex-tester .regex-editor {
+    -fx-padding: 8;
+}
+
+.regex-tester .regex-editor .text {
+    -fx-fill: -color-fg-default;
+}
+
 .regex-match {
-    -rtfx-background-color: #1e90ff;
+    -rtfx-background-color: #42adff;
 }
