@@ -110,6 +110,7 @@ public class MainModel {
 
         TreeItem<Nav> sysTools = group("系统工具", Material2AL.ACCOUNT_TREE);
         sysTools.getChildren().setAll(List.of(
+                item("JAR 安装", "fxml/jar_installer/JarInstallerView.fxml"),
                 item("Git配置助手", "fxml/git_config/GitConfigView.fxml"),
                 item("环境变量助手", "fxml/env_vars/EnvVarView.fxml")
         ));

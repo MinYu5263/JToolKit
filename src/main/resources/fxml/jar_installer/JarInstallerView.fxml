@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.minyu.jtoolkit.core.component.ConfigCard?>
+<?import com.minyu.jtoolkit.core.component.ConfigGroup?>
+<?import com.minyu.jtoolkit.core.component.EnhancedTextArea?>
+<?import com.minyu.jtoolkit.core.component.EnhancedTextField?>
+<?import com.minyu.jtoolkit.core.component.PathTextField?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.minyu.jtoolkit.module.jar_installer.JarInstallerController"
+      spacing="10"
+      styleClass="jar-installer">
+
+    <ConfigGroup title="基本信息" expanded="true">
+        <ConfigCard title="JAR 文件" description="要安装到本地 Maven 仓库的 JAR 文件路径">
+            <PathTextField fx:id="jarFileField" pickerMode="FILE" editable="false" HBox.hgrow="ALWAYS"/>
+        </ConfigCard>
+        <ConfigCard title="Group ID">
+            <TextField fx:id="groupIdField"/>
+        </ConfigCard>
+        <ConfigCard title="Artifact ID">
+            <TextField fx:id="artifactIdField"/>
+        </ConfigCard>
+        <ConfigCard title="Version">
+            <EnhancedTextField fx:id="versionField" mode="NONE"/>
+        </ConfigCard>
+    </ConfigGroup>
+
+    <ConfigGroup title="可选配置" expanded="false">
+        <ConfigCard title="POM 文件" description="如该 JAR 有对应的 POM 文件，可在此指定">
+            <PathTextField fx:id="pomFileField" pickerMode="FILE" editable="false" HBox.hgrow="ALWAYS"/>
+        </ConfigCard>
+        <ConfigCard title="Sources 文件" description="源码 JAR（可选）">
+            <PathTextField fx:id="sourcesFileField" pickerMode="FILE" editable="false" HBox.hgrow="ALWAYS"/>
+        </ConfigCard>
+        <ConfigCard title="Javadoc 文件" description="文档 JAR（可选）">
+            <PathTextField fx:id="javadocFileField" pickerMode="FILE" editable="false" HBox.hgrow="ALWAYS"/>
+        </ConfigCard>
+    </ConfigGroup>
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="installButton" text="安装到本地仓库" onAction="#onInstall"/>
+    </HBox>
+
+    <EnhancedTextArea fx:id="outputArea" title="执行结果" areaStyle="code-area" mode="OUTPUT"
+                      editable="false" wrapText="true" VBox.vgrow="ALWAYS" minHeight="150"/>
+</VBox>
