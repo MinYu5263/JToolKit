@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import atlantafx.base.controls.ToggleSwitch?>
+<?import com.minyu.jtoolkit.core.component.ConfigCard?>
+<?import com.minyu.jtoolkit.core.component.EnhancedTextArea?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.minyu.jtoolkit.module.text_formatter.TextFormatterController"
+      spacing="10"
+      styleClass="text-formatter">
+
+    <ConfigCard title="格式化类型">
+        <ComboBox fx:id="formatTypeCombo" prefWidth="120"/>
+    </ConfigCard>
+    <ConfigCard title="缩进">
+        <ComboBox fx:id="indentCombo" prefWidth="120"/>
+    </ConfigCard>
+    <ConfigCard title="压缩模式">
+        <ToggleSwitch fx:id="compactSwitch"/>
+    </ConfigCard>
+
+    <SplitPane dividerPositions="0.5" VBox.vgrow="ALWAYS">
+        <EnhancedTextArea fx:id="inputArea" title="输入" areaStyle="code-area" mode="INPUT"
+                          wrapText="true" VBox.vgrow="ALWAYS"/>
+        <EnhancedTextArea fx:id="outputArea" title="输出" areaStyle="code-area" mode="OUTPUT"
+                          editable="false" wrapText="true" VBox.vgrow="ALWAYS"/>
+    </SplitPane>
+</VBox>

@@ -102,8 +102,7 @@ public class MainModel {
 
         TreeItem<Nav> text = group("文本工具", Material2AL.DEVELOPER_BOARD);
         text.getChildren().setAll(List.of(
-                item("JSON 格式化", "fxml/json/JsonView.fxml"),
-                item("XML 格式化", "fxml/xml/XmlView.fxml"),
+                item("文本格式化", "fxml/text_formatter/TextFormatterView.fxml"),
                 item("正则表达式测试", "fxml/regex/RegexView.fxml"),
                 item("文本分析与实用工具", "fxml/text_analyzer/TextAnalyzerView.fxml")
         ));
