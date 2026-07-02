@@ -40,6 +40,7 @@ public abstract class EnhancedInputBase<T extends TextInputControl> extends VBox
     @Getter
     protected final T inputControl;
     private final Label titleLabel;
+    private HBox titleBar;
     // 属性定义
     private final StringProperty title = new SimpleStringProperty(this, "title", "");
     private final ObjectProperty<Mode> mode = new SimpleObjectProperty<>(this, "mode", Mode.ALL);
@@ -80,7 +81,6 @@ public abstract class EnhancedInputBase<T extends TextInputControl> extends VBox
 
     private void initBaseView() {
         this.setSpacing(5);
-        this.setPadding(new Insets(5));
         this.getStyleClass().add("enhanced-input-base");
 
         pasteButton = createButton("粘贴", Feather.CLIPBOARD, this::pasteText);
@@ -108,7 +108,7 @@ public abstract class EnhancedInputBase<T extends TextInputControl> extends VBox
         HBox.setMargin(leadingContainer, new Insets(0, 5, 0, 0));
         HBox.setMargin(trailingContainer, new Insets(0, 0, 0, 5));
 
-        HBox titleBar = new HBox();
+        titleBar = new HBox();
         titleBar.setAlignment(Pos.CENTER_LEFT);
         titleBar.getChildren().addAll(
                 titleLabel,
@@ -150,6 +150,9 @@ public abstract class EnhancedInputBase<T extends TextInputControl> extends VBox
         setShowClear(true);
         setShowImport(true);
         setShowExport(true);
+        titleBar.setManaged(true);
+        titleBar.setVisible(true);
+        setSpacing(5);
 
         switch (newMode) {
             case INPUT -> {
@@ -167,6 +170,9 @@ public abstract class EnhancedInputBase<T extends TextInputControl> extends VBox
                 setShowClear(false);
                 setShowImport(false);
                 setShowExport(false);
+                titleBar.setManaged(false);
+                titleBar.setVisible(false);
+                setSpacing(0);
             }
             case ALL -> {
             }

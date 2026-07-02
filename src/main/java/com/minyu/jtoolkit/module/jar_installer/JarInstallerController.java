@@ -9,7 +9,6 @@ import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -28,8 +27,8 @@ import java.util.List;
 public class JarInstallerController extends BaseController<JarInstallerPersistentState> {
 
     @FXML private PathTextField jarFileField;
-    @FXML private TextField groupIdField;
-    @FXML private TextField artifactIdField;
+    @FXML private EnhancedTextField groupIdField;
+    @FXML private EnhancedTextField artifactIdField;
     @FXML private EnhancedTextField versionField;
     @FXML private PathTextField pomFileField;
     @FXML private PathTextField sourcesFileField;

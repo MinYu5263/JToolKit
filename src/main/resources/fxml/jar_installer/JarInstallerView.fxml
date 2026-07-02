@@ -19,10 +19,10 @@
             <PathTextField fx:id="jarFileField" pickerMode="FILE" editable="false" HBox.hgrow="ALWAYS"/>
         </ConfigCard>
         <ConfigCard title="Group ID">
-            <TextField fx:id="groupIdField"/>
+            <EnhancedTextField fx:id="groupIdField" mode="NONE"/>
         </ConfigCard>
         <ConfigCard title="Artifact ID">
-            <TextField fx:id="artifactIdField"/>
+            <EnhancedTextField fx:id="artifactIdField" mode="NONE"/>
         </ConfigCard>
         <ConfigCard title="Version">
             <EnhancedTextField fx:id="versionField" mode="NONE"/>
