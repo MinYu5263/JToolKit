@@ -34,7 +34,7 @@ public final class SearchDialog extends ModalDialog {
         this.model = model;
 
         setId("search-dialog");
-        header.setTitle("Search");
+        header.setTitle("搜索");
 
         content.setBody(createContent());
         content.setPrefSize(600, 440);
@@ -43,7 +43,7 @@ public final class SearchDialog extends ModalDialog {
     }
 
     private VBox createContent() {
-        var placeholder = new Label("Type to search");
+        var placeholder = new Label("输入关键字搜索");
         placeholder.getStyleClass().addAll(Styles.TITLE_4, Styles.TEXT_MUTED);
 
         searchField = new CustomTextField();
