@@ -1,33 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import atlantafx.base.controls.CustomTextField?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.*?>
 <?import java.lang.String?>
-<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.minyu.jtoolkit.module.env_vars.EnvVarController"
-      spacing="10.0" prefHeight="600.0" prefWidth="800.0">
+      spacing="10">
 
     <padding>
         <Insets top="10" right="10" bottom="10" left="10"/>
     </padding>
 
     <HBox alignment="CENTER_LEFT" spacing="10">
-        <Label text="环境变量" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
         <Label fx:id="osInfoLabel" text="(Windows)" textFill="grey"/>
-
-        <HBox HBox.hgrow="ALWAYS"/>
-
-        <TextField fx:id="searchField" promptText="搜索变量名或值" prefWidth="250"/>
-        <Button text="刷新" onAction="#onRefreshAll"/>
     </HBox>
 
     <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
 
         <Tab text="用户变量 (User)">
-            <VBox spacing="5.0">
-                <padding><Insets top="10" right="5" bottom="5" left="5"/></padding>
-                <Label text="仅对当前用户生效" style="-fx-text-fill: #666; -fx-font-size: 11px;"/>
+            <VBox spacing="10">
+                <padding>
+                    <Insets top="10" right="5" bottom="5" left="5"/>
+                </padding>
+
+                <HBox spacing="10">
+                    <CustomTextField fx:id="userSearchField" promptText="搜索变量名或值"
+                                     HBox.hgrow="ALWAYS">
+                        <left>
+                            <Label>
+                                <graphic>
+                                    <FontIcon iconLiteral="mdmz-search" iconColor="#888888"/>
+                                </graphic>
+                                <padding>
+                                    <Insets left="8" right="5"/>
+                                </padding>
+                            </Label>
+                        </left>
+                    </CustomTextField>
+                    <Button onAction="#onRefreshUser" text="刷新">
+                        <graphic>
+                            <FontIcon iconLiteral="mdmz-refresh"/>
+                        </graphic>
+                    </Button>
+                    <Button fx:id="btnAddUser" onAction="#onAddUserVar" text="新建">
+                        <graphic>
+                            <FontIcon iconLiteral="mdal-add"/>
+                        </graphic>
+                    </Button>
+                </HBox>
 
                 <TableView fx:id="userTable" VBox.vgrow="ALWAYS">
                     <columns>
@@ -39,20 +64,48 @@
                     </columnResizePolicy>
                 </TableView>
 
-                <HBox spacing="10.0">
-                    <Button fx:id="btnAddUser" text="新建" onAction="#onAddUserVar"/>
+                <HBox spacing="10">
                     <Button fx:id="btnEditUser" text="编辑" onAction="#onEditUserVar"/>
                     <Button fx:id="btnDelUser" text="删除" onAction="#onDeleteUserVar">
-                        <styleClass><String fx:value="danger"/></styleClass>
+                        <styleClass>
+                            <String fx:value="danger"/>
+                        </styleClass>
                     </Button>
                 </HBox>
             </VBox>
         </Tab>
 
         <Tab text="系统变量 (System)">
-            <VBox spacing="5.0">
-                <padding><Insets top="10" right="5" bottom="5" left="5"/></padding>
-                <Label text="对所有用户生效 (需要管理员权限)" style="-fx-text-fill: #666; -fx-font-size: 11px;"/>
+            <VBox spacing="10">
+                <padding>
+                    <Insets top="10" right="5" bottom="5" left="5"/>
+                </padding>
+
+                <HBox spacing="10">
+                    <CustomTextField fx:id="sysSearchField" promptText="搜索变量名或值"
+                                     HBox.hgrow="ALWAYS">
+                        <left>
+                            <Label>
+                                <graphic>
+                                    <FontIcon iconLiteral="mdmz-search" iconColor="#888888"/>
+                                </graphic>
+                                <padding>
+                                    <Insets left="8" right="5"/>
+                                </padding>
+                            </Label>
+                        </left>
+                    </CustomTextField>
+                    <Button onAction="#onRefreshSys" text="刷新">
+                        <graphic>
+                            <FontIcon iconLiteral="mdmz-refresh"/>
+                        </graphic>
+                    </Button>
+                    <Button fx:id="btnAddSys" onAction="#onAddSysVar" text="新建">
+                        <graphic>
+                            <FontIcon iconLiteral="mdal-add"/>
+                        </graphic>
+                    </Button>
+                </HBox>
 
                 <TableView fx:id="sysTable" VBox.vgrow="ALWAYS">
                     <columns>
@@ -64,12 +117,15 @@
                     </columnResizePolicy>
                 </TableView>
 
-                <HBox spacing="10.0">
-                    <Button fx:id="btnAddSys" text="新建" onAction="#onAddSysVar"/>
+                <HBox spacing="10">
                     <Button fx:id="btnEditSys" text="编辑" onAction="#onEditSysVar"/>
                     <Button fx:id="btnDelSys" text="删除" onAction="#onDeleteSysVar">
-                        <styleClass><String fx:value="danger"/></styleClass>
-                        <tooltip><Tooltip text="删除系统变量可能导致系统不稳定，请谨慎操作"/></tooltip>
+                        <styleClass>
+                            <String fx:value="danger"/>
+                        </styleClass>
+                        <tooltip>
+                            <Tooltip text="删除系统变量可能导致系统不稳定，请谨慎操作"/>
+                        </tooltip>
                     </Button>
                 </HBox>
             </VBox>

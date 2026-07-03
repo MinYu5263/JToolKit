@@ -1,5 +1,6 @@
 package com.minyu.jtoolkit.module.env_vars;
 
+import atlantafx.base.controls.CustomTextField;
 import com.minyu.jtoolkit.core.util.AppLifecycleUtils;
 import com.minyu.jtoolkit.module.BaseController;
 import com.minyu.jtoolkit.system.service.EnvVarService;
@@ -34,7 +35,9 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
     @FXML
     private Label osInfoLabel;
     @FXML
-    private TextField searchField; // 新增搜索框
+    private CustomTextField userSearchField;
+    @FXML
+    private CustomTextField sysSearchField;
 
     // 用户变量表格
     @FXML
@@ -115,11 +118,10 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
      * 初始化搜索过滤器
      */
     private void initSearchFilter() {
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            // 定义过滤逻辑：如果 key 或 value 包含搜索文本（忽略大小写），则保留
-            filteredUserList.setPredicate(item -> filterLogic(item, newValue));
-            filteredSysList.setPredicate(item -> filterLogic(item, newValue));
-        });
+        userSearchField.textProperty().addListener((obs, old, val) ->
+                filteredUserList.setPredicate(item -> filterLogic(item, val)));
+        sysSearchField.textProperty().addListener((obs, old, val) ->
+                filteredSysList.setPredicate(item -> filterLogic(item, val)));
     }
 
     private boolean filterLogic(EnvVarItem item, String searchText) {
@@ -153,7 +155,17 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
 
     @FXML
     public void onRefreshAll() {
+        onRefreshUser();
+        onRefreshSys();
+    }
+
+    @FXML
+    public void onRefreshUser() {
         refreshList(userList, envVarService.getUserVariables());
+    }
+
+    @FXML
+    public void onRefreshSys() {
         refreshList(sysList, envVarService.getSystemVariables());
     }
 
@@ -417,7 +429,7 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
 
         if (isList) {
             // 使用新做的路径编辑器
-            PathEditorDialog dialog = new PathEditorDialog(searchField.getScene().getWindow(), key, value);
+            PathEditorDialog dialog = new PathEditorDialog(userSearchField.getScene().getWindow(), key, value);
             dialog.showAndWait().ifPresent(newValue -> {
                 // 保存逻辑
                 if (isSystem) {
