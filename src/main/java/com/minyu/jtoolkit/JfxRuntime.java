@@ -1,6 +1,8 @@
 package com.minyu.jtoolkit;
 
 import com.minyu.jtoolkit.core.event.StageReadyEvent;
+import com.minyu.jtoolkit.core.util.AppIconUtils;
+import com.minyu.jtoolkit.core.util.ApplicationShutdown;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
@@ -37,9 +39,11 @@ public class JfxRuntime extends Application {
 
     @Override
     public void start(Stage stage) {
+        Platform.setImplicitExit(true);
+        AppIconUtils.configureApplicationIcons(stage);
         showSplashScreen(stage);
 
-        new Thread(() -> {
+        Thread startupThread = new Thread(() -> {
             try {
                 // 启动 Spring Boot
                 context = new SpringApplicationBuilder()
@@ -60,7 +64,9 @@ public class JfxRuntime extends Application {
                 e.printStackTrace();
                 Platform.exit();
             }
-        }, "Spring-Startup-Thread").start();
+        }, "Spring-Startup-Thread");
+        startupThread.setDaemon(true);
+        startupThread.start();
     }
 
     private void showSplashScreen(Stage parentStage) {
@@ -115,7 +121,7 @@ public class JfxRuntime extends Application {
         Scene scene = new Scene(root, 500, 300);
         scene.setFill(Color.TRANSPARENT); // 这一步至关重要，否则四个角是白色的
 
-        splashStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/logo_32.png"))));
+        AppIconUtils.configureApplicationIcons(splashStage);
 
         splashStage.setScene(scene);
         splashStage.centerOnScreen();
@@ -124,9 +130,6 @@ public class JfxRuntime extends Application {
 
     @Override
     public void stop() {
-        if (context != null) {
-            context.close();
-        }
-        Platform.exit();
+        ApplicationShutdown.exit(context);
     }
 }
