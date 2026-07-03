@@ -47,83 +47,71 @@
 
                 <VBox spacing="10">
                     <RadioButton fx:id="secTypeSpecific" text="指定:" toggleGroup="$secGroup"/>
-                    <VBox fx:id="secSpecificContainer">
+                    <GridPane fx:id="secSpecificContainer" hgap="10" vgap="5">
                         <padding>
                             <Insets left="20"/>
                         </padding>
-                        <HBox spacing="10">
-                            <CheckBox text="00"/>
-                            <CheckBox text="01"/>
-                            <CheckBox text="02"/>
-                            <CheckBox text="03"/>
-                            <CheckBox text="04"/>
-                            <CheckBox text="05"/>
-                            <CheckBox text="06"/>
-                            <CheckBox text="07"/>
-                            <CheckBox text="08"/>
-                            <CheckBox text="09"/>
-                        </HBox>
-                        <HBox spacing="10">
-                            <CheckBox text="10"/>
-                            <CheckBox text="11"/>
-                            <CheckBox text="12"/>
-                            <CheckBox text="13"/>
-                            <CheckBox text="14"/>
-                            <CheckBox text="15"/>
-                            <CheckBox text="16"/>
-                            <CheckBox text="17"/>
-                            <CheckBox text="18"/>
-                            <CheckBox text="19"/>
-                        </HBox>
-                        <HBox spacing="10">
-                            <CheckBox text="20"/>
-                            <CheckBox text="21"/>
-                            <CheckBox text="22"/>
-                            <CheckBox text="23"/>
-                            <CheckBox text="24"/>
-                            <CheckBox text="25"/>
-                            <CheckBox text="26"/>
-                            <CheckBox text="27"/>
-                            <CheckBox text="28"/>
-                            <CheckBox text="29"/>
-                        </HBox>
-                        <HBox spacing="10">
-                            <CheckBox text="30"/>
-                            <CheckBox text="31"/>
-                            <CheckBox text="32"/>
-                            <CheckBox text="33"/>
-                            <CheckBox text="34"/>
-                            <CheckBox text="35"/>
-                            <CheckBox text="36"/>
-                            <CheckBox text="37"/>
-                            <CheckBox text="38"/>
-                            <CheckBox text="39"/>
-                        </HBox>
-                        <HBox spacing="10">
-                            <CheckBox text="40"/>
-                            <CheckBox text="41"/>
-                            <CheckBox text="42"/>
-                            <CheckBox text="43"/>
-                            <CheckBox text="44"/>
-                            <CheckBox text="45"/>
-                            <CheckBox text="46"/>
-                            <CheckBox text="47"/>
-                            <CheckBox text="48"/>
-                            <CheckBox text="49"/>
-                        </HBox>
-                        <HBox spacing="10">
-                            <CheckBox text="50"/>
-                            <CheckBox text="51"/>
-                            <CheckBox text="52"/>
-                            <CheckBox text="53"/>
-                            <CheckBox text="54"/>
-                            <CheckBox text="55"/>
-                            <CheckBox text="56"/>
-                            <CheckBox text="57"/>
-                            <CheckBox text="58"/>
-                            <CheckBox text="59"/>
-                        </HBox>
-                    </VBox>
+                        <CheckBox text="00" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <CheckBox text="01" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                        <CheckBox text="02" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+                        <CheckBox text="03" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+                        <CheckBox text="04" GridPane.rowIndex="0" GridPane.columnIndex="4"/>
+                        <CheckBox text="05" GridPane.rowIndex="0" GridPane.columnIndex="5"/>
+                        <CheckBox text="06" GridPane.rowIndex="0" GridPane.columnIndex="6"/>
+                        <CheckBox text="07" GridPane.rowIndex="0" GridPane.columnIndex="7"/>
+                        <CheckBox text="08" GridPane.rowIndex="0" GridPane.columnIndex="8"/>
+                        <CheckBox text="09" GridPane.rowIndex="0" GridPane.columnIndex="9"/>
+                        <CheckBox text="10" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <CheckBox text="11" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                        <CheckBox text="12" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+                        <CheckBox text="13" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+                        <CheckBox text="14" GridPane.rowIndex="1" GridPane.columnIndex="4"/>
+                        <CheckBox text="15" GridPane.rowIndex="1" GridPane.columnIndex="5"/>
+                        <CheckBox text="16" GridPane.rowIndex="1" GridPane.columnIndex="6"/>
+                        <CheckBox text="17" GridPane.rowIndex="1" GridPane.columnIndex="7"/>
+                        <CheckBox text="18" GridPane.rowIndex="1" GridPane.columnIndex="8"/>
+                        <CheckBox text="19" GridPane.rowIndex="1" GridPane.columnIndex="9"/>
+                        <CheckBox text="20" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                        <CheckBox text="21" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                        <CheckBox text="22" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+                        <CheckBox text="23" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+                        <CheckBox text="24" GridPane.rowIndex="2" GridPane.columnIndex="4"/>
+                        <CheckBox text="25" GridPane.rowIndex="2" GridPane.columnIndex="5"/>
+                        <CheckBox text="26" GridPane.rowIndex="2" GridPane.columnIndex="6"/>
+                        <CheckBox text="27" GridPane.rowIndex="2" GridPane.columnIndex="7"/>
+                        <CheckBox text="28" GridPane.rowIndex="2" GridPane.columnIndex="8"/>
+                        <CheckBox text="29" GridPane.rowIndex="2" GridPane.columnIndex="9"/>
+                        <CheckBox text="30" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                        <CheckBox text="31" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                        <CheckBox text="32" GridPane.rowIndex="3" GridPane.columnIndex="2"/>
+                        <CheckBox text="33" GridPane.rowIndex="3" GridPane.columnIndex="3"/>
+                        <CheckBox text="34" GridPane.rowIndex="3" GridPane.columnIndex="4"/>
+                        <CheckBox text="35" GridPane.rowIndex="3" GridPane.columnIndex="5"/>
+                        <CheckBox text="36" GridPane.rowIndex="3" GridPane.columnIndex="6"/>
+                        <CheckBox text="37" GridPane.rowIndex="3" GridPane.columnIndex="7"/>
+                        <CheckBox text="38" GridPane.rowIndex="3" GridPane.columnIndex="8"/>
+                        <CheckBox text="39" GridPane.rowIndex="3" GridPane.columnIndex="9"/>
+                        <CheckBox text="40" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                        <CheckBox text="41" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                        <CheckBox text="42" GridPane.rowIndex="4" GridPane.columnIndex="2"/>
+                        <CheckBox text="43" GridPane.rowIndex="4" GridPane.columnIndex="3"/>
+                        <CheckBox text="44" GridPane.rowIndex="4" GridPane.columnIndex="4"/>
+                        <CheckBox text="45" GridPane.rowIndex="4" GridPane.columnIndex="5"/>
+                        <CheckBox text="46" GridPane.rowIndex="4" GridPane.columnIndex="6"/>
+                        <CheckBox text="47" GridPane.rowIndex="4" GridPane.columnIndex="7"/>
+                        <CheckBox text="48" GridPane.rowIndex="4" GridPane.columnIndex="8"/>
+                        <CheckBox text="49" GridPane.rowIndex="4" GridPane.columnIndex="9"/>
+                        <CheckBox text="50" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+                        <CheckBox text="51" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+                        <CheckBox text="52" GridPane.rowIndex="5" GridPane.columnIndex="2"/>
+                        <CheckBox text="53" GridPane.rowIndex="5" GridPane.columnIndex="3"/>
+                        <CheckBox text="54" GridPane.rowIndex="5" GridPane.columnIndex="4"/>
+                        <CheckBox text="55" GridPane.rowIndex="5" GridPane.columnIndex="5"/>
+                        <CheckBox text="56" GridPane.rowIndex="5" GridPane.columnIndex="6"/>
+                        <CheckBox text="57" GridPane.rowIndex="5" GridPane.columnIndex="7"/>
+                        <CheckBox text="58" GridPane.rowIndex="5" GridPane.columnIndex="8"/>
+                        <CheckBox text="59" GridPane.rowIndex="5" GridPane.columnIndex="9"/>
+                    </GridPane>
                 </VBox>
             </VBox>
         </Tab>
@@ -161,83 +149,71 @@
 
                 <VBox spacing="10">
                     <RadioButton fx:id="minTypeSpecific" text="指定:" toggleGroup="$minGroup"/>
-                    <VBox fx:id="minSpecificContainer">
+                    <GridPane fx:id="minSpecificContainer" hgap="10" vgap="5">
                         <padding>
                             <Insets left="20"/>
                         </padding>
-                        <HBox spacing="10">
-                            <CheckBox text="00"/>
-                            <CheckBox text="01"/>
-                            <CheckBox text="02"/>
-                            <CheckBox text="03"/>
-                            <CheckBox text="04"/>
-                            <CheckBox text="05"/>
-                            <CheckBox text="06"/>
-                            <CheckBox text="07"/>
-                            <CheckBox text="08"/>
-                            <CheckBox text="09"/>
-                        </HBox>
-                        <HBox spacing="10">
-                            <CheckBox text="10"/>
-                            <CheckBox text="11"/>
-                            <CheckBox text="12"/>
-                            <CheckBox text="13"/>
-                            <CheckBox text="14"/>
-                            <CheckBox text="15"/>
-                            <CheckBox text="16"/>
-                            <CheckBox text="17"/>
-                            <CheckBox text="18"/>
-                            <CheckBox text="19"/>
-                        </HBox>
-                        <HBox spacing="10">
-                            <CheckBox text="20"/>
-                            <CheckBox text="21"/>
-                            <CheckBox text="22"/>
-                            <CheckBox text="23"/>
-                            <CheckBox text="24"/>
-                            <CheckBox text="25"/>
-                            <CheckBox text="26"/>
-                            <CheckBox text="27"/>
-                            <CheckBox text="28"/>
-                            <CheckBox text="29"/>
-                        </HBox>
-                        <HBox spacing="10">
-                            <CheckBox text="30"/>
-                            <CheckBox text="31"/>
-                            <CheckBox text="32"/>
-                            <CheckBox text="33"/>
-                            <CheckBox text="34"/>
-                            <CheckBox text="35"/>
-                            <CheckBox text="36"/>
-                            <CheckBox text="37"/>
-                            <CheckBox text="38"/>
-                            <CheckBox text="39"/>
-                        </HBox>
-                        <HBox spacing="10">
-                            <CheckBox text="40"/>
-                            <CheckBox text="41"/>
-                            <CheckBox text="42"/>
-                            <CheckBox text="43"/>
-                            <CheckBox text="44"/>
-                            <CheckBox text="45"/>
-                            <CheckBox text="46"/>
-                            <CheckBox text="47"/>
-                            <CheckBox text="48"/>
-                            <CheckBox text="49"/>
-                        </HBox>
-                        <HBox spacing="10">
-                            <CheckBox text="50"/>
-                            <CheckBox text="51"/>
-                            <CheckBox text="52"/>
-                            <CheckBox text="53"/>
-                            <CheckBox text="54"/>
-                            <CheckBox text="55"/>
-                            <CheckBox text="56"/>
-                            <CheckBox text="57"/>
-                            <CheckBox text="58"/>
-                            <CheckBox text="59"/>
-                        </HBox>
-                    </VBox>
+                        <CheckBox text="00" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <CheckBox text="01" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                        <CheckBox text="02" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+                        <CheckBox text="03" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+                        <CheckBox text="04" GridPane.rowIndex="0" GridPane.columnIndex="4"/>
+                        <CheckBox text="05" GridPane.rowIndex="0" GridPane.columnIndex="5"/>
+                        <CheckBox text="06" GridPane.rowIndex="0" GridPane.columnIndex="6"/>
+                        <CheckBox text="07" GridPane.rowIndex="0" GridPane.columnIndex="7"/>
+                        <CheckBox text="08" GridPane.rowIndex="0" GridPane.columnIndex="8"/>
+                        <CheckBox text="09" GridPane.rowIndex="0" GridPane.columnIndex="9"/>
+                        <CheckBox text="10" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <CheckBox text="11" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                        <CheckBox text="12" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+                        <CheckBox text="13" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+                        <CheckBox text="14" GridPane.rowIndex="1" GridPane.columnIndex="4"/>
+                        <CheckBox text="15" GridPane.rowIndex="1" GridPane.columnIndex="5"/>
+                        <CheckBox text="16" GridPane.rowIndex="1" GridPane.columnIndex="6"/>
+                        <CheckBox text="17" GridPane.rowIndex="1" GridPane.columnIndex="7"/>
+                        <CheckBox text="18" GridPane.rowIndex="1" GridPane.columnIndex="8"/>
+                        <CheckBox text="19" GridPane.rowIndex="1" GridPane.columnIndex="9"/>
+                        <CheckBox text="20" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                        <CheckBox text="21" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                        <CheckBox text="22" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+                        <CheckBox text="23" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+                        <CheckBox text="24" GridPane.rowIndex="2" GridPane.columnIndex="4"/>
+                        <CheckBox text="25" GridPane.rowIndex="2" GridPane.columnIndex="5"/>
+                        <CheckBox text="26" GridPane.rowIndex="2" GridPane.columnIndex="6"/>
+                        <CheckBox text="27" GridPane.rowIndex="2" GridPane.columnIndex="7"/>
+                        <CheckBox text="28" GridPane.rowIndex="2" GridPane.columnIndex="8"/>
+                        <CheckBox text="29" GridPane.rowIndex="2" GridPane.columnIndex="9"/>
+                        <CheckBox text="30" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                        <CheckBox text="31" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                        <CheckBox text="32" GridPane.rowIndex="3" GridPane.columnIndex="2"/>
+                        <CheckBox text="33" GridPane.rowIndex="3" GridPane.columnIndex="3"/>
+                        <CheckBox text="34" GridPane.rowIndex="3" GridPane.columnIndex="4"/>
+                        <CheckBox text="35" GridPane.rowIndex="3" GridPane.columnIndex="5"/>
+                        <CheckBox text="36" GridPane.rowIndex="3" GridPane.columnIndex="6"/>
+                        <CheckBox text="37" GridPane.rowIndex="3" GridPane.columnIndex="7"/>
+                        <CheckBox text="38" GridPane.rowIndex="3" GridPane.columnIndex="8"/>
+                        <CheckBox text="39" GridPane.rowIndex="3" GridPane.columnIndex="9"/>
+                        <CheckBox text="40" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                        <CheckBox text="41" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                        <CheckBox text="42" GridPane.rowIndex="4" GridPane.columnIndex="2"/>
+                        <CheckBox text="43" GridPane.rowIndex="4" GridPane.columnIndex="3"/>
+                        <CheckBox text="44" GridPane.rowIndex="4" GridPane.columnIndex="4"/>
+                        <CheckBox text="45" GridPane.rowIndex="4" GridPane.columnIndex="5"/>
+                        <CheckBox text="46" GridPane.rowIndex="4" GridPane.columnIndex="6"/>
+                        <CheckBox text="47" GridPane.rowIndex="4" GridPane.columnIndex="7"/>
+                        <CheckBox text="48" GridPane.rowIndex="4" GridPane.columnIndex="8"/>
+                        <CheckBox text="49" GridPane.rowIndex="4" GridPane.columnIndex="9"/>
+                        <CheckBox text="50" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+                        <CheckBox text="51" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+                        <CheckBox text="52" GridPane.rowIndex="5" GridPane.columnIndex="2"/>
+                        <CheckBox text="53" GridPane.rowIndex="5" GridPane.columnIndex="3"/>
+                        <CheckBox text="54" GridPane.rowIndex="5" GridPane.columnIndex="4"/>
+                        <CheckBox text="55" GridPane.rowIndex="5" GridPane.columnIndex="5"/>
+                        <CheckBox text="56" GridPane.rowIndex="5" GridPane.columnIndex="6"/>
+                        <CheckBox text="57" GridPane.rowIndex="5" GridPane.columnIndex="7"/>
+                        <CheckBox text="58" GridPane.rowIndex="5" GridPane.columnIndex="8"/>
+                        <CheckBox text="59" GridPane.rowIndex="5" GridPane.columnIndex="9"/>
+                    </GridPane>
                 </VBox>
             </VBox>
         </Tab>
@@ -275,41 +251,37 @@
 
                 <VBox spacing="10">
                     <RadioButton fx:id="hourTypeSpecific" text="指定:" toggleGroup="$hourGroup"/>
-                    <VBox fx:id="hourSpecificContainer">
+                    <GridPane fx:id="hourSpecificContainer" hgap="10" vgap="5">
                         <padding>
                             <Insets left="20"/>
                         </padding>
-                        <HBox spacing="10">
-                            <Label text="上午: "/>
-                            <CheckBox text="00"/>
-                            <CheckBox text="01"/>
-                            <CheckBox text="02"/>
-                            <CheckBox text="03"/>
-                            <CheckBox text="04"/>
-                            <CheckBox text="05"/>
-                            <CheckBox text="06"/>
-                            <CheckBox text="07"/>
-                            <CheckBox text="08"/>
-                            <CheckBox text="09"/>
-                            <CheckBox text="10"/>
-                            <CheckBox text="11"/>
-                        </HBox>
-                        <HBox spacing="10">
-                            <Label text="下午: "/>
-                            <CheckBox text="12"/>
-                            <CheckBox text="13"/>
-                            <CheckBox text="14"/>
-                            <CheckBox text="15"/>
-                            <CheckBox text="16"/>
-                            <CheckBox text="17"/>
-                            <CheckBox text="18"/>
-                            <CheckBox text="19"/>
-                            <CheckBox text="20"/>
-                            <CheckBox text="21"/>
-                            <CheckBox text="22"/>
-                            <CheckBox text="23"/>
-                        </HBox>
-                    </VBox>
+                        <Label text="上午:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <CheckBox text="00" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                        <CheckBox text="01" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+                        <CheckBox text="02" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+                        <CheckBox text="03" GridPane.rowIndex="0" GridPane.columnIndex="4"/>
+                        <CheckBox text="04" GridPane.rowIndex="0" GridPane.columnIndex="5"/>
+                        <CheckBox text="05" GridPane.rowIndex="0" GridPane.columnIndex="6"/>
+                        <CheckBox text="06" GridPane.rowIndex="0" GridPane.columnIndex="7"/>
+                        <CheckBox text="07" GridPane.rowIndex="0" GridPane.columnIndex="8"/>
+                        <CheckBox text="08" GridPane.rowIndex="0" GridPane.columnIndex="9"/>
+                        <CheckBox text="09" GridPane.rowIndex="0" GridPane.columnIndex="10"/>
+                        <CheckBox text="10" GridPane.rowIndex="0" GridPane.columnIndex="11"/>
+                        <CheckBox text="11" GridPane.rowIndex="0" GridPane.columnIndex="12"/>
+                        <Label text="下午:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <CheckBox text="12" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                        <CheckBox text="13" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+                        <CheckBox text="14" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+                        <CheckBox text="15" GridPane.rowIndex="1" GridPane.columnIndex="4"/>
+                        <CheckBox text="16" GridPane.rowIndex="1" GridPane.columnIndex="5"/>
+                        <CheckBox text="17" GridPane.rowIndex="1" GridPane.columnIndex="6"/>
+                        <CheckBox text="18" GridPane.rowIndex="1" GridPane.columnIndex="7"/>
+                        <CheckBox text="19" GridPane.rowIndex="1" GridPane.columnIndex="8"/>
+                        <CheckBox text="20" GridPane.rowIndex="1" GridPane.columnIndex="9"/>
+                        <CheckBox text="21" GridPane.rowIndex="1" GridPane.columnIndex="10"/>
+                        <CheckBox text="22" GridPane.rowIndex="1" GridPane.columnIndex="11"/>
+                        <CheckBox text="23" GridPane.rowIndex="1" GridPane.columnIndex="12"/>
+                    </GridPane>
                 </VBox>
             </VBox>
         </Tab>
@@ -356,46 +328,42 @@
 
                 <VBox spacing="10">
                     <RadioButton fx:id="dayTypeSpecific" text="指定:" toggleGroup="$dayGroup"/>
-                    <VBox fx:id="daySpecificContainer">
+                    <GridPane fx:id="daySpecificContainer" hgap="10" vgap="5">
                         <padding>
                             <Insets left="20"/>
                         </padding>
-                        <HBox spacing="10">
-                            <CheckBox text="01"/>
-                            <CheckBox text="02"/>
-                            <CheckBox text="03"/>
-                            <CheckBox text="04"/>
-                            <CheckBox text="05"/>
-                            <CheckBox text="06"/>
-                            <CheckBox text="07"/>
-                            <CheckBox text="08"/>
-                            <CheckBox text="09"/>
-                            <CheckBox text="10"/>
-                            <CheckBox text="11"/>
-                            <CheckBox text="12"/>
-                            <CheckBox text="13"/>
-                            <CheckBox text="14"/>
-                            <CheckBox text="15"/>
-                            <CheckBox text="16"/>
-                        </HBox>
-                        <HBox spacing="10">
-                            <CheckBox text="17"/>
-                            <CheckBox text="18"/>
-                            <CheckBox text="19"/>
-                            <CheckBox text="20"/>
-                            <CheckBox text="21"/>
-                            <CheckBox text="22"/>
-                            <CheckBox text="23"/>
-                            <CheckBox text="24"/>
-                            <CheckBox text="25"/>
-                            <CheckBox text="26"/>
-                            <CheckBox text="27"/>
-                            <CheckBox text="28"/>
-                            <CheckBox text="29"/>
-                            <CheckBox text="30"/>
-                            <CheckBox text="31"/>
-                        </HBox>
-                    </VBox>
+                        <CheckBox text="01" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <CheckBox text="02" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                        <CheckBox text="03" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+                        <CheckBox text="04" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+                        <CheckBox text="05" GridPane.rowIndex="0" GridPane.columnIndex="4"/>
+                        <CheckBox text="06" GridPane.rowIndex="0" GridPane.columnIndex="5"/>
+                        <CheckBox text="07" GridPane.rowIndex="0" GridPane.columnIndex="6"/>
+                        <CheckBox text="08" GridPane.rowIndex="0" GridPane.columnIndex="7"/>
+                        <CheckBox text="09" GridPane.rowIndex="0" GridPane.columnIndex="8"/>
+                        <CheckBox text="10" GridPane.rowIndex="0" GridPane.columnIndex="9"/>
+                        <CheckBox text="11" GridPane.rowIndex="0" GridPane.columnIndex="10"/>
+                        <CheckBox text="12" GridPane.rowIndex="0" GridPane.columnIndex="11"/>
+                        <CheckBox text="13" GridPane.rowIndex="0" GridPane.columnIndex="12"/>
+                        <CheckBox text="14" GridPane.rowIndex="0" GridPane.columnIndex="13"/>
+                        <CheckBox text="15" GridPane.rowIndex="0" GridPane.columnIndex="14"/>
+                        <CheckBox text="16" GridPane.rowIndex="0" GridPane.columnIndex="15"/>
+                        <CheckBox text="17" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <CheckBox text="18" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                        <CheckBox text="19" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+                        <CheckBox text="20" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+                        <CheckBox text="21" GridPane.rowIndex="1" GridPane.columnIndex="4"/>
+                        <CheckBox text="22" GridPane.rowIndex="1" GridPane.columnIndex="5"/>
+                        <CheckBox text="23" GridPane.rowIndex="1" GridPane.columnIndex="6"/>
+                        <CheckBox text="24" GridPane.rowIndex="1" GridPane.columnIndex="7"/>
+                        <CheckBox text="25" GridPane.rowIndex="1" GridPane.columnIndex="8"/>
+                        <CheckBox text="26" GridPane.rowIndex="1" GridPane.columnIndex="9"/>
+                        <CheckBox text="27" GridPane.rowIndex="1" GridPane.columnIndex="10"/>
+                        <CheckBox text="28" GridPane.rowIndex="1" GridPane.columnIndex="11"/>
+                        <CheckBox text="29" GridPane.rowIndex="1" GridPane.columnIndex="12"/>
+                        <CheckBox text="30" GridPane.rowIndex="1" GridPane.columnIndex="13"/>
+                        <CheckBox text="31" GridPane.rowIndex="1" GridPane.columnIndex="14"/>
+                    </GridPane>
                 </VBox>
             </VBox>
         </Tab>
@@ -433,25 +401,23 @@
 
                 <VBox spacing="10">
                     <RadioButton fx:id="monthTypeSpecific" text="指定:" toggleGroup="$monthGroup"/>
-                    <VBox fx:id="monthSpecificContainer">
+                    <GridPane fx:id="monthSpecificContainer" hgap="10" vgap="5">
                         <padding>
                             <Insets left="20"/>
                         </padding>
-                        <HBox spacing="10">
-                            <CheckBox text="01"/>
-                            <CheckBox text="02"/>
-                            <CheckBox text="03"/>
-                            <CheckBox text="04"/>
-                            <CheckBox text="05"/>
-                            <CheckBox text="06"/>
-                            <CheckBox text="07"/>
-                            <CheckBox text="08"/>
-                            <CheckBox text="09"/>
-                            <CheckBox text="10"/>
-                            <CheckBox text="11"/>
-                            <CheckBox text="12"/>
-                        </HBox>
-                    </VBox>
+                        <CheckBox text="01" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <CheckBox text="02" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                        <CheckBox text="03" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+                        <CheckBox text="04" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+                        <CheckBox text="05" GridPane.rowIndex="0" GridPane.columnIndex="4"/>
+                        <CheckBox text="06" GridPane.rowIndex="0" GridPane.columnIndex="5"/>
+                        <CheckBox text="07" GridPane.rowIndex="0" GridPane.columnIndex="6"/>
+                        <CheckBox text="08" GridPane.rowIndex="0" GridPane.columnIndex="7"/>
+                        <CheckBox text="09" GridPane.rowIndex="0" GridPane.columnIndex="8"/>
+                        <CheckBox text="10" GridPane.rowIndex="0" GridPane.columnIndex="9"/>
+                        <CheckBox text="11" GridPane.rowIndex="0" GridPane.columnIndex="10"/>
+                        <CheckBox text="12" GridPane.rowIndex="0" GridPane.columnIndex="11"/>
+                    </GridPane>
                 </VBox>
             </VBox>
         </Tab>
@@ -491,20 +457,18 @@
 
                 <VBox spacing="10">
                     <RadioButton fx:id="weekTypeSpecific" text="指定:" toggleGroup="$weekGroup"/>
-                    <VBox fx:id="weekSpecificContainer">
+                    <GridPane fx:id="weekSpecificContainer" hgap="10" vgap="5">
                         <padding>
                             <Insets left="20"/>
                         </padding>
-                        <HBox spacing="10">
-                            <CheckBox text="周一"/>
-                            <CheckBox text="周二"/>
-                            <CheckBox text="周三"/>
-                            <CheckBox text="周四"/>
-                            <CheckBox text="周五"/>
-                            <CheckBox text="周六"/>
-                            <CheckBox text="周日"/>
-                        </HBox>
-                    </VBox>
+                        <CheckBox text="周一" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <CheckBox text="周二" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                        <CheckBox text="周三" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+                        <CheckBox text="周四" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+                        <CheckBox text="周五" GridPane.rowIndex="0" GridPane.columnIndex="4"/>
+                        <CheckBox text="周六" GridPane.rowIndex="0" GridPane.columnIndex="5"/>
+                        <CheckBox text="周日" GridPane.rowIndex="0" GridPane.columnIndex="6"/>
+                    </GridPane>
                 </VBox>
             </VBox>
         </Tab>

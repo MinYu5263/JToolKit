@@ -38,25 +38,22 @@ public class CronController extends BaseController<CronPersistentState> {
     @FXML
     private ComboBox<Integer> executionCountCombo;
 
-    // ================= 秒 (Seconds) =================
     @FXML
     private ToggleGroup secGroup;
     @FXML
-    private RadioButton secTypeEvery;     // 每秒
+    private RadioButton secTypeEvery;
     @FXML
-    private RadioButton secTypeRange;     // 周期 (Range)
+    private RadioButton secTypeRange;
     @FXML
     private Spinner<Integer> secRangeStart, secRangeEnd;
     @FXML
-    private RadioButton secTypeIncrement; // 循环 (Increment)
+    private RadioButton secTypeIncrement;
     @FXML
     private Spinner<Integer> secIncrementStart, secIncrementStep;
     @FXML
-    private RadioButton secTypeSpecific;  // 指定
+    private RadioButton secTypeSpecific;
     @FXML
-    private Pane secSpecificContainer;    // **注意：在FXML中给包含0-59 CheckBox的VBox加上此ID**
-
-    // ================= 分 (Minutes) =================
+    private Pane secSpecificContainer;
     @FXML
     private ToggleGroup minGroup;
     @FXML
@@ -74,7 +71,6 @@ public class CronController extends BaseController<CronPersistentState> {
     @FXML
     private Pane minSpecificContainer;
 
-    // ================= 时 (Hours) =================
     @FXML
     private ToggleGroup hourGroup;
     @FXML
@@ -92,7 +88,6 @@ public class CronController extends BaseController<CronPersistentState> {
     @FXML
     private Pane hourSpecificContainer;
 
-    // ================= 日 (Day of Month) =================
     @FXML
     private ToggleGroup dayGroup;
     @FXML
@@ -106,19 +101,18 @@ public class CronController extends BaseController<CronPersistentState> {
     @FXML
     private Spinner<Integer> dayIncrementStart, dayIncrementStep;
     @FXML
-    private RadioButton dayTypeNearestWeekday; // 每月x号最近的工作日
+    private RadioButton dayTypeNearestWeekday;
     @FXML
     private Spinner<Integer> dayNearestWeekday;
     @FXML
-    private RadioButton dayTypeLastDay;        // 本月最后一天 (L)
+    private RadioButton dayTypeLastDay;
     @FXML
-    private RadioButton dayTypeLastWeekday;    // 本月最后工作日 (LW)
+    private RadioButton dayTypeLastWeekday;
     @FXML
     private RadioButton dayTypeSpecific;
     @FXML
     private Pane daySpecificContainer;
 
-    // ================= 月 (Month) =================
     @FXML
     private ToggleGroup monthGroup;
     @FXML
@@ -136,23 +130,22 @@ public class CronController extends BaseController<CronPersistentState> {
     @FXML
     private Pane monthSpecificContainer;
 
-    // ================= 周 (Day of Week) =================
     @FXML
     private ToggleGroup weekGroup;
     @FXML
     private RadioButton weekTypeEvery;
     @FXML
-    private RadioButton weekTypeNone;          // 不指定 (?)
+    private RadioButton weekTypeNone;
     @FXML
     private RadioButton weekTypeRange;
     @FXML
     private Spinner<Integer> weekRangeStart, weekRangeEnd;
     @FXML
-    private RadioButton weekTypeNthDay;        // 第X周的星期Y
+    private RadioButton weekTypeNthDay;
     @FXML
     private Spinner<Integer> weekNthWeek, weekNthDayVal;
     @FXML
-    private RadioButton weekTypeLast;          // 本月最后一个星期X
+    private RadioButton weekTypeLast;
     @FXML
     private Spinner<Integer> weekLastDayVal;
     @FXML
@@ -160,11 +153,10 @@ public class CronController extends BaseController<CronPersistentState> {
     @FXML
     private Pane weekSpecificContainer;
 
-    // ================= 年 (Year) =================
     @FXML
     private ToggleGroup yearGroup;
     @FXML
-    private RadioButton yearTypeNone;          // 不指定 (留空)
+    private RadioButton yearTypeNone;
     @FXML
     private RadioButton yearTypeEvery;
     @FXML
@@ -177,23 +169,18 @@ public class CronController extends BaseController<CronPersistentState> {
     private boolean isRestoring = false;
 
     public CronController() {
-        // 使用 Quartz 定义
         this.cronParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ));
     }
 
     @Override
     public void initView() {
-        // 1. 初始化所有 Spinner
         initCommonSpinners();
 
         executionCountCombo.getItems().addAll(5, 10, 25, 50, 100);
 
-        // 2. 绑定事件监听 (任何修改触发自动生成)
         bindListeners();
 
-        // 3. 按钮事件
         btnParse.setOnAction(e -> onParse());
-
         btnReverseParse.setOnAction(e -> onReverseParse());
     }
 
@@ -244,19 +231,16 @@ public class CronController extends BaseController<CronPersistentState> {
         if (spinner == null) return;
         SpinnerValueFactory<Integer> factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(min, max, initial);
         spinner.setValueFactory(factory);
-        // 允许直接输入数值并提交
         spinner.setEditable(true);
         spinner.valueProperty().addListener(e -> autoGenerate());
     }
 
     private void bindListeners() {
-        // 绑定 ToggleGroup 切换
         List<ToggleGroup> groups = List.of(secGroup, minGroup, hourGroup, dayGroup, monthGroup, weekGroup, yearGroup);
         for (ToggleGroup group : groups) {
             group.selectedToggleProperty().addListener((obs, oldVal, newVal) -> autoGenerate());
         }
 
-        // 绑定所有 CheckBox 点击事件
         bindCheckBoxesInContainer(secSpecificContainer);
         bindCheckBoxesInContainer(minSpecificContainer);
         bindCheckBoxesInContainer(hourSpecificContainer);
@@ -265,24 +249,20 @@ public class CronController extends BaseController<CronPersistentState> {
         bindCheckBoxesInContainer(weekSpecificContainer);
     }
 
-    /**
-     * 递归遍历容器找到所有 CheckBox 并绑定事件
-     */
     private void bindCheckBoxesInContainer(Pane container) {
         if (container == null) return;
         for (Node node : container.getChildren()) {
-            if (node instanceof CheckBox) {
-                ((CheckBox) node).selectedProperty().addListener(e -> autoGenerate());
-            } else if (node instanceof Pane) {
-                // 处理嵌套布局（如 HBox 在 VBox 里）
-                bindCheckBoxesInContainer((Pane) node);
+            if (node instanceof CheckBox cb) {
+                cb.selectedProperty().addListener(e -> autoGenerate());
+            } else if (node instanceof Pane p) {
+                bindCheckBoxesInContainer(p);
             }
         }
     }
 
     private void autoGenerate() {
         if (isRestoring) return;
-        if (cronExpressionField.isFocused()) return; // 防抖
+        if (cronExpressionField.isFocused()) return;
 
         String sec = generateStandardPart(secGroup, secTypeEvery, secTypeRange, secRangeStart, secRangeEnd,
                 secTypeIncrement, secIncrementStart, secIncrementStep, secTypeSpecific, secSpecificContainer);
@@ -298,34 +278,21 @@ public class CronController extends BaseController<CronPersistentState> {
 
         String year = generateYearPart();
 
-        // === 处理 日(Day) 和 周(Week) 的互斥关系 ===
+        // 日和周互斥：一方有值时另一方必须为 ?
         String day;
         String week;
 
-        // 如果用户在 "周" 选择了 "不指定(?)"，或者在 "日" 选择了具体配置，则日优先
-        boolean weekIsNone = weekGroup.getSelectedToggle() == weekTypeNone;
-
-        if (weekIsNone) {
+        if (weekGroup.getSelectedToggle() == weekTypeNone) {
             week = "?";
             day = generateDayPart();
         } else {
-            // 如果用户专门配置了周，日必须变 ?
-            // 注意：这里简化逻辑，如果日选了 "?" (通常UI里没有日的不指定选项，默认是Every)，则根据周的配置来
-            // 为了保证 Quartz 格式正确，如果周有特定配置，日强制为 ?
             week = generateWeekPart();
             day = "?";
         }
 
-        // 修正：如果日和周都碰巧生成了 ? (例如周选None，日选None)，Quartz是不允许的。
-        // 但根据当前UI，日没有 "None" 选项，通常是 "Every" (*)。
-        // 互斥规则：
-        // 1. 如果周选了 "Every (*)" 或 "Specific" 等，日这就得是 "?"
-        // 2. 如果周选了 "None (?)"，日就可以是 "*" 或其他
-
         if (!"?".equals(week)) {
             day = "?";
         } else if ("?".equals(day)) {
-            // 如果两个都是 ?，这不合法。通常默认日是 *
             day = "*";
         }
 
@@ -338,7 +305,6 @@ public class CronController extends BaseController<CronPersistentState> {
         saveValues();
     }
 
-    // 生成标准的 时、分、秒、月 部分
     private String generateStandardPart(ToggleGroup group, RadioButton every,
                                         RadioButton range, Spinner<Integer> rStart, Spinner<Integer> rEnd,
                                         RadioButton increment, Spinner<Integer> iStart, Spinner<Integer> iStep,
@@ -351,7 +317,6 @@ public class CronController extends BaseController<CronPersistentState> {
         return "*";
     }
 
-    // 生成 日 部分
     private String generateDayPart() {
         Toggle selected = dayGroup.getSelectedToggle();
         if (selected == dayTypeEvery) return "*";
@@ -364,11 +329,10 @@ public class CronController extends BaseController<CronPersistentState> {
         return "*";
     }
 
-    // 生成 周 部分
     private String generateWeekPart() {
         Toggle selected = weekGroup.getSelectedToggle();
         if (selected == weekTypeNone) return "?";
-        if (selected == weekTypeEvery) return "*"; // Quartz中周用*也是合法的，代表每天
+        if (selected == weekTypeEvery) return "*";
         if (selected == weekTypeRange) return weekRangeStart.getValue() + "-" + weekRangeEnd.getValue();
         if (selected == weekTypeNthDay) return weekNthDayVal.getValue() + "#" + weekNthWeek.getValue();
         if (selected == weekTypeLast) return weekLastDayVal.getValue() + "L";
@@ -376,7 +340,6 @@ public class CronController extends BaseController<CronPersistentState> {
         return "?";
     }
 
-    // 生成 年 部分
     private String generateYearPart() {
         Toggle selected = yearGroup.getSelectedToggle();
         if (selected == yearTypeNone) return "";
@@ -385,13 +348,10 @@ public class CronController extends BaseController<CronPersistentState> {
         return "";
     }
 
-    /**
-     * 获取容器内所有被选中的 CheckBox 的文本值，并用逗号拼接
-     */
     private String getSelectedCheckBoxValues(Pane container) {
         List<String> selected = new ArrayList<>();
         collectCheckBoxValues(container, selected);
-        if (selected.isEmpty()) return "*"; // 如果没选，默认 *
+        if (selected.isEmpty()) return "*";
         return String.join(",", selected);
     }
 
@@ -400,26 +360,15 @@ public class CronController extends BaseController<CronPersistentState> {
         for (Node node : container.getChildren()) {
             if (node instanceof CheckBox cb) {
                 if (cb.isSelected()) {
-                    // 假设 CheckBox 的 text 就是数值 (00, 01 -> 0, 1)
-                    // 需要去除前导0，比如 "01" -> "1"
-                    try {
-                        // 尝试转数字再转字符串去掉前导0
-                        String text = cb.getText();
-                        // 如果是 "周一" 这种，需特殊处理，但Quartz周通常用 1-7 (SUN-SAT)
-                        // 这里假设 FXML 里 CheckBox 要么是数字，要么在Controller里做映射
-                        // 简单处理：如果是数字，去0；否则保留
-                        if (text.matches("\\d+")) {
-                            result.add(String.valueOf(Integer.parseInt(text)));
-                        } else {
-                            // 处理中文周
-                            result.add(convertWeekTextToNum(text));
-                        }
-                    } catch (Exception e) {
-                        result.add(cb.getText());
+                    String text = cb.getText();
+                    if (text.matches("\\d+")) {
+                        result.add(String.valueOf(Integer.parseInt(text)));
+                    } else {
+                        result.add(convertWeekTextToNum(text));
                     }
                 }
-            } else if (node instanceof Pane) {
-                collectCheckBoxValues((Pane) node, result);
+            } else if (node instanceof Pane p) {
+                collectCheckBoxValues(p, result);
             }
         }
     }
@@ -472,9 +421,6 @@ public class CronController extends BaseController<CronPersistentState> {
         }
     }
 
-    /**
-     * 反解析到 UI
-     */
     @FXML
     private void onReverseParse() {
         String expression = cronExpressionField.getText();
@@ -482,39 +428,32 @@ public class CronController extends BaseController<CronPersistentState> {
 
         try {
             Cron cron = cronParser.parse(expression);
-            isRestoring = true; // 锁定：暂停自动生成
+            isRestoring = true;
 
-            // 1. 秒
             restoreStandardPart(cron.retrieve(CronFieldName.SECOND), secGroup,
                     secTypeEvery, secTypeRange, secRangeStart, secRangeEnd,
                     secTypeIncrement, secIncrementStart, secIncrementStep,
                     secTypeSpecific, secSpecificContainer);
 
-            // 2. 分
             restoreStandardPart(cron.retrieve(CronFieldName.MINUTE), minGroup,
                     minTypeEvery, minTypeRange, minRangeStart, minRangeEnd,
                     minTypeIncrement, minIncrementStart, minIncrementStep,
                     minTypeSpecific, minSpecificContainer);
 
-            // 3. 时
             restoreStandardPart(cron.retrieve(CronFieldName.HOUR), hourGroup,
                     hourTypeEvery, hourTypeRange, hourRangeStart, hourRangeEnd,
                     hourTypeIncrement, hourIncrementStart, hourIncrementStep,
                     hourTypeSpecific, hourSpecificContainer);
 
-            // 4. 日 (特殊处理)
             restoreDayPart(cron.retrieve(CronFieldName.DAY_OF_MONTH));
 
-            // 5. 月
             restoreStandardPart(cron.retrieve(CronFieldName.MONTH), monthGroup,
                     monthTypeEvery, monthTypeRange, monthRangeStart, monthRangeEnd,
                     monthTypeIncrement, monthIncrementStart, monthIncrementStep,
                     monthTypeSpecific, monthSpecificContainer);
 
-            // 6. 周 (特殊处理)
             restoreWeekPart(cron.retrieve(CronFieldName.DAY_OF_WEEK));
 
-            // 7. 年 (可选)
             if (cron.retrieve(CronFieldName.YEAR) != null) {
                 restoreYearPart(cron.retrieve(CronFieldName.YEAR));
             } else {
@@ -533,9 +472,6 @@ public class CronController extends BaseController<CronPersistentState> {
         }
     }
 
-    /**
-     * 通用反解析逻辑 (秒、分、时、月)
-     */
     private void restoreStandardPart(CronField field, ToggleGroup group,
                                      RadioButton typeEvery,
                                      RadioButton typeRange, Spinner<Integer> rStart, Spinner<Integer> rEnd,
@@ -552,12 +488,11 @@ public class CronController extends BaseController<CronPersistentState> {
             rEnd.getValueFactory().setValue((int) between.getTo().getValue());
         } else if (exp instanceof Every every) {
             typeIncrement.setSelected(true);
-            // Every 结构通常是 (start)/step， cron-utils 中 expression 是 start
             int start = 0;
             if (every.getExpression() instanceof On on) {
                 start = on.getTime().getValue();
-            } else if (every.getExpression() instanceof Between between) {
-                start = (int) between.getFrom().getValue(); // 处理 5-20/5 这种情况
+            } else if (every.getExpression() instanceof Between b) {
+                start = (int) b.getFrom().getValue();
             }
             iStart.getValueFactory().setValue(start);
             iStep.getValueFactory().setValue(every.getPeriod().getValue());
@@ -570,9 +505,6 @@ public class CronController extends BaseController<CronPersistentState> {
         }
     }
 
-    /**
-     * 日 反解析
-     */
     private void restoreDayPart(CronField field) {
         if (field == null) return;
         FieldExpression exp = field.getExpression();
@@ -580,9 +512,7 @@ public class CronController extends BaseController<CronPersistentState> {
         if (exp instanceof Always) {
             dayTypeEvery.setSelected(true);
         } else if (exp instanceof QuestionMark) {
-            // Quartz 日和周互斥，如果是?，通常UI中不做特殊显示，或者保留原状
-            // 但为了逻辑一致，如果周设定了，这里UI应该切到 Specific 且不选，或者 Every
-            // 简单处理：如果 Cron 只有 ?，默认选 Every 或者不做操作
+            // 日和周的互斥由 autoGenerate 统一处理
         } else if (exp instanceof Between between) {
             dayTypeRange.setSelected(true);
             dayRangeStart.getValueFactory().setValue((int) between.getFrom().getValue());
@@ -598,7 +528,6 @@ public class CronController extends BaseController<CronPersistentState> {
             clearCheckBoxes(daySpecificContainer);
             checkCheckBoxes(daySpecificContainer, getValuesFromExpression(exp));
         } else {
-            // 处理 L, W 等特殊字符
             String expStr = exp.asString();
             if ("L".equals(expStr)) {
                 dayTypeLastDay.setSelected(true);
@@ -606,15 +535,11 @@ public class CronController extends BaseController<CronPersistentState> {
                 dayTypeLastWeekday.setSelected(true);
             } else if (expStr.endsWith("W")) {
                 dayTypeNearestWeekday.setSelected(true);
-                String num = expStr.replace("W", "");
-                dayNearestWeekday.getValueFactory().setValue(Integer.parseInt(num));
+                dayNearestWeekday.getValueFactory().setValue(Integer.parseInt(expStr.replace("W", "")));
             }
         }
     }
 
-    /**
-     * 周 反解析
-     */
     private void restoreWeekPart(CronField field) {
         if (field == null) return;
         FieldExpression exp = field.getExpression();
@@ -637,7 +562,6 @@ public class CronController extends BaseController<CronPersistentState> {
                 weekTypeLast.setSelected(true);
                 weekLastDayVal.getValueFactory().setValue(on.getTime().getValue());
             } else {
-                // 单个周几
                 weekTypeSpecific.setSelected(true);
                 clearCheckBoxes(weekSpecificContainer);
                 checkCheckBoxes(weekSpecificContainer, List.of(on.getTime().getValue()));
@@ -649,9 +573,6 @@ public class CronController extends BaseController<CronPersistentState> {
         }
     }
 
-    /**
-     * 年 反解析
-     */
     private void restoreYearPart(CronField field) {
         FieldExpression exp = field.getExpression();
         if (exp instanceof Always) {
@@ -661,17 +582,15 @@ public class CronController extends BaseController<CronPersistentState> {
             yearRangeStart.getValueFactory().setValue((int) between.getFrom().getValue());
             yearRangeEnd.getValueFactory().setValue((int) between.getTo().getValue());
         } else {
-            yearTypeNone.setSelected(true); // 年比较简单，其他情况归为 None
+            yearTypeNone.setSelected(true);
         }
     }
 
-    // 辅助：判断是否包含特殊字符 L, W, #
     private boolean isSpecialChar(FieldExpression exp) {
         String s = exp.asString();
         return s.contains("L") || s.contains("W") || s.contains("#");
     }
 
-    // 辅助：从 And/On 表达式提取数值列表
     private List<Integer> getValuesFromExpression(FieldExpression exp) {
         List<Integer> res = new ArrayList<>();
         if (exp instanceof On on) {
@@ -686,7 +605,6 @@ public class CronController extends BaseController<CronPersistentState> {
         return res;
     }
 
-    // 辅助：清空容器内的 CheckBox
     private void clearCheckBoxes(Pane container) {
         if (container == null) return;
         for (Node node : container.getChildren()) {
@@ -695,14 +613,11 @@ public class CronController extends BaseController<CronPersistentState> {
         }
     }
 
-    // 辅助：根据数值选中 CheckBox
     private void checkCheckBoxes(Pane container, List<Integer> values) {
         if (container == null) return;
         for (Node node : container.getChildren()) {
             if (node instanceof CheckBox cb) {
-                String text = cb.getText();
-                // 尝试匹配：文本是数字，或者文本是中文周
-                if (values.contains(parseCheckBoxValue(text))) {
+                if (values.contains(parseCheckBoxValue(cb.getText()))) {
                     cb.setSelected(true);
                 }
             } else if (node instanceof Pane p) {
@@ -711,7 +626,6 @@ public class CronController extends BaseController<CronPersistentState> {
         }
     }
 
-    // 解析 CheckBox 文本为数字，以便和 Cron 解析结果比对
     private int parseCheckBoxValue(String text) {
         if (text.matches("\\d+")) {
             return Integer.parseInt(text);
@@ -728,7 +642,6 @@ public class CronController extends BaseController<CronPersistentState> {
         };
     }
 
-    // === BaseController ===
     @Override
     protected String getViewKey() {
         return "cron";
