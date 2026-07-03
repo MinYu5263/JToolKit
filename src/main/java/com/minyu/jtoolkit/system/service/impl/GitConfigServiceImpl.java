@@ -106,7 +106,7 @@ public class GitConfigServiceImpl implements GitConfigService {
     }
 
     @Override
-    public void generateSshKey(String filename, String email) throws Exception {
+    public void generateSshKey(String filename, String keyType, String email) throws Exception {
         File dir = new File(SSH_DIR);
         if (!dir.exists()) dir.mkdirs();
 
@@ -116,18 +116,40 @@ public class GitConfigServiceImpl implements GitConfigService {
         }
 
         ProcessBuilder pb = new ProcessBuilder(
-                "ssh-keygen", "-t", "rsa", "-C", email,
+                "ssh-keygen", "-t", keyType, "-C", email,
                 "-f", privateKeyFile.getAbsolutePath(), "-N", ""
         );
         pb.redirectErrorStream(true);
         Process process = pb.start();
 
-        // 读取输出以防报错
         String output = new String(process.getInputStream().readAllBytes());
         int exitCode = process.waitFor();
 
         if (exitCode != 0) {
             throw new RuntimeException("生成失败:\n" + output);
+        }
+    }
+
+    @Override
+    public void renameSshKey(File pubKeyFile, String newName) throws Exception {
+        String pubPath = pubKeyFile.getAbsolutePath();
+        // 去掉 .pub 后缀得到私钥路径
+        String privatePath = pubPath.replaceAll("\\.pub$", "");
+
+        File newPubFile = new File(pubKeyFile.getParent(), newName + ".pub");
+        File newPrivateFile = new File(pubKeyFile.getParent(), newName);
+
+        if (newPubFile.exists() || newPrivateFile.exists()) {
+            throw new RuntimeException("目标文件已存在: " + newName);
+        }
+
+        if (!new File(privatePath).renameTo(newPrivateFile)) {
+            throw new RuntimeException("重命名私钥失败");
+        }
+        if (!pubKeyFile.renameTo(newPubFile)) {
+            // 回滚
+            newPrivateFile.renameTo(new File(privatePath));
+            throw new RuntimeException("重命名公钥失败");
         }
     }
 

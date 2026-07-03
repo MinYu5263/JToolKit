@@ -52,8 +52,16 @@ public interface GitConfigService {
 
     /**
      * 生成 SSH 密钥
-     * @param filename 文件名 (如 id_rsa_test)
+     * @param filename 文件名 (如 id_ed25519)
+     * @param keyType  密钥类型 (ed25519, rsa, ecdsa)
      * @param email    邮箱/备注
      */
-    void generateSshKey(String filename, String email) throws Exception;
+    void generateSshKey(String filename, String keyType, String email) throws Exception;
+
+    /**
+     * 重命名 SSH 密钥文件（同时重命名私钥和 .pub 公钥）
+     * @param pubKeyFile 当前公钥文件
+     * @param newName    新文件名（不含扩展名）
+     */
+    void renameSshKey(File pubKeyFile, String newName) throws Exception;
 }
