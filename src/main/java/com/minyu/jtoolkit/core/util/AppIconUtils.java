@@ -16,8 +16,13 @@ import java.util.Objects;
 
 @Slf4j
 public final class AppIconUtils {
+    private static final String LOGO_16 = "/images/logo_16.png";
+    private static final String LOGO_24 = "/images/logo_24.png";
     private static final String LOGO_32 = "/images/logo_32.png";
+    private static final String LOGO_64 = "/images/logo_64.png";
     private static final String LOGO_128 = "/images/logo_128.png";
+    private static final String LOGO_256 = "/images/logo_256.png";
+    private static final String LOGO_512 = "/images/logo_512.png";
     private static final int DOCK_ICON_PADDING = 16;
 
     private AppIconUtils() {
@@ -29,7 +34,15 @@ public final class AppIconUtils {
     }
 
     public static List<Image> loadStageIcons() {
-        return List.of(loadJavaFxImage(LOGO_32), loadJavaFxImage(LOGO_128));
+        return List.of(
+                loadJavaFxImage(LOGO_16),
+                loadJavaFxImage(LOGO_24),
+                loadJavaFxImage(LOGO_32),
+                loadJavaFxImage(LOGO_64),
+                loadJavaFxImage(LOGO_128),
+                loadJavaFxImage(LOGO_256),
+                loadJavaFxImage(LOGO_512)
+        );
     }
 
     public static BufferedImage loadDockIconImage() {

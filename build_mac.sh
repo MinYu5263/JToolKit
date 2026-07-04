@@ -1,20 +1,19 @@
-#!/bin/bash
+winget install --id ImageMagick.ImageMagick -e#!/bin/bash
 echo "[macOS] Starting Build Process..."
 
-# 1. 清理旧构建
+# 1. Clean previous build output
 if [ -d "dist" ]; then
     echo "Cleaning dist..."
     rm -rf dist
 fi
 
-# 2. 配置 JavaFX 路径 (优先读取系统环境变量，否则使用默认值)
-# 若系统未配置 PATH_TO_FX_MODS，将使用下方默认路径，请按需修改
+# 2. Configure JavaFX path, preferring PATH_TO_FX_MODS when present
 DEFAULT_MODS="/Users/yourname/path/to/javafx-jmods-21"
 FX_MODS="${PATH_TO_FX_MODS:-$DEFAULT_MODS}"
 
 echo "Using JavaFX mods: $FX_MODS"
 
-# 3. 执行打包
+# 3. Run jpackage
 echo "Running jpackage..."
 jpackage @package-app-image.txt \
   --icon jtoolkit.icns \
