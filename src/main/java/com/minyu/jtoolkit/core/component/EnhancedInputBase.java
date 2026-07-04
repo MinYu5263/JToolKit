@@ -234,6 +234,7 @@ public abstract class EnhancedInputBase<T extends TextInputControl> extends VBox
             Clipboard.getSystemClipboard().setContent(new ClipboardContent() {{
                 putString(text);
             }});
+            Toast.success("复制成功");
         }
     }
 

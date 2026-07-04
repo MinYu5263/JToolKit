@@ -1,6 +1,7 @@
 package com.minyu.jtoolkit.module.main;
 
 import atlantafx.base.controls.ModalPane;
+import com.minyu.jtoolkit.core.component.Toast;
 import com.minyu.jtoolkit.core.service.HotKeyManager;
 import com.minyu.jtoolkit.core.service.ViewLoader;
 import com.minyu.jtoolkit.module.main.layout.MainModel;
@@ -39,6 +40,7 @@ public class MainController {
 
     @FXML
     public void initialize() {
+        Toast.register(rootPane);
         initMenuTree();
     }
 
