@@ -17,7 +17,6 @@ public class AboutController {
     @FXML private VBox root;
     @FXML private ImageView appLogo;
     @FXML private Label versionLabel;
-    @FXML private Label systemInfoLabel;
 
     @FXML
     public void initialize() {
@@ -27,21 +26,12 @@ public class AboutController {
             appLogo.setFitHeight(64);
         } catch (Exception ignored) {}
 
-        versionLabel.setText("Version 1.0.0-SNAPSHOT");
-
-        String javaVersion = System.getProperty("java.version");
-        String osName = System.getProperty("os.name");
-        systemInfoLabel.setText("Running on Java " + javaVersion + " (" + osName + ")");
+        versionLabel.setText("版本：1.0-SNAPSHOT");
     }
 
     @FXML
     private void openGithub() {
         openLink("https://github.com/MinYu5263/JToolKit");
-    }
-
-    @FXML
-    private void openWebsite() {
-        openLink("https://github.com/MinYu5263");
     }
 
     private void openLink(String url) {
