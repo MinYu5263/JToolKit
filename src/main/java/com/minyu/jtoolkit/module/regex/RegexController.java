@@ -26,13 +26,11 @@ import java.util.regex.PatternSyntaxException;
 @Component
 public class RegexController extends BaseController<RegexPersistentState> {
 
-    // === UI 组件 ===
     @FXML private TextField regexField;
     @FXML private ComboBox<String> templateCombo;
     @FXML private Label matchCountLabel;
-    @FXML private StackPane editorContainer; // 对应 FXML 中的新容器
+    @FXML private StackPane editorContainer;
 
-    // === 选项开关 ===
     @FXML private ToggleSwitch swGlobal;
     @FXML private ToggleSwitch swIgnoreCase;
     @FXML private ToggleSwitch swMultiline;
@@ -41,13 +39,10 @@ public class RegexController extends BaseController<RegexPersistentState> {
     @FXML private ToggleSwitch swUnicode;
     @FXML private ToggleSwitch swCanonEq;
 
-    // === RichTextFX 核心组件 ===
     private CodeArea codeArea;
 
-    // === 数据源 ===
     private final Map<String, String> regexTemplates = new LinkedHashMap<>();
 
-    // CSS 类名 (必须在你的 CSS 文件中定义)
     private static final String MATCH_CLASS = "regex-match";
 
     public void initView() {
@@ -56,21 +51,13 @@ public class RegexController extends BaseController<RegexPersistentState> {
         registerListeners();
     }
 
-    /**
-     * 初始化 CodeArea 并放入 StackPane
-     */
     private void initCodeArea() {
         codeArea = new CodeArea();
         codeArea.getStyleClass().addAll("code-area", "regex-editor");
 
-        // 这里的 CSS 路径建议根据你的项目实际情况修改，或者在主 Application 中统一加载
-        // codeArea.getStylesheets().add(getClass().getResource("/assets/styles/highlight.css").toExternalForm());
-
-        // 使用 VirtualizedScrollPane 包裹以支持高性能滚动
         VirtualizedScrollPane<CodeArea> scrollPane = new VirtualizedScrollPane<>(codeArea);
         scrollPane.getStyleClass().add("regex-editor-scroll");
 
-        // 修复嵌套滚动：内部滚动到边界时，将滚轮事件传递给外层 ScrollPane
         scrollPane.addEventFilter(ScrollEvent.SCROLL, event -> {
             double dy = event.getDeltaY();
             double scrollY = scrollPane.estimatedScrollYProperty().getValue();
@@ -113,32 +100,25 @@ public class RegexController extends BaseController<RegexPersistentState> {
     }
 
     private void registerListeners() {
-        // 核心：监听文本或正则变化 -> 触发高亮
         codeArea.textProperty().addListener((obs, old, val) -> computeHighlighting());
         regexField.textProperty().addListener((obs, old, val) -> computeHighlighting());
 
-        // 监听所有开关
         List.of(swGlobal, swIgnoreCase, swMultiline, swDotAll, swComments, swUnicode, swCanonEq)
                 .forEach(sw -> sw.selectedProperty().addListener(obs -> computeHighlighting()));
     }
 
-    /**
-     * 核心高亮逻辑
-     */
     private void computeHighlighting() {
         String text = codeArea.getText();
         String regex = regexField.getText();
 
         matchCountLabel.setText("0 matches");
 
-        // 判空
         if (text == null || text.isEmpty() || regex == null || regex.isEmpty()) {
             codeArea.clearStyle(0, text.length());
             return;
         }
 
         try {
-            // 1. 组装 Pattern
             int flags = 0;
             if (swIgnoreCase.isSelected()) flags |= Pattern.CASE_INSENSITIVE;
             if (swMultiline.isSelected()) flags |= Pattern.MULTILINE;
@@ -153,44 +133,36 @@ public class RegexController extends BaseController<RegexPersistentState> {
             Pattern pattern = Pattern.compile(regex, flags);
             Matcher matcher = pattern.matcher(text);
 
-            // 2. 计算样式区间
             StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
             int lastEnd = 0;
             int count = 0;
             boolean global = swGlobal.isSelected();
 
             while (matcher.find()) {
-                // 添加前面未匹配的文本段（无样式）
                 spansBuilder.add(Collections.emptyList(), matcher.start() - lastEnd);
 
-                // 添加匹配到的文本段（高亮样式）
                 spansBuilder.add(Collections.singleton(MATCH_CLASS), matcher.end() - matcher.start());
 
                 lastEnd = matcher.end();
                 count++;
 
-                // 如果没开启全局匹配，只匹配第一个
                 if (!global) break;
             }
 
-            // 添加最后剩余的文本段
             spansBuilder.add(Collections.emptyList(), text.length() - lastEnd);
 
-            // 3. 应用样式 (必须在 JavaFX 线程，此处通常已经是 UI 线程)
             StyleSpans<Collection<String>> spans = spansBuilder.create();
             codeArea.setStyleSpans(0, spans);
 
             matchCountLabel.setText(count + " matches");
 
         } catch (PatternSyntaxException e) {
-            // 正则语法错误，清除高亮并报错
             codeArea.clearStyle(0, text.length());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // === 持久化实现 ===
     @Override
     protected String getViewKey() {
         return "regex_tester";
@@ -216,7 +188,6 @@ public class RegexController extends BaseController<RegexPersistentState> {
         if (state == null) return;
         regexField.setText(state.getRegexPattern());
 
-        // 恢复文本 (CodeArea)
         if (state.getSourceText() != null) {
             codeArea.replaceText(state.getSourceText());
         }
@@ -229,7 +200,6 @@ public class RegexController extends BaseController<RegexPersistentState> {
         swUnicode.setSelected(state.isUnicode());
         swCanonEq.setSelected(state.isCanonEq());
 
-        // 恢复后触发一次高亮
         Platform.runLater(this::computeHighlighting);
     }
 

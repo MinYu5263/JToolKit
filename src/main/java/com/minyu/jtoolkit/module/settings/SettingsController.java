@@ -59,19 +59,10 @@ public class SettingsController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // 1. 初始化下拉框数据
         initThemeCombo();
-
-        // 2. 初始化字体微调器
         initFontSizeSpinner();
-
-        // 3. 初始化快捷键录制逻辑
         initShortcutRecorder();
-
-        // 4. 回显当前的配置
         loadFromAppConfig();
-
-        // 5. 配置监听器
         bindConfigListeners();
     }
 
@@ -109,19 +100,16 @@ public class SettingsController implements Initializable {
     private void loadFromAppConfig() {
         AppConfig config = appConfigManager.getCurrentConfig();
 
-        // 回显主题
         String currentThemeId = config.getThemeId();
         themeCombo.getItems().stream()
                 .filter(item -> Objects.equals(item.themeId(), currentThemeId))
                 .findFirst()
                 .ifPresent(item -> themeCombo.setValue(item));
 
-        // 回显字体
         if (config.getFontSize() != null) {
             fontSizeSpinner.getValueFactory().setValue(config.getFontSize());
         }
 
-        // 回显快捷键
         String searchShortcut = config.getShortcuts().get("search");
         if (searchShortcut != null && !searchShortcut.isBlank()) {
             try {
@@ -134,14 +122,12 @@ public class SettingsController implements Initializable {
     }
 
     private void bindConfigListeners() {
-        // 主题变更
         themeCombo.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 appConfigManager.updateTheme(newVal.themeId());
             }
         });
 
-        // 字体变更
         fontSizeSpinner.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 appConfigManager.updateFontSize(newVal);
@@ -154,11 +140,9 @@ public class SettingsController implements Initializable {
             event.consume();
             KeyCode code = event.getCode();
 
-            // 删除快捷键
             if (code == KeyCode.BACK_SPACE || code == KeyCode.DELETE) {
                 shortcutField.setText("");
                 currentKeyCombination = null;
-                // 更新配置：移除快捷键
                 appConfigManager.updateShortcut("search", null);
                 rootBox.requestFocus();
                 return;
@@ -192,15 +176,11 @@ public class SettingsController implements Initializable {
     @FXML
     private void onClearAllData() {
         if (showConfirmDialog("警告：确定要清空所有数据吗？", "此操作不可恢复！\n应用将重置为初始状态（包括主题和设置），建议重启应用以避免显示异常。")) {
-            // 清空所有
             storageService.clearAll();
             showInfoDialog("重置完成", "所有数据已清空，请重启应用。");
         }
     }
 
-    /**
-     * 打开数据目录
-     */
     @FXML
     private void onOpenDataDir() {
         try {
@@ -250,21 +230,18 @@ public class SettingsController implements Initializable {
         }
     }
 
-    // 通用确认弹窗
     private boolean showConfirmDialog(String header, String content) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("确认操作");
         alert.setHeaderText(header);
         alert.setContentText(content);
 
-        // 适配当前窗口 (如果有 owner 可以设置 initOwner)
         alert.initOwner(rootBox.getScene().getWindow());
 
         Optional<ButtonType> result = alert.showAndWait();
         return result.isPresent() && result.get() == ButtonType.OK;
     }
 
-    // 通用提示弹窗
     private void showInfoDialog(String header, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("提示");

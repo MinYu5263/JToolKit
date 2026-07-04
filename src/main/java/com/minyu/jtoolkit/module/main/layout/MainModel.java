@@ -14,9 +14,7 @@ import java.util.Objects;
 
 public class MainModel {
 
-    // 当前选中的页面 FXML 路径
     private final ReadOnlyObjectWrapper<String> selectedPage = new ReadOnlyObjectWrapper<>();
-    // 导航树数据
     private final ReadOnlyObjectWrapper<TreeItem<Nav>> navTree = new ReadOnlyObjectWrapper<>();
 
     private final ReadOnlyListWrapper<Nav> footerList = new ReadOnlyListWrapper<>(FXCollections.observableArrayList());
@@ -41,19 +39,10 @@ public class MainModel {
         return searchShortcutText;
     }
 
-    /**
-     * 导航到指定页面
-     *
-     * @param fxmlPath FXML 文件路径
-     */
     public void navigate(String fxmlPath) {
         selectedPage.set(Objects.requireNonNull(fxmlPath));
     }
 
-    /**
-     * 初始化菜单数据
-     * 直接从 NavConfig 获取静态配置，构建 TreeItem 结构
-     */
     public void initMenu() {
         TreeItem<Nav> sideRoot = createSideTree();
         this.navTree.set(sideRoot);

@@ -32,14 +32,10 @@ import java.util.stream.Collectors;
 @Component
 public class FileTreeController extends BaseController<FileTreePersistentState> {
 
-    // === 数据源 ===
     private final ObservableList<FileTreePersistentState.HistoryItem> historyData = FXCollections.observableArrayList();
 
-    // === 状态标志 ===
-    // 用于防止在恢复历史配置时，UI控件的变化触发自动生成，导致配置被覆盖
     private boolean isRestoring = false;
 
-    // === UI 组件 ===
     @FXML
     private PathTextField pathField;
     @FXML
@@ -61,15 +57,12 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
 
     @FXML
     public void initView() {
-        // 1. 路径变化触发生成
         pathField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null && !newValue.isBlank()) {
-                // 1. 尝试在历史记录中查找
                 Optional<FileTreePersistentState.HistoryItem> match = historyData.stream()
                         .filter(h -> h.getPath().equals(newValue))
                         .findFirst();
 
-                // 2. 锁定 UI 触发器，防止修改开关时重复触发生成
                 isRestoring = true;
                 try {
                     if (match.isPresent()) {
@@ -78,15 +71,13 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
                         resetToDefaultConfig();
                     }
                 } finally {
-                    isRestoring = false; // 解锁
+                    isRestoring = false;
                 }
 
-                // 3. 执行生成
                 onGenerate();
             }
         });
 
-        // 2. 初始化样式选择
         styleCombo.setItems(FXCollections.observableArrayList(TreeStyle.values()));
         styleCombo.setConverter(new StringConverter<>() {
             @Override
@@ -106,23 +97,18 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
         styleCombo.getSelectionModel().select(TreeStyle.ASCII);
         styleCombo.valueProperty().addListener((o, old, val) -> triggerUpdate());
 
-        // 3. 初始化深度设置
         depthSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 20, 2));
 
-        // 联动逻辑：选中"无限制" -> 禁用数字框
         noLimitSwitch.selectedProperty().addListener((observable, oldValue, isNoLimit) -> {
             depthSpinner.setDisable(isNoLimit);
             triggerUpdate();
         });
-        // 默认开启无限制
         noLimitSwitch.setSelected(true);
 
-        // 只有在非无限制模式下，调整数字才触发更新
         depthSpinner.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (!noLimitSwitch.isSelected()) triggerUpdate();
         });
 
-        // 4. 按钮交互
         editIgnoreBtn.setOnAction(e -> openIgnoreEditor());
         historyBtn.setOnAction(e -> showHistoryDialog());
 
@@ -130,18 +116,12 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
         ignoreField.textProperty().addListener(o -> triggerUpdate());
     }
 
-    /**
-     * 统一触发更新的方法
-     * 如果正在恢复历史配置(isRestoring=true)，则跳过，避免中间状态触发生成导致配置错乱
-     */
     private void triggerUpdate() {
         if (isRestoring) return;
         if (pathField.getText() != null && !pathField.getText().isBlank()) {
             onGenerate();
         }
     }
-
-    // ================== 核心交互 ==================
 
     @FXML
     public void onGenerate() {
@@ -155,7 +135,6 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
             return;
         }
 
-        // 1. 获取当前 UI 配置
         int maxDepth = noLimitSwitch.isSelected() ? Integer.MAX_VALUE : depthSpinner.getValue();
         boolean dirsOnly = dirsOnlySwitch.isSelected();
         String ignorePattern = ignoreField.getText();
@@ -178,7 +157,7 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
             @Override
             protected void succeeded() {
                 resultArea.setText(getValue());
-                saveValues(); // 完成后触发状态持久化保存
+                saveValues();
             }
 
             @Override
@@ -192,20 +171,17 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
     private void addToHistory(File dir, TreeStyle style, int maxDepth, boolean dirsOnly, String ignorePattern) {
         String path = dir.getAbsolutePath();
 
-        // 查找现有记录
         Optional<FileTreePersistentState.HistoryItem> existing = historyData.stream()
                 .filter(h -> h.getPath().equals(path))
                 .findFirst();
 
         if (existing.isPresent()) {
             FileTreePersistentState.HistoryItem item = existing.get();
-            // 更新配置
             item.setStyle(style.name());
             item.setMaxDepth(maxDepth);
             item.setDirectoriesOnly(dirsOnly);
             item.setIgnorePattern(ignorePattern);
         } else {
-            // 新增
             FileTreePersistentState.HistoryItem newItem = new FileTreePersistentState.HistoryItem(
                     path, dir.getName(), style.name(), maxDepth, dirsOnly, ignorePattern
             );
@@ -222,7 +198,6 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
             );
         }
 
-        // === 功能点 2：每次打开时，将当前目录置顶 ===
         String currentPath = pathField.getText();
         if (currentPath != null && !currentPath.isBlank()) {
             Optional<FileTreePersistentState.HistoryItem> currentItem = historyData.stream()
@@ -231,7 +206,6 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
 
             if (currentItem.isPresent()) {
                 FileTreePersistentState.HistoryItem item = currentItem.get();
-                // 只有当它不在第一位时才移动，避免无意义刷新
                 if (historyData.indexOf(item) != 0) {
                     historyData.remove(item);
                     historyData.addFirst(item);
@@ -244,7 +218,6 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
         HBox.setHgrow(listView, Priority.ALWAYS);
         VBox.setVgrow(listView, Priority.ALWAYS);
 
-        // === CellFactory：处理单条删除 ===
         listView.setCellFactory(lv -> new ListCell<>() {
             @Override
             protected void updateItem(FileTreePersistentState.HistoryItem item, boolean empty) {
@@ -258,11 +231,9 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
                 } else {
                     setText(item.getName());
 
-                    // 右键菜单
                     ContextMenu contextMenu = new ContextMenu();
                     MenuItem deleteItem = new MenuItem("删除此记录");
                     deleteItem.setOnAction(event -> {
-                        // === 功能点 3：删除当前选中的记录时，清空UI并恢复默认 ===
                         if (item.getPath().equals(pathField.getText())) {
                             resetUI();
                         }
@@ -271,11 +242,9 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
                     contextMenu.getItems().add(deleteItem);
                     setContextMenu(contextMenu);
 
-                    // 左键点击
                     setOnMouseClicked(event -> {
                         if (event.getButton() == javafx.scene.input.MouseButton.PRIMARY) {
                             pathField.setText(item.getPath());
-                            // 不关闭弹窗
                         }
                     });
                 }
@@ -287,12 +256,10 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
             listView.scrollTo(0);
         }
 
-        // === 功能点 1：底部清空全部按钮 ===
         Button clearAllBtn = new Button("清空所有历史");
-        clearAllBtn.getStyleClass().add(Styles.DANGER); // 红色危险样式
+        clearAllBtn.getStyleClass().add(Styles.DANGER);
         clearAllBtn.setMaxWidth(Double.MAX_VALUE);
         clearAllBtn.setOnAction(e -> {
-            // modalPane.hide();
             showClearAllConfirmation(modalPane);
         });
 
@@ -300,7 +267,6 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
 
         VBox vBox = new VBox(10);
         vBox.setPadding(new Insets(10));
-        // 将按钮加到最底部
         vBox.getChildren().addAll(label, listView, clearAllBtn);
 
         ModalBox modalBox = new ModalBox();
@@ -321,9 +287,8 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
     private void restoreItemConfig(FileTreePersistentState.HistoryItem item) {
         if (item == null) return;
 
-        isRestoring = true; // === 锁定：阻止 triggerUpdate ===
+        isRestoring = true;
         try {
-            // 1. 恢复样式
             try {
                 if (item.getStyle() != null) {
                     styleCombo.setValue(TreeStyle.valueOf(item.getStyle()));
@@ -334,13 +299,10 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
                 styleCombo.setValue(TreeStyle.ASCII);
             }
 
-            // 2. 恢复忽略规则
             ignoreField.setText(item.getIgnorePattern() != null ? item.getIgnorePattern() : "");
 
-            // 3. 恢复只显示文件夹
             dirsOnlySwitch.setSelected(item.isDirectoriesOnly());
 
-            // 4. 恢复深度 (兼容旧数据 maxDepth可能为0的情况)
             if (item.getMaxDepth() == Integer.MAX_VALUE || item.getMaxDepth() == 0) {
                 noLimitSwitch.setSelected(true);
             } else {
@@ -348,7 +310,7 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
                 depthSpinner.getValueFactory().setValue(item.getMaxDepth());
             }
         } finally {
-            isRestoring = false; // === 解锁 ===
+            isRestoring = false;
         }
     }
 
@@ -463,19 +425,13 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
         return false;
     }
 
-    /**
-     * 重置界面：清空路径、清空结果、恢复配置为默认
-     */
     private void resetUI() {
-        // 1. 暂停监听器 (虽然空路径通常不会触发生成，但为了安全起见)
         isRestoring = true;
         try {
-            // 清空输入和输出
             pathField.setText("");
             resultArea.setText("");
 
-            // 恢复默认配置
-            noLimitSwitch.setSelected(true); // 默认无限制
+            noLimitSwitch.setSelected(true);
             dirsOnlySwitch.setSelected(false);
             styleCombo.getSelectionModel().select(TreeStyle.ASCII);
             ignoreField.setText("");
@@ -484,9 +440,6 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
         }
     }
 
-    /**
-     * 显示清空历史记录的二次确认弹窗
-     */
     private void showClearAllConfirmation(ModalPane underlyingModal) {
          var modalPane = (ModalPane) pathField.getScene().lookup("#main-modal-pane-alert");
         if (modalPane == null) {
@@ -500,8 +453,6 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
                "确定要清空所有历史记录吗？ 此操作执行后无法恢复",
                 null
         );
-        // warning.getStyleClass().add(Styles.WARNING);
-
         Button btnCancel = new Button("取消");
         Button btnConfirm = new Button("确认清空");
 
@@ -540,7 +491,6 @@ public class FileTreeController extends BaseController<FileTreePersistentState> 
         btnCancel.requestFocus();
     }
 
-    // ================== BaseController 实现 ==================
     @Override
     protected String getViewKey() {
         return "file_tree_generator";

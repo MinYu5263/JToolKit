@@ -19,20 +19,16 @@ public class TextAnalyzerController extends BaseController<TextAnalyzerPersisten
     @FXML
     private EnhancedTextArea textArea;
 
-    // 统计标签
     @FXML
     private Label lblTotalLength, lblLines, lblWords;
     @FXML
     private Label lblSelLength, lblSelStart, lblSelEnd;
 
-    // 核心状态
     private String originalText = "";
-    private boolean isProgrammaticChange = false; // 锁：是否为程序触发的修改
+    private boolean isProgrammaticChange = false;
 
     @FXML
     public void initView() {
-
-
         textArea.textProperty().addListener((obs, old, val) -> {
             if (!isProgrammaticChange) {
                 originalText = val;
@@ -41,30 +37,21 @@ public class TextAnalyzerController extends BaseController<TextAnalyzerPersisten
             saveValues();
         });
 
-        // 2. 选区变化监听
         textArea.selectionProperty().addListener((obs, old, val) -> updateSelectionStats());
 
         updateStats();
         updateSelectionStats();
     }
 
-    // ================== 新增功能：显示原文 ==================
-
     @FXML
     public void onShowOriginal() {
         if (originalText != null) {
-            // 还原也是一种"程序修改"，不应该覆盖 originalText 本身
             isProgrammaticChange = true;
             textArea.setText(originalText);
             isProgrammaticChange = false;
         }
     }
 
-    // ================== 核心算法：替换文本 ==================
-
-    /**
-     * 执行转换操作 (会触发 isProgrammaticChange 锁)
-     */
     private void replaceText(UnaryOperator<String> transformer) {
         IndexRange range = textArea.getSelection();
         boolean hasSelection = range.getLength() > 0;
@@ -74,7 +61,6 @@ public class TextAnalyzerController extends BaseController<TextAnalyzerPersisten
 
         String result = transformer.apply(source);
 
-        // === 加锁开始 ===
         isProgrammaticChange = true;
         try {
             if (hasSelection) {
@@ -84,12 +70,9 @@ public class TextAnalyzerController extends BaseController<TextAnalyzerPersisten
                 textArea.setText(result);
             }
         } finally {
-            // === 解锁 ===
             isProgrammaticChange = false;
         }
     }
-
-    // ================== 转换 Action (保持不变) ==================
 
     @FXML
     public void toLowerCase() {
@@ -174,10 +157,7 @@ public class TextAnalyzerController extends BaseController<TextAnalyzerPersisten
         });
     }
 
-    // ================== 分词算法 ==================
-
     private String joinWords(String input, String delimiter, boolean capitalizeFirst) {
-        // 如果包含换行符，则将文本按行切分，对每一行递归调用 joinWords，最后再用换行符拼回去
         if (input.contains("\n")) {
             return java.util.Arrays.stream(input.split("\n", -1))
                     .map(line -> joinWords(line, delimiter, capitalizeFirst))
@@ -204,8 +184,6 @@ public class TextAnalyzerController extends BaseController<TextAnalyzerPersisten
         return words;
     }
 
-    // ================== 统计更新 (保持不变) ==================
-
     private void updateStats() {
         String text = textArea.getText();
         if (text == null) text = "";
@@ -221,8 +199,6 @@ public class TextAnalyzerController extends BaseController<TextAnalyzerPersisten
         lblSelEnd.setText(String.valueOf(range.getEnd()));
     }
 
-    // ================== 持久化 ==================
-
     @Override
     protected String getViewKey() {
         return "text_analyzer";
@@ -231,7 +207,6 @@ public class TextAnalyzerController extends BaseController<TextAnalyzerPersisten
     @Override
     protected void restoreValues(TextAnalyzerPersistentState state) {
         if (state != null) {
-            // 恢复时也不应该视为用户输入，防止覆盖 originalText
             isProgrammaticChange = true;
             if (state.getText() != null) textArea.setText(state.getText());
             if (state.getOriginalText() != null) this.originalText = state.getOriginalText();

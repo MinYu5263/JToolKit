@@ -34,13 +34,11 @@ import java.util.function.Consumer;
 @Component
 public class EnvVarController extends BaseController<EnvVarPersistentState> {
 
-    // === UI 组件 ===
     @FXML
     private CustomTextField userSearchField;
     @FXML
     private CustomTextField sysSearchField;
 
-    // 用户变量表格
     @FXML
     private TableView<EnvVarItem> userTable;
     @FXML
@@ -54,7 +52,6 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
     @FXML
     private Button btnDelUser;
 
-    // 系统变量表格
     @FXML
     private TableView<EnvVarItem> sysTable;
     @FXML
@@ -68,15 +65,12 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
     @FXML
     private Button btnDelSys;
 
-    // === 数据源 ===
     private final ObservableList<EnvVarItem> userList = FXCollections.observableArrayList();
     private final ObservableList<EnvVarItem> sysList = FXCollections.observableArrayList();
 
-    // 过滤后的视图数据源 (用于搜索)
     private FilteredList<EnvVarItem> filteredUserList;
     private FilteredList<EnvVarItem> filteredSysList;
 
-    // === 服务 ===
     private final EnvVarService envVarService;
 
     public EnvVarController(EnvVarService envVarService) {
@@ -91,22 +85,18 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
     }
 
     private void initTables() {
-        // 1. 初始化 FilteredList，默认不过滤 (predicate = always true)
         filteredUserList = new FilteredList<>(userList, p -> true);
         filteredSysList = new FilteredList<>(sysList, p -> true);
 
-        // 2. 绑定列
         userKeyCol.setCellValueFactory(cell -> cell.getValue().keyProperty());
         userValueCol.setCellValueFactory(cell -> cell.getValue().valueProperty());
 
-        // 3. 将 TableView 绑定到过滤后的列表，而不是原始列表
         userTable.setItems(filteredUserList);
 
         sysKeyCol.setCellValueFactory(cell -> cell.getValue().keyProperty());
         sysValueCol.setCellValueFactory(cell -> cell.getValue().valueProperty());
         sysTable.setItems(filteredSysList);
 
-        // 4. 双击编辑事件
         userTable.setOnMouseClicked(e -> {
             if (e.getClickCount() == 2 && !btnEditUser.isDisabled()) onEditUserVar();
         });
@@ -115,9 +105,6 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
         });
     }
 
-    /**
-     * 初始化搜索过滤器
-     */
     private void initSearchFilter() {
         userSearchField.textProperty().addListener((obs, old, val) ->
                 filteredUserList.setPredicate(item -> filterLogic(item, val)));
@@ -171,8 +158,6 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
         data.forEach((k, v) -> list.add(new EnvVarItem(k, v)));
     }
 
-    // ================= 用户变量操作 =================
-
     @FXML
     public void onAddUserVar() {
         showEditModal("新建用户变量", null, null, pair -> {
@@ -217,8 +202,6 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
         return false;
     }
 
-    // ================= 系统变量操作 =================
-
     @FXML
     public void onAddSysVar() {
         if (!ensureAdmin()) return;
@@ -237,7 +220,6 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
         if (!ensureAdmin()) return;
         EnvVarItem selected = sysTable.getSelectionModel().getSelectedItem();
         if (selected == null) return;
-        // 调用智能编辑
         smartEdit("编辑系统变量", selected.getKey(), selected.getValue(), true);
     }
 
@@ -257,9 +239,6 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
         }
     }
 
-    // ================= 辅助方法与类 =================
-
-    // 简单的数据包装类，方便 TableView 绑定
     public static class EnvVarItem {
         private final SimpleStringProperty key;
         private final SimpleStringProperty value;
@@ -286,7 +265,6 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
         }
     }
 
-    // 简单的 Key-Value 数据对
     private record VarPair(String key, String value) {
     }
 
@@ -297,21 +275,18 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
         grid.setVgap(15);
         grid.setPadding(new Insets(10, 0, 10, 0));
 
-        // --- 关键布局修复：设置列宽约束 ---
         ColumnConstraints col1 = new ColumnConstraints();
-        col1.setMinWidth(80); // 保证左侧 Label 不会被压缩
+        col1.setMinWidth(80);
         col1.setHgrow(Priority.NEVER);
 
         ColumnConstraints col2 = new ColumnConstraints();
-        col2.setHgrow(Priority.ALWAYS); // 右侧输入框自动撑满
+        col2.setHgrow(Priority.ALWAYS);
 
         grid.getColumnConstraints().addAll(col1, col2);
 
-        // 变量名输入框
         TextField keyField = new TextField(key);
         keyField.setPromptText("例如：JAVA_HOME");
 
-        // 变量值输入框 (改为 TextField 以匹配单行路径的 UI 风格)
         TextField valueField = new TextField(value);
         valueField.setPromptText("变量值路径");
 
@@ -321,7 +296,6 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
         btnBrowseDir.setOnAction(e -> {
             DirectoryChooser dc = new DirectoryChooser();
             dc.setTitle("选择目录");
-            // 尝试定位到当前已输入的路径
             if (valueField.getText() != null && !valueField.getText().isBlank()) {
                 File f = new File(valueField.getText());
                 if (f.exists() && f.isDirectory()) dc.setInitialDirectory(f);
@@ -337,7 +311,6 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
             fc.setTitle("选择文件");
             if (valueField.getText() != null && !valueField.getText().isBlank()) {
                 File f = new File(valueField.getText());
-                // 如果当前是文件，定位到其父目录；如果是目录，定位到该目录
                 if (f.exists()) {
                     if (f.isDirectory()) fc.setInitialDirectory(f);
                     else fc.setInitialDirectory(f.getParentFile());
@@ -351,16 +324,12 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
 
         HBox buttonBox = new HBox(10, btnBrowseDir, btnBrowseFile);
 
-        // 组装 Grid
-        // Row 0: 变量名
         grid.add(new Label("变量名(N):"), 0, 0);
         grid.add(keyField, 1, 0);
 
-        // Row 1: 变量值
         grid.add(new Label("变量值(V):"), 0, 1);
         grid.add(valueField, 1, 1);
 
-        // Row 2: 浏览按钮 (放在第1列，即输入框下方)
         grid.add(buttonBox, 1, 2);
 
         Button btnCancel = new Button("取消");
@@ -397,13 +366,12 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
         modalPane.usePredefinedTransitionFactories(null);
         modalPane.show(modalBox);
 
-        // 焦点控制：如果是新建，焦点在 key；如果是编辑，焦点在 value
         javafx.application.Platform.runLater(() -> {
             if (key == null || key.isEmpty()) {
                 keyField.requestFocus();
             } else {
                 valueField.requestFocus();
-                valueField.selectAll(); // 方便直接替换
+                valueField.selectAll();
             }
         });
     }
@@ -426,18 +394,11 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
         alert.showAndWait();
     }
 
-    /**
-     * 智能打开编辑对话框
-     * 如果包含分隔符，打开列表编辑器；否则打开普通编辑器
-     */
     private void smartEdit(String title, String key, String value, boolean isSystem) {
-        // 判断是否包含路径分隔符 (Windows是分号)
         boolean isList = value != null && value.contains(java.io.File.pathSeparator);
 
         if (isList) {
-            // 使用新做的路径编辑器
             PathEditorDialog dialog = new PathEditorDialog(key, value, newValue -> {
-                // 保存逻辑
                 if (isSystem) {
                     try {
                         envVarService.setSystemVariable(key, newValue);
@@ -452,7 +413,6 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
             });
             dialog.show(userSearchField.getScene());
         } else {
-            // 使用原来的简单 Key-Value 编辑器
             showEditModal(title, key, value, pair -> {
                 if (isSystem) {
                     try {
@@ -477,7 +437,6 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
         return modalPane;
     }
 
-    // === BaseController 实现 ===
     @Override
     protected String getViewKey() {
         return "env_vars_manager";

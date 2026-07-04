@@ -20,17 +20,14 @@ import java.util.List;
 @Component
 public class YamlPropsController extends BaseController<YamlPropsPersistentState> {
 
-    // 当前转换方向状态
     private final BooleanProperty propToYaml = new SimpleBooleanProperty(true);
     @FXML
     private EnhancedTextArea sourceInput;
 
-    // Jackson Mappers
     private final JavaPropsMapper propsMapper;
     private final YAMLMapper yamlMapper;
     @FXML
     private EnhancedTextArea targetOutput;
-    // 防止在恢复数据(restoreValues)时触发监听器里的“内容交换”逻辑
     private boolean isRestoring = false;
 
     public YamlPropsController() {
@@ -53,12 +50,9 @@ public class YamlPropsController extends BaseController<YamlPropsPersistentState
         sourceInput.bindBidirectionalScrollAll(targetOutput);
     }
 
-    // ================== 核心转换逻辑 ==================
-
     private void tryConvert() {
         String input = sourceInput.getText();
 
-        // 空值处理
         if (input == null || input.isBlank()) {
             targetOutput.setText("");
             return;
@@ -80,11 +74,6 @@ public class YamlPropsController extends BaseController<YamlPropsPersistentState
         }
     }
 
-    // ================== 交互事件 ==================
-
-    /**
-     * 切换转换方向
-     */
     @FXML
     public void onToggleDirection() {
         propToYaml.set(!propToYaml.get());
@@ -99,8 +88,6 @@ public class YamlPropsController extends BaseController<YamlPropsPersistentState
             targetOutput.setTitle("Properties");
         }
     }
-
-    // ================== 持久化状态 ==================
 
     @Override
     protected String getViewKey() {

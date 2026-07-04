@@ -64,7 +64,6 @@ public class MainController {
             }
         });
 
-        // 将搜索框的文本属性与搜索快捷见的文本属性进行绑定
         model.searchShortcutTextProperty().bind(
                 Bindings.createStringBinding(
                         () -> hotKeyManager.getDisplayText("search"),
@@ -93,7 +92,6 @@ public class MainController {
     }
 
     private void initGlobalShortcuts(Sidebar sidebar) {
-        // 监听 Scene 的按键事件
         mainLayout.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) {
                 newScene.setOnKeyPressed(e -> {

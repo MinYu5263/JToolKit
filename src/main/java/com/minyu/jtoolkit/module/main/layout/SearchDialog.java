@@ -67,7 +67,6 @@ public final class SearchDialog extends ModalDialog {
     }
 
     private void init() {
-        // 监听输入，调用 model 搜索
         searchField.textProperty().addListener((obs, old, val) -> {
             if (val == null || val.isBlank()) {
                 resultList.getItems().clear();
@@ -76,7 +75,6 @@ public final class SearchDialog extends ModalDialog {
             resultList.getItems().setAll(model.search(val));
         });
 
-        // 键盘向下选择
         searchField.addEventFilter(KeyEvent.KEY_RELEASED, e -> {
             if (e.getCode() == KeyCode.DOWN && !resultList.getItems().isEmpty()) {
                 resultList.getSelectionModel().selectFirst();
@@ -84,7 +82,6 @@ public final class SearchDialog extends ModalDialog {
             }
         });
 
-        // 列表回车选中
         resultList.setOnKeyPressed(e -> {
             var selectionModel = resultList.getSelectionModel();
             if (e.getCode() == KeyCode.ENTER && !selectionModel.isEmpty()) {
@@ -93,7 +90,6 @@ public final class SearchDialog extends ModalDialog {
             }
         });
 
-        // 快捷键 ESC 关闭 (虽然 ModalBox 自带，但双重保险)
         addEventHandler(KeyEvent.KEY_PRESSED, e -> {
             if (e.getCode() == KeyCode.ESCAPE) {
                 close();
@@ -101,12 +97,10 @@ public final class SearchDialog extends ModalDialog {
         });
     }
 
-    // 提供给外部调用，用于打开后自动聚焦输入框
     public void begForFocus() {
         searchField.requestFocus();
     }
 
-    // 搜索结果列表单元格样式
     private static final class ResultListCell extends ListCell<SearchResult> {
         private final HBox root;
         private final Label parentLabel;
@@ -115,7 +109,6 @@ public final class SearchDialog extends ModalDialog {
         public ResultListCell(Consumer<SearchResult> clickHandler) {
             super();
 
-            // 样式定义
             parentLabel = new Label();
             parentLabel.getStyleClass().add(Styles.TEXT_MUTED);
 

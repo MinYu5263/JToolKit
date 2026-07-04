@@ -88,25 +88,15 @@ public final class Sidebar extends VBox {
     public void openSearchDialog() {
         if (searchDialog == null) {
             searchDialog = new SearchDialog(model);
-            // 设置关闭时清空内容，可选
-            // searchDialog.setClearOnClose(true);
         }
-        // 调用 ModalBox 的 show 方法，它会自动寻找 ID 为 "main-modal-pane" 的 ModalPane
         searchDialog.show(getScene());
 
-        // 延迟聚焦，体验更好
         Platform.runLater(searchDialog::begForFocus);
     }
 
     private VBox createFooter() {
         return new VBox();
     }
-
-
-    /// ////////////////////////////////////////////////////////////////////////
-    // 内部类 Header：负责 Logo 和 搜索按钮
-
-    /// ////////////////////////////////////////////////////////////////////////
 
     private class Header extends VBox {
 
@@ -138,7 +128,6 @@ public final class Sidebar extends VBox {
             root.setAlignment(Pos.CENTER_LEFT);
             root.getStyleClass().add("logo");
 
-            // root.setCursor(javafx.scene.Cursor.HAND);
             appImage.setOnMouseClicked(e -> {
                 long now = System.currentTimeMillis();
                 if (now - lastClickTime > 500) {
@@ -150,14 +139,13 @@ public final class Sidebar extends VBox {
 
                 if (clickCount >= 7) {
                     showHiddenCredits();
-                    clickCount = 0; // 重置
+                    clickCount = 0;
                 }
             });
 
             return root;
         }
 
-        // 隐藏的版权声明
         private void showHiddenCredits() {
             javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
             alert.setTitle("关于作者");
@@ -183,9 +171,9 @@ public final class Sidebar extends VBox {
             HBox.setHgrow(searchBox, Priority.ALWAYS);
 
             var root = new Button();
-            root.getStyleClass().addAll("search-button"); // 需要 CSS 配合去边框
+            root.getStyleClass().addAll("search-button");
             root.setGraphic(searchBox);
-            root.setMaxWidth(Double.MAX_VALUE); // 按钮撑满父容器
+            root.setMaxWidth(Double.MAX_VALUE);
 
             root.setStyle("-fx-background-color: -color-bg-default; -fx-border-color: -color-border-default; -fx-border-radius: 4px; -fx-background-radius: 4px; -fx-padding: 8px 12px;");
 

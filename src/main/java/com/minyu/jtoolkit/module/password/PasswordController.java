@@ -67,8 +67,6 @@ public class PasswordController extends BaseController<PasswordPersistentState> 
 
         String excludeStr = excludeField.getText();
 
-        // 1. 构建有效的字符池列表 (List of Pools)
-        // 每一个元素代表一个被选中的类别（且剔除了排除字符）
         List<char[]> activePools = new ArrayList<>();
 
         if (upperSwitch.isSelected()) {
@@ -97,10 +95,7 @@ public class PasswordController extends BaseController<PasswordPersistentState> 
         for (int k = 0; k < quantity; k++) {
             StringBuilder singlePwd = new StringBuilder(length);
             for (int i = 0; i < length; i++) {
-                // 2. 第一步随机：从有效的类别池中随机选一个池子 (平衡权重)
                 char[] selectedPool = activePools.get(secureRandom.nextInt(activePools.size()));
-
-                // 3. 第二步随机：从选中的池子中随机选一个字符
                 char selectedChar = selectedPool[secureRandom.nextInt(selectedPool.length)];
 
                 singlePwd.append(selectedChar);
@@ -116,25 +111,19 @@ public class PasswordController extends BaseController<PasswordPersistentState> 
         resultArea.setText(finalOutput.toString());
     }
 
-    /**
-     * 辅助方法：处理排除字符，并将处理后的有效字符集加入列表
-     */
     private void addPoolIfValid(List<char[]> pools, String sourcePool, String excludeStr) {
         String processed = sourcePool;
         if (excludeStr != null && !excludeStr.isEmpty()) {
-            String toExclude = excludeStr.replace(" ", ""); // 允许空格分隔
+            String toExclude = excludeStr.replace(" ", "");
             for (char c : toExclude.toCharArray()) {
                 processed = processed.replace(String.valueOf(c), "");
             }
         }
 
-        // 只有当该类别在排除后仍有剩余字符时，才加入候选池
         if (!processed.isEmpty()) {
             pools.add(processed.toCharArray());
         }
     }
-
-    // ================== BaseController 实现 ==================
 
     @Override
     protected String getViewKey() {

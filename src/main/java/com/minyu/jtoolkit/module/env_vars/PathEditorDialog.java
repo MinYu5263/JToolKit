@@ -19,10 +19,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-/**
- * 路径变量编辑器对话框
- * 用于处理类似 PATH 这种包含多个值的变量
- */
 public class PathEditorDialog extends ModalDialog {
 
     private final ObservableList<String> pathList;
@@ -32,22 +28,18 @@ public class PathEditorDialog extends ModalDialog {
         header.setTitle("编辑环境变量: " + variableName);
         header.setDescription("编辑文本列表，每行代表一个路径。");
 
-        // 1. 解析初始值 (按系统分隔符拆分)
-        String separator = File.pathSeparator; // Windows是分号，Mac/Linux是冒号
+        String separator = File.pathSeparator;
         List<String> splitData = new ArrayList<>();
         if (initialValue != null && !initialValue.isEmpty()) {
             splitData = List.of(initialValue.split(separator));
         }
         pathList = FXCollections.observableArrayList(splitData);
 
-        // 2. 构建 UI
         listView = new ListView<>(pathList);
         listView.setEditable(true);
-        // 允许双击编辑
         listView.setCellFactory(param -> new TextFieldListCell());
         HBox.setHgrow(listView, Priority.ALWAYS);
 
-        // 右侧按钮栏
         VBox rightBar = new VBox(10);
         rightBar.setPadding(new Insets(0, 0, 0, 10));
 
@@ -59,9 +51,8 @@ public class PathEditorDialog extends ModalDialog {
         Button btnUp = new Button("上移");
         Button btnDown = new Button("下移");
 
-        // 统一样式
         for (Button btn : List.of(btnAdd, btnBrowse, btnEdit, btnDelete, btnUp, btnDown)) {
-            btn.setMaxWidth(Double.MAX_VALUE); // 按钮撑满宽度
+            btn.setMaxWidth(Double.MAX_VALUE);
         }
 
         rightBar.getChildren().addAll(btnAdd, btnBrowse, btnEdit, btnDelete, sep, btnUp, btnDown);
@@ -93,16 +84,12 @@ public class PathEditorDialog extends ModalDialog {
         content.setBody(body);
         content.setPrefSize(680, 480);
 
-        // 3. 事件绑定
-
-        // 新建
         btnAdd.setOnAction(e -> {
             pathList.add("在此处输入新路径");
             listView.getSelectionModel().selectLast();
             listView.edit(pathList.size() - 1);
         });
 
-        // 浏览文件夹
         btnBrowse.setOnAction(e -> {
             DirectoryChooser dc = new DirectoryChooser();
             dc.setTitle("选择路径");
@@ -113,19 +100,16 @@ public class PathEditorDialog extends ModalDialog {
             }
         });
 
-        // 编辑选中
         btnEdit.setOnAction(e -> {
             int index = listView.getSelectionModel().getSelectedIndex();
             if (index >= 0) listView.edit(index);
         });
 
-        // 删除选中
         btnDelete.setOnAction(e -> {
             int index = listView.getSelectionModel().getSelectedIndex();
             if (index >= 0) pathList.remove(index);
         });
 
-        // 上移
         btnUp.setOnAction(e -> {
             int index = listView.getSelectionModel().getSelectedIndex();
             if (index > 0) {
@@ -134,7 +118,6 @@ public class PathEditorDialog extends ModalDialog {
             }
         });
 
-        // 下移
         btnDown.setOnAction(e -> {
             int index = listView.getSelectionModel().getSelectedIndex();
             if (index >= 0 && index < pathList.size() - 1) {
@@ -144,9 +127,6 @@ public class PathEditorDialog extends ModalDialog {
         });
     }
 
-    /**
-     * 内部类：支持直接编辑的 ListCell
-     */
     private static class TextFieldListCell extends ListCell<String> {
         private TextField textField;
 
@@ -193,7 +173,6 @@ public class PathEditorDialog extends ModalDialog {
             textField = new TextField(getString());
             textField.setMinWidth(this.getWidth() - this.getGraphicTextGap() * 2);
             textField.setOnAction(evt -> commitEdit(textField.getText()));
-            // 失去焦点时提交
             textField.focusedProperty().addListener((obs, oldVal, newVal) -> {
                 if (!newVal) commitEdit(textField.getText());
             });
