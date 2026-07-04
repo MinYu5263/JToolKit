@@ -1,6 +1,9 @@
 package com.minyu.jtoolkit.system.service.impl;
 
 import com.minyu.jtoolkit.system.service.EnvVarService;
+import com.sun.jna.Memory;
+import com.sun.jna.Native;
+import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,6 +17,8 @@ public class WindowsEnvService implements EnvVarService {
 
     private static final String USER_ENV_PATH = "Environment";
     private static final String SYS_ENV_PATH = "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment";
+    private static final int WM_SETTINGCHANGE = 0x001A;
+    private static final int BROADCAST_TIMEOUT_MS = 5000;
 
     @Override
     public Map<String, String> getUserVariables() {
@@ -76,13 +81,15 @@ public class WindowsEnvService implements EnvVarService {
     private void broadcastChange() {
         try {
             WinDef.DWORDByReference result = new WinDef.DWORDByReference();
+            Memory environment = new Memory(("Environment".length() + 1L) * Native.WCHAR_SIZE);
+            environment.setWideString(0, "Environment");
             User32.INSTANCE.SendMessageTimeout(
                     WinUser.HWND_BROADCAST,
-                    0x001A,
+                    WM_SETTINGCHANGE,
                     new WinDef.WPARAM(0),
-                    new WinDef.LPARAM(0),
+                    new WinDef.LPARAM(Pointer.nativeValue(environment)),
                     WinUser.SMTO_ABORTIFHUNG,
-                    100,
+                    BROADCAST_TIMEOUT_MS,
                     result
             );
             log.info("System broadcast sent.");

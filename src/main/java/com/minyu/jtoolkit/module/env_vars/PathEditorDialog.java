@@ -1,35 +1,36 @@
 package com.minyu.jtoolkit.module.env_vars;
 
+import atlantafx.base.theme.Styles;
+import com.minyu.jtoolkit.core.component.ModalDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.Window;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
  * 路径变量编辑器对话框
  * 用于处理类似 PATH 这种包含多个值的变量
  */
-public class PathEditorDialog extends Dialog<String> {
+public class PathEditorDialog extends ModalDialog {
 
     private final ObservableList<String> pathList;
     private final ListView<String> listView;
 
-    public PathEditorDialog(Window owner, String variableName, String initialValue) {
-        // 设置标题
-        setTitle("编辑环境变量: " + variableName);
-        setHeaderText("编辑文本列表，每行代表一个路径。");
-        initOwner(owner);
+    public PathEditorDialog(String variableName, String initialValue, Consumer<String> saveHandler) {
+        header.setTitle("编辑环境变量: " + variableName);
+        header.setDescription("编辑文本列表，每行代表一个路径。");
 
         // 1. 解析初始值 (按系统分隔符拆分)
         String separator = File.pathSeparator; // Windows是分号，Mac/Linux是冒号
@@ -65,16 +66,32 @@ public class PathEditorDialog extends Dialog<String> {
 
         rightBar.getChildren().addAll(btnAdd, btnBrowse, btnEdit, btnDelete, sep, btnUp, btnDown);
 
-        // 主布局
-        HBox content = new HBox(listView, rightBar);
-        content.setPadding(new Insets(10));
-        content.setPrefSize(600, 400);
+        HBox listContent = new HBox(listView, rightBar);
+        listContent.setPadding(new Insets(10));
+        listContent.setPrefSize(600, 400);
 
-        getDialogPane().setContent(content);
+        Button btnCancel = new Button("取消");
+        btnCancel.setCancelButton(true);
+        btnCancel.setOnAction(e -> close());
 
-        // 按钮类型
-        ButtonType okType = new ButtonType("确定", ButtonBar.ButtonData.OK_DONE);
-        getDialogPane().getButtonTypes().addAll(okType, ButtonType.CANCEL);
+        Button btnOk = new Button("确定");
+        btnOk.getStyleClass().add(Styles.ACCENT);
+        btnOk.setDefaultButton(true);
+        btnOk.setOnAction(e -> {
+            saveHandler.accept(pathList.stream()
+                    .filter(s -> s != null && !s.isBlank())
+                    .collect(Collectors.joining(separator)));
+            close();
+        });
+
+        HBox footer = new HBox(10, btnCancel, btnOk);
+        footer.setAlignment(Pos.CENTER_RIGHT);
+        footer.setPadding(new Insets(0, 10, 10, 10));
+
+        VBox body = new VBox(listContent, footer);
+        VBox.setVgrow(listContent, Priority.ALWAYS);
+        content.setBody(body);
+        content.setPrefSize(680, 480);
 
         // 3. 事件绑定
 
@@ -89,7 +106,7 @@ public class PathEditorDialog extends Dialog<String> {
         btnBrowse.setOnAction(e -> {
             DirectoryChooser dc = new DirectoryChooser();
             dc.setTitle("选择路径");
-            File file = dc.showDialog(getOwner());
+            File file = dc.showDialog(listView.getScene().getWindow());
             if (file != null) {
                 pathList.add(file.getAbsolutePath());
                 listView.getSelectionModel().selectLast();
@@ -124,17 +141,6 @@ public class PathEditorDialog extends Dialog<String> {
                 Collections.swap(pathList, index, index + 1);
                 listView.getSelectionModel().select(index + 1);
             }
-        });
-
-        // 4. 结果转换：把 List 拼回 String
-        setResultConverter(btnType -> {
-            if (btnType == okType) {
-                // 过滤空行，并用分隔符连接
-                return pathList.stream()
-                        .filter(s -> s != null && !s.isBlank())
-                        .collect(Collectors.joining(separator));
-            }
-            return null;
         });
     }
 

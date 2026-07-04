@@ -16,10 +16,6 @@
         <Insets top="10" right="10" bottom="10" left="10"/>
     </padding>
 
-    <HBox alignment="CENTER_LEFT" spacing="10">
-        <Label fx:id="osInfoLabel" text="(Windows)" textFill="grey"/>
-    </HBox>
-
     <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
 
         <Tab text="用户变量 (User)">

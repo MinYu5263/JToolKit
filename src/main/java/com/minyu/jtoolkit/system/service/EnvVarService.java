@@ -40,4 +40,18 @@ public interface EnvVarService {
      * 判断当前实现是否支持写入操作
      */
     boolean isWritable();
+
+    /**
+     * 判断是否支持写入用户级变量
+     */
+    default boolean isUserWritable() {
+        return isWritable();
+    }
+
+    /**
+     * 判断是否支持写入系统级变量
+     */
+    default boolean isSystemWritable() {
+        return isWritable();
+    }
 }

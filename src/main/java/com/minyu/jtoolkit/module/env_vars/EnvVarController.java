@@ -1,6 +1,9 @@
 package com.minyu.jtoolkit.module.env_vars;
 
 import atlantafx.base.controls.CustomTextField;
+import atlantafx.base.controls.ModalPane;
+import atlantafx.base.layout.ModalBox;
+import atlantafx.base.theme.Styles;
 import com.minyu.jtoolkit.core.util.AppLifecycleUtils;
 import com.minyu.jtoolkit.module.BaseController;
 import com.minyu.jtoolkit.system.service.EnvVarService;
@@ -10,11 +13,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
+import javafx.scene.layout.*;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +27,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 @Slf4j
 @Lazy(false)
@@ -32,8 +35,6 @@ import java.util.Optional;
 public class EnvVarController extends BaseController<EnvVarPersistentState> {
 
     // === UI 组件 ===
-    @FXML
-    private Label osInfoLabel;
     @FXML
     private CustomTextField userSearchField;
     @FXML
@@ -138,19 +139,15 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
     }
 
     private void checkPermission() {
-        boolean writable = envVarService.isWritable();
+        boolean userWritable = envVarService.isUserWritable();
+        boolean systemWritable = envVarService.isSystemWritable();
 
-        if (!writable) {
-            osInfoLabel.setText("(当前系统不支持修改，仅只读)");
-            btnAddUser.setDisable(true);
-            btnEditUser.setDisable(true);
-            btnDelUser.setDisable(true);
-            btnAddSys.setDisable(true);
-            btnEditSys.setDisable(true);
-            btnDelSys.setDisable(true);
-        } else {
-            osInfoLabel.setText("(当前系统: Windows - 可编辑)");
-        }
+        btnAddUser.setDisable(!userWritable);
+        btnEditUser.setDisable(!userWritable);
+        btnDelUser.setDisable(!userWritable);
+        btnAddSys.setDisable(!systemWritable);
+        btnEditSys.setDisable(!systemWritable);
+        btnDelSys.setDisable(!systemWritable);
     }
 
     @FXML
@@ -178,7 +175,7 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
 
     @FXML
     public void onAddUserVar() {
-        showEditDialog("新建用户变量", null, null).ifPresent(pair -> {
+        showEditModal("新建用户变量", null, null, pair -> {
             envVarService.setUserVariable(pair.key, pair.value);
             onRefreshAll();
         });
@@ -225,7 +222,7 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
     @FXML
     public void onAddSysVar() {
         if (!ensureAdmin()) return;
-        showEditDialog("新建系统变量", null, null).ifPresent(pair -> {
+        showEditModal("新建系统变量", null, null, pair -> {
             try {
                 envVarService.setSystemVariable(pair.key, pair.value);
                 onRefreshAll();
@@ -293,22 +290,12 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
     private record VarPair(String key, String value) {
     }
 
-    // 弹出一个包含两个输入框的 Dialog
-    private Optional<VarPair> showEditDialog(String title, String key, String value) {
-        Dialog<VarPair> dialog = new Dialog<>();
-        dialog.setTitle(title);
-        dialog.setHeaderText(null);
-
-        // 设置一个合理的默认宽度
-        dialog.getDialogPane().setPrefWidth(600);
-
-        ButtonType okButtonType = new ButtonType("保存", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
-
+    private void showEditModal(String title, String key, String value, Consumer<VarPair> saveHandler) {
+        ModalPane modalPane = getMainModalPane();
         GridPane grid = new GridPane();
         grid.setHgap(10);
-        grid.setVgap(15); //稍微增加垂直间距
-        grid.setPadding(new javafx.geometry.Insets(20, 20, 20, 20));
+        grid.setVgap(15);
+        grid.setPadding(new Insets(10, 0, 10, 0));
 
         // --- 关键布局修复：设置列宽约束 ---
         ColumnConstraints col1 = new ColumnConstraints();
@@ -328,11 +315,9 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
         TextField valueField = new TextField(value);
         valueField.setPromptText("变量值路径");
 
-        // --- 新增：浏览按钮栏 ---
         Button btnBrowseDir = new Button("浏览目录(D)");
         Button btnBrowseFile = new Button("浏览文件(F)");
 
-        // 浏览目录逻辑
         btnBrowseDir.setOnAction(e -> {
             DirectoryChooser dc = new DirectoryChooser();
             dc.setTitle("选择目录");
@@ -341,13 +326,12 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
                 File f = new File(valueField.getText());
                 if (f.exists() && f.isDirectory()) dc.setInitialDirectory(f);
             }
-            File selected = dc.showDialog(dialog.getOwner());
+            File selected = dc.showDialog(valueField.getScene().getWindow());
             if (selected != null) {
                 valueField.setText(selected.getAbsolutePath());
             }
         });
 
-        // 浏览文件逻辑
         btnBrowseFile.setOnAction(e -> {
             FileChooser fc = new FileChooser();
             fc.setTitle("选择文件");
@@ -359,7 +343,7 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
                     else fc.setInitialDirectory(f.getParentFile());
                 }
             }
-            File selected = fc.showOpenDialog(dialog.getOwner());
+            File selected = fc.showOpenDialog(valueField.getScene().getWindow());
             if (selected != null) {
                 valueField.setText(selected.getAbsolutePath());
             }
@@ -379,7 +363,39 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
         // Row 2: 浏览按钮 (放在第1列，即输入框下方)
         grid.add(buttonBox, 1, 2);
 
-        dialog.getDialogPane().setContent(grid);
+        Button btnCancel = new Button("取消");
+        btnCancel.setCancelButton(true);
+        btnCancel.setOnAction(e -> modalPane.hide());
+
+        Button btnSave = new Button("保存");
+        btnSave.getStyleClass().add(Styles.ACCENT);
+        btnSave.setDefaultButton(true);
+        btnSave.setOnAction(e -> {
+            saveHandler.accept(new VarPair(keyField.getText(), valueField.getText()));
+            modalPane.hide();
+        });
+
+        HBox footer = new HBox(10, btnCancel, btnSave);
+        footer.setAlignment(Pos.CENTER_RIGHT);
+
+        Label titleLabel = new Label(title);
+        titleLabel.getStyleClass().add(Styles.TITLE_4);
+
+        VBox body = new VBox(14, titleLabel, grid, footer);
+        body.setPadding(new Insets(16));
+
+        ModalBox modalBox = new ModalBox();
+        modalBox.addContent(body);
+        modalBox.setMaxSize(600, 260);
+
+        AnchorPane.setTopAnchor(body, 0.0);
+        AnchorPane.setBottomAnchor(body, 0.0);
+        AnchorPane.setLeftAnchor(body, 0.0);
+        AnchorPane.setRightAnchor(body, 0.0);
+
+        modalPane.setAlignment(Pos.CENTER);
+        modalPane.usePredefinedTransitionFactories(null);
+        modalPane.show(modalBox);
 
         // 焦点控制：如果是新建，焦点在 key；如果是编辑，焦点在 value
         javafx.application.Platform.runLater(() -> {
@@ -390,15 +406,6 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
                 valueField.selectAll(); // 方便直接替换
             }
         });
-
-        dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == okButtonType) {
-                return new VarPair(keyField.getText(), valueField.getText());
-            }
-            return null;
-        });
-
-        return dialog.showAndWait();
     }
 
     private boolean showConfirmDialog(String title, String content) {
@@ -406,7 +413,7 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(content);
-        alert.initOwner(osInfoLabel.getScene().getWindow());
+        alert.initOwner(userSearchField.getScene().getWindow());
         return alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK;
     }
 
@@ -415,7 +422,7 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(content);
-        alert.initOwner(osInfoLabel.getScene().getWindow());
+        alert.initOwner(userSearchField.getScene().getWindow());
         alert.showAndWait();
     }
 
@@ -429,8 +436,7 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
 
         if (isList) {
             // 使用新做的路径编辑器
-            PathEditorDialog dialog = new PathEditorDialog(userSearchField.getScene().getWindow(), key, value);
-            dialog.showAndWait().ifPresent(newValue -> {
+            PathEditorDialog dialog = new PathEditorDialog(key, value, newValue -> {
                 // 保存逻辑
                 if (isSystem) {
                     try {
@@ -444,9 +450,10 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
                     onRefreshAll();
                 }
             });
+            dialog.show(userSearchField.getScene());
         } else {
             // 使用原来的简单 Key-Value 编辑器
-            showEditDialog(title, key, value).ifPresent(pair -> {
+            showEditModal(title, key, value, pair -> {
                 if (isSystem) {
                     try {
                         envVarService.setSystemVariable(pair.key(), pair.value());
@@ -460,6 +467,14 @@ public class EnvVarController extends BaseController<EnvVarPersistentState> {
                 }
             });
         }
+    }
+
+    private ModalPane getMainModalPane() {
+        var modalPane = (ModalPane) userSearchField.getScene().lookup("#main-modal-pane");
+        if (modalPane == null) {
+            throw new IllegalStateException("ModalPane not found in Scene.");
+        }
+        return modalPane;
     }
 
     // === BaseController 实现 ===
