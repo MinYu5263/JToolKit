@@ -8,7 +8,7 @@ if [ -d "dist" ]; then
 fi
 
 # 2. Configure JavaFX path, preferring PATH_TO_FX_MODS when present
-DEFAULT_MODS="/Users/yourname/path/to/javafx-jmods-21"
+DEFAULT_MODS="/Users/minyu/software/javafx-jmods-21.0.11"
 FX_MODS="${PATH_TO_FX_MODS:-$DEFAULT_MODS}"
 
 echo "Using JavaFX mods: $FX_MODS"
